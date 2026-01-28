@@ -18,7 +18,7 @@ export const COUNTDOWN_PHASES = [
 
 export const EXERCISES_SEED = [
   {
-    id: 'pushup-default',
+    id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
     name: 'Push-ups',
     category: 'upper-body' as const,
     description: 'Classic push-up exercise targeting chest, triceps, and shoulders.',

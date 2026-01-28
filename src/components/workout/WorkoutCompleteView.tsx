@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card } from '@/components/shared/Card'
 import { Button } from '@/components/shared/Button'
@@ -45,8 +45,7 @@ export function WorkoutCompleteView() {
     return calculator.calculateAverageTimePerRep(repHistory)
   }, [repHistory, repCount, elapsedMs])
 
-  // Create object URL for video preview
-  useMemo(() => {
+  useEffect(() => {
     if (recordingBlob) {
       const url = URL.createObjectURL(recordingBlob)
       setVideoUrl(url)
