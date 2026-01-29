@@ -43,12 +43,13 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
   const lastRepTimeRef = useRef(Date.now())
   const autoEndTimerRef = useRef<number | null>(null)
   const hasPlayedWarningSound = useRef(false)
+  const lastCountdownValue = useRef(0)
 
   const { isInitialized, isLoading, initialize, startDetection, stopDetection } =
     usePoseDetection(currentExercise?.detectorType || 'pushup')
 
   // Create beep sound for inactivity warning
-  const playWarningBeep = useCallback(() => {
+  const playWarningBeep = useCallback((frequency: number = 800) => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
     const oscillator = audioContext.createOscillator()
     const gainNode = audioContext.createGain()
@@ -56,14 +57,14 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
     oscillator.connect(gainNode)
     gainNode.connect(audioContext.destination)
 
-    oscillator.frequency.value = 800 // 800Hz beep
+    oscillator.frequency.value = frequency
     oscillator.type = 'sine'
 
     gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2)
 
     oscillator.start(audioContext.currentTime)
-    oscillator.stop(audioContext.currentTime + 0.3)
+    oscillator.stop(audioContext.currentTime + 0.2)
   }, [])
 
   const { startRecording, stopRecording, pauseRecording, resumeRecording } =
@@ -117,6 +118,7 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
       setShowAutoEndWarning(false)
       setAutoEndCountdown(0)
       hasPlayedWarningSound.current = false
+      lastCountdownValue.current = 0
 
       if (autoEndTimerRef.current) {
         clearTimeout(autoEndTimerRef.current)
@@ -138,10 +140,12 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
         // Show warning and countdown
         const secondsLeft = Math.ceil((INACTIVITY_THRESHOLD - timeSinceLastRep) / 1000)
 
-        // Play beep sound once when warning first appears
-        if (!hasPlayedWarningSound.current) {
-          playWarningBeep()
-          hasPlayedWarningSound.current = true
+        // Play beep sound for each countdown second (3, 2, 1)
+        if (secondsLeft !== lastCountdownValue.current && secondsLeft > 0) {
+          // Different pitch for each second (higher = more urgent)
+          const frequency = secondsLeft === 3 ? 600 : secondsLeft === 2 ? 800 : 1000
+          playWarningBeep(frequency)
+          lastCountdownValue.current = secondsLeft
         }
 
         setShowAutoEndWarning(true)
@@ -150,6 +154,7 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
         setShowAutoEndWarning(false)
         setAutoEndCountdown(0)
         hasPlayedWarningSound.current = false
+        lastCountdownValue.current = 0
       }
     }, 1000)
 
@@ -231,6 +236,7 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
               lastRepTimeRef.current = Date.now()
               setShowAutoEndWarning(false)
               hasPlayedWarningSound.current = false
+              lastCountdownValue.current = 0
             }}
           >
             Keep Going

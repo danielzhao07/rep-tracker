@@ -30,6 +30,7 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
     incrementRep,
     decrementRep,
     resetWorkout,
+    restartWorkout,
   } = useWorkoutStore()
 
   const { saveWorkout } = useHistoryStore()
@@ -102,7 +103,7 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
   }
 
   const handleRetryWorkout = () => {
-    resetWorkout()
+    restartWorkout() // Use restartWorkout to keep currentExercise and isCameraMode
     onRetry?.()
   }
 
