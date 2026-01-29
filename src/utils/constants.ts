@@ -7,13 +7,25 @@
  * - angle < 120 = DOWN position (arms bent)
  */
 export const PUSHUP_THRESHOLDS = {
-  // Thresholds matching your working Python implementation (relaxed for easier detection)
-  ELBOW_ANGLE_TOP: 150,    // Arms extended = UP position (Relaxed from 160)
-  ELBOW_ANGLE_BOTTOM: 130, // Arms bent = DOWN position (Relaxed from 120)
+  // Original working thresholds from Python implementation
+  ELBOW_ANGLE_TOP: 155,    // Arms extended = UP position (slightly relaxed from 160 for better detection)
+  ELBOW_ANGLE_BOTTOM: 120, // Arms bent = DOWN position (original value)
 
   // Body alignment thresholds for form validation
   BODY_ALIGNMENT_GOOD: 160,
   BODY_ALIGNMENT_WARNING: 140,
+
+  // Push-up position validation thresholds (prevent cheating while standing/sitting)
+  MAX_SHOULDER_HIP_Y_DIFF: 0.25,    // Shoulders and hips at similar height (25% of frame) - stricter
+  MIN_WRIST_VISIBILITY: 0.4,        // Wrists should be visible (40% confidence)
+  MIN_KNEE_ANGLE: 150,              // Knees must be mostly straight (prevents knee push-ups)
+
+  // Anti-cheating validation
+  MIN_SHOULDER_VERTICAL_MOVEMENT: 0.015,  // Shoulders must move down at least 1.5% (relaxed, just prevents arm-only)
+  MAX_ELBOW_ANGLE_DIFF: 50,               // Both elbows within 50° (relaxed from 45°)
+
+  // Inactivity warning
+  INACTIVITY_WARNING_MS: 10000,  // Warn if no reps detected for 10 seconds
 } as const
 
 export const COUNTDOWN_PHASES = [
@@ -44,5 +56,7 @@ export const ROUTES = {
   WORKOUT: '/workout',
   MANUAL_ENTRY: '/manual-entry',
   HISTORY: '/history',
-  ANALYTICS: '/analytics',
+  EXERCISES: '/exercises',
+  PROFILE: '/profile',
+  WORKOUT_START: '/workout/start',
 } as const
