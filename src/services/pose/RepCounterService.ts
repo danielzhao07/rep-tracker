@@ -33,4 +33,8 @@ export class RepCounterService {
   getRepHistory(): Rep[] {
     return this.detector.getRepHistory()
   }
+
+  getDetector(): BaseDetector {
+    return this.detector
+  }
 }

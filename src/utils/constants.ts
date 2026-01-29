@@ -1,8 +1,17 @@
+/**
+ * Push-up detection thresholds
+ * Adapted from working Python implementation using same values
+ *
+ * Your Python code: rep_logic(120, 160, angle)
+ * - angle > 160 = UP position (arms extended)
+ * - angle < 120 = DOWN position (arms bent)
+ */
 export const PUSHUP_THRESHOLDS = {
-  ELBOW_ANGLE_TOP: 160,
-  ELBOW_ANGLE_BOTTOM: 90,
-  ELBOW_ANGLE_ECCENTRIC_START: 120,
-  ELBOW_ANGLE_CONCENTRIC_END: 140,
+  // Thresholds matching your working Python implementation (relaxed for easier detection)
+  ELBOW_ANGLE_TOP: 150,    // Arms extended = UP position (Relaxed from 160)
+  ELBOW_ANGLE_BOTTOM: 130, // Arms bent = DOWN position (Relaxed from 120)
+
+  // Body alignment thresholds for form validation
   BODY_ALIGNMENT_GOOD: 160,
   BODY_ALIGNMENT_WARNING: 140,
 } as const

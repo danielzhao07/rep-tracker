@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { VideoFeed } from './VideoFeed'
 import { RepCounter } from './RepCounter'
 import { FormFeedbackPanel } from './FormFeedbackPanel'
@@ -32,6 +32,11 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
   const { stream } = useCameraStore()
   const [elapsed, setElapsed] = useState(0)
+  const [detectionStarted, setDetectionStarted] = useState(false)
+  
+  // Store video/canvas refs to start detection when initialization completes
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   const { isInitialized, isLoading, initialize, startDetection, stopDetection } =
     usePoseDetection(currentExercise?.detectorType || 'pushup')
@@ -39,11 +44,21 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
   const { startRecording, stopRecording, pauseRecording, resumeRecording } =
     useVideoRecording()
 
+  // Initialize pose detection when in camera mode
   useEffect(() => {
     if (isCameraMode) {
       initialize()
     }
   }, [isCameraMode, initialize])
+
+  // Start detection when BOTH video is ready AND pose detection is initialized
+  useEffect(() => {
+    if (isInitialized && videoRef.current && canvasRef.current && !detectionStarted) {
+      console.log('🚀 Both video and pose detection ready, starting...')
+      startDetection(videoRef.current, canvasRef.current)
+      setDetectionStarted(true)
+    }
+  }, [isInitialized, detectionStarted, startDetection])
 
   useEffect(() => {
     if (!startTime || isPaused) return
@@ -57,14 +72,23 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
   const handleVideoReady = useCallback(
     (video: HTMLVideoElement, canvas: HTMLCanvasElement) => {
-      if (isInitialized) {
+      console.log('📹 Video feed ready')
+      videoRef.current = video
+      canvasRef.current = canvas
+      
+      // If already initialized, start detection immediately
+      if (isInitialized && !detectionStarted) {
+        console.log('🚀 Pose detection already initialized, starting immediately...')
         startDetection(video, canvas)
+        setDetectionStarted(true)
       }
+      
+      // Start recording with composite canvas (video + skeleton overlay)
       if (stream) {
-        startRecording(stream)
+        startRecording(stream, video, canvas)
       }
     },
-    [isInitialized, startDetection, stream, startRecording]
+    [isInitialized, detectionStarted, startDetection, stream, startRecording]
   )
 
   const handlePause = () => {

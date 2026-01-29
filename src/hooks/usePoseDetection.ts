@@ -7,25 +7,31 @@ import type { ExerciseDetectorType, Pose } from '@/types'
 export function usePoseDetection(exerciseType: ExerciseDetectorType) {
   const poseServiceRef = useRef<PoseDetectionService | null>(null)
   const repCounterRef = useRef<RepCounterService | null>(null)
+  const lastRepCountRef = useRef<number>(0)
+  const frameCountRef = useRef<number>(0)
   const [isInitialized, setIsInitialized] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const { addRep, setRepPhase, updateFormFeedback, isPaused } =
+  const { addRep, setRepPhase, updateFormFeedback, setFormScore, setDebugInfo } =
     useWorkoutStore()
 
   const initialize = useCallback(async () => {
     setIsLoading(true)
     try {
+      console.log('🔄 Initializing pose detection...')
       const poseService = new PoseDetectionService()
       await poseService.initialize()
       poseServiceRef.current = poseService
 
       const repCounter = new RepCounterService(exerciseType)
       repCounterRef.current = repCounter
+      lastRepCountRef.current = 0
+      frameCountRef.current = 0
 
       setIsInitialized(true)
+      console.log('✅ Pose detection initialized successfully')
     } catch (err) {
-      console.error('Failed to initialize pose detection:', err)
+      console.error('❌ Failed to initialize pose detection:', err)
     } finally {
       setIsLoading(false)
     }
@@ -33,9 +39,23 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
 
   const startDetection = useCallback(
     (videoElement: HTMLVideoElement, canvas?: HTMLCanvasElement) => {
-      if (!poseServiceRef.current || !repCounterRef.current) return
+      if (!poseServiceRef.current || !repCounterRef.current) {
+        console.warn('⚠️ Cannot start detection: services not initialized')
+        return
+      }
+
+      console.log('🎥 Starting pose detection on video element...')
+      console.log('   Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight)
+      console.log('   Video readyState:', videoElement.readyState)
+
+      // Clear any previous callbacks to avoid duplicates
+      poseServiceRef.current.clearCallbacks()
 
       poseServiceRef.current.onPoseDetected((pose: Pose) => {
+        frameCountRef.current++
+        
+        // Get isPaused fresh from store to avoid closure issues
+        const { isPaused } = useWorkoutStore.getState()
         if (isPaused) return
 
         const result = repCounterRef.current!.processFrame(
@@ -43,26 +63,42 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
           pose.timestamp
         )
 
+        // Get elbow angle from detector for debugging
+        const detector = repCounterRef.current!.getDetector()
+        const elbowAngle = detector.getElbowAngle?.() ?? 0
+        
+        // Update debug info in store (throttled to avoid too many updates)
+        if (frameCountRef.current % 5 === 0) {
+          setDebugInfo(elbowAngle, true, frameCountRef.current)
+        }
+
         setRepPhase(result.phase)
         updateFormFeedback(result.feedback)
 
-        if (result.count > repCounterRef.current!.getCurrentCount() - 1) {
+        // Check if a NEW rep was completed by comparing with last known count
+        if (result.count > lastRepCountRef.current) {
           const history = repCounterRef.current!.getRepHistory()
           const lastRep = history[history.length - 1]
           if (lastRep) {
+            console.log(`🔥 Rep ${result.count} detected!`, lastRep)
             addRep(lastRep)
+            setFormScore(lastRep.formScore)
           }
+          lastRepCountRef.current = result.count
         }
       })
 
       poseServiceRef.current.startDetection(videoElement, canvas)
+      console.log('✅ Pose detection started successfully')
     },
-    [isPaused, addRep, setRepPhase, updateFormFeedback]
+    [addRep, setRepPhase, updateFormFeedback, setFormScore, setDebugInfo]
   )
 
   const stopDetection = useCallback(() => {
+    console.log('🛑 Stopping pose detection...')
     poseServiceRef.current?.stopDetection()
-  }, [])
+    setDebugInfo(0, false, 0)
+  }, [setDebugInfo])
 
   useEffect(() => {
     return () => {

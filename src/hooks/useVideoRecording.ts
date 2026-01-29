@@ -6,10 +6,20 @@ export function useVideoRecording() {
   const serviceRef = useRef<VideoRecordingService | null>(null)
   const { setRecordingBlob, setIsRecording } = useWorkoutStore()
 
+  /**
+   * Start recording with optional composite canvas support
+   * @param stream - Camera stream
+   * @param videoElement - Optional: The video element showing camera feed
+   * @param skeletonCanvas - Optional: The canvas with skeleton overlay
+   */
   const startRecording = useCallback(
-    (stream: MediaStream) => {
+    (
+      stream: MediaStream,
+      videoElement?: HTMLVideoElement,
+      skeletonCanvas?: HTMLCanvasElement
+    ) => {
       const service = new VideoRecordingService()
-      service.startRecording(stream)
+      service.startRecording(stream, videoElement, skeletonCanvas)
       serviceRef.current = service
       setIsRecording(true)
     },

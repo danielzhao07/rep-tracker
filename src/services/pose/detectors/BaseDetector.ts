@@ -37,6 +37,11 @@ export abstract class BaseDetector {
     return this.currentPhase
   }
 
+  // Override in subclass to provide angle for debugging
+  getElbowAngle(): number {
+    return 0
+  }
+
   protected createFormIssue(
     severity: FormIssue['severity'],
     message: string,

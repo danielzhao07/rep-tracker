@@ -18,6 +18,11 @@ interface WorkoutState {
 
   formFeedback: string[]
   formScore: number
+  
+  // Debug info for pose detection
+  debugElbowAngle: number
+  debugPoseDetected: boolean
+  debugFrameCount: number
 
   startWorkout: (exercise: Exercise, cameraMode: boolean) => void
   pauseWorkout: () => void
@@ -33,6 +38,9 @@ interface WorkoutState {
 
   updateFormFeedback: (feedback: string[]) => void
   setFormScore: (score: number) => void
+  
+  // Debug setters
+  setDebugInfo: (angle: number, detected: boolean, frameCount: number) => void
 
   setRecordingBlob: (blob: Blob | null) => void
   setIsRecording: (recording: boolean) => void
@@ -56,6 +64,11 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
 
   formFeedback: [],
   formScore: 0,
+  
+  // Debug defaults
+  debugElbowAngle: 0,
+  debugPoseDetected: false,
+  debugFrameCount: 0,
 
   startWorkout: (exercise, cameraMode) =>
     set({
@@ -71,6 +84,9 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       formFeedback: [],
       formScore: 0,
       recordingBlob: null,
+      debugElbowAngle: 0,
+      debugPoseDetected: false,
+      debugFrameCount: 0,
     }),
 
   pauseWorkout: () => set({ isPaused: true }),
@@ -100,6 +116,9 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       recordingBlob: null,
       formFeedback: [],
       formScore: 0,
+      debugElbowAngle: 0,
+      debugPoseDetected: false,
+      debugFrameCount: 0,
     }),
 
   incrementRep: () => set((state) => ({ repCount: state.repCount + 1 })),
@@ -115,6 +134,12 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
 
   updateFormFeedback: (feedback) => set({ formFeedback: feedback }),
   setFormScore: (score) => set({ formScore: score }),
+  
+  setDebugInfo: (angle, detected, frameCount) => set({
+    debugElbowAngle: angle,
+    debugPoseDetected: detected,
+    debugFrameCount: frameCount,
+  }),
 
   setRecordingBlob: (blob) => set({ recordingBlob: blob }),
   setIsRecording: (recording) => set({ isRecording: recording }),

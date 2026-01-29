@@ -1,8 +1,35 @@
 # Rep Tracker Project Plan
 
+## ⚠️ CRITICAL: MediaPipe API Requirements
+
+**DO NOT USE LEGACY MEDIAPIPE PACKAGES - THEY ARE BROKEN AND DEPRECATED**
+
+This project uses the **MODERN MediaPipe Tasks Vision API** (`@mediapipe/tasks-vision`).
+
+### ❌ NEVER USE THESE (Legacy/Broken):
+- `@mediapipe/pose` - DEPRECATED, DOES NOT WORK
+- `@mediapipe/camera_utils` - DEPRECATED
+- `@mediapipe/drawing_utils` - DEPRECATED
+
+### ✅ ALWAYS USE THIS (Modern):
+- `@mediapipe/tasks-vision` - CURRENT, SUPPORTED API
+
+### 📚 Required Documentation References:
+When working on pose detection or rep counting, **ALWAYS reference these official sources**:
+1. **MediaPipe Tasks Vision Overview**: https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker
+2. **Web/JavaScript Guide**: https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker/web_js
+3. **Working Example**: https://codepen.io/mediapipe-preview/pen/abRLMxN
+
+**Key Classes to Use:**
+- `PoseLandmarker` (for pose detection)
+- `FilesetResolver` (for loading WASM files)
+- `DrawingUtils` (for drawing skeleton)
+
+---
+
 ## Executive Summary
 
-A professional, production-ready fitness rep tracker using computer vision (MediaPipe Pose) to automatically count reps during workouts. The app will feature a minimalistic dark theme (black, gray, green accents), accurate pose detection, video replay capabilities, form analysis, and comprehensive metrics.
+A professional, production-ready fitness rep tracker using computer vision (MediaPipe Tasks Vision) to automatically count reps during workouts. The app features a minimalistic dark theme (black, gray, green accents), accurate pose detection, video replay capabilities, form analysis, and comprehensive metrics.
 
 ---
 
@@ -49,7 +76,7 @@ A professional, production-ready fitness rep tracker using computer vision (Medi
 | **State Management** | Zustand | Lightweight client state (camera, workout) |
 | **Server State** | React Query (TanStack) | Supabase data caching, optimistic updates |
 | **Backend** | Supabase | Auth, PostgreSQL database, file storage |
-| **Computer Vision** | MediaPipe Pose | 33-point pose detection, rep counting |
+| **Computer Vision** | MediaPipe Tasks Vision | 33-point pose detection, rep counting (modern API) |
 | **Video** | MediaRecorder API | Browser-native video recording |
 | **Audio** | Web Audio API | Text-to-speech countdown cues |
 | **Charts** | Recharts | Minimalistic progress visualization |
@@ -68,8 +95,7 @@ A professional, production-ready fitness rep tracker using computer vision (Medi
     "@supabase/auth-helpers-react": "^0.5.0",
     "@tanstack/react-query": "^5.17.0",
     "zustand": "^4.5.0",
-    "@mediapipe/pose": "^0.5.1675469404",
-    "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/tasks-vision": "^0.10.14",
     "recharts": "^2.12.0",
     "lucide-react": "^0.338.0",
     "clsx": "^2.1.0",

@@ -114,7 +114,6 @@ export function WorkoutCompleteView() {
             src={videoUrl}
             controls
             className="w-full aspect-video"
-            style={{ transform: 'scaleX(-1)' }}
           />
         </div>
       )}
