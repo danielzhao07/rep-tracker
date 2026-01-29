@@ -129,8 +129,8 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
     // Check for inactivity every second
     const inactivityCheck = setInterval(() => {
       const timeSinceLastRep = Date.now() - lastRepTimeRef.current
-      const INACTIVITY_THRESHOLD = 7000 // 7 seconds (faster detection)
-      const WARNING_THRESHOLD = 4000 // Show warning at 4 seconds
+      const INACTIVITY_THRESHOLD = 9000 // 9 seconds before auto-end
+      const WARNING_THRESHOLD = 5000 // Show warning at 5 seconds
 
       if (timeSinceLastRep >= INACTIVITY_THRESHOLD) {
         // Auto-end workout
