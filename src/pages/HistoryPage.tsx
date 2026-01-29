@@ -1,14 +1,19 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Card } from '@/components/shared/Card'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { Modal } from '@/components/shared/Modal'
 import { useHistoryStore } from '@/store/historyStore'
+import { VideoStorageRepository } from '@/repositories/VideoStorageRepository'
 import { formatDuration, formatDate, formatTime } from '@/utils/helpers'
 import { EXERCISES_SEED } from '@/utils/constants'
-import { Calendar, Clock, Target, Trash2 } from 'lucide-react'
+import { Calendar, Clock, Target, Trash2, Video, Play } from 'lucide-react'
 
 export function HistoryPage() {
   const { workouts, isLoading, error, loadWorkouts, deleteWorkout } =
     useHistoryStore()
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null)
+  const [selectedWorkoutName, setSelectedWorkoutName] = useState<string>('')
+  const [isLoadingVideo, setIsLoadingVideo] = useState(false)
 
   useEffect(() => {
     loadWorkouts()
@@ -18,6 +23,29 @@ export function HistoryPage() {
     return (
       EXERCISES_SEED.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
     )
+  }
+
+  const handlePlayVideo = async (videoUrl: string, exerciseName: string) => {
+    setIsLoadingVideo(true)
+    setSelectedWorkoutName(exerciseName)
+    
+    try {
+      // Get signed URL for playback
+      const videoRepo = new VideoStorageRepository()
+      const playableUrl = await videoRepo.getVideoUrl(videoUrl)
+      setSelectedVideoUrl(playableUrl)
+    } catch (err) {
+      console.error('Failed to get video URL:', err)
+      // Try using the original URL as fallback
+      setSelectedVideoUrl(videoUrl)
+    } finally {
+      setIsLoadingVideo(false)
+    }
+  }
+
+  const handleCloseVideo = () => {
+    setSelectedVideoUrl(null)
+    setSelectedWorkoutName('')
   }
 
   if (isLoading && workouts.length === 0) {
@@ -80,6 +108,16 @@ export function HistoryPage() {
                 </div>
 
                 <div className="flex items-center gap-6">
+                  {/* Video play button */}
+                  {workout.videoUrl && (
+                    <button
+                      onClick={() => handlePlayVideo(workout.videoUrl!, getExerciseName(workout.exerciseId))}
+                      className="flex items-center gap-1 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg transition-colors"
+                    >
+                      <Play size={16} />
+                      <span className="text-sm">Play</span>
+                    </button>
+                  )}
                   <div className="text-right">
                     <p className="text-2xl font-bold text-green-500">
                       {workout.repCount}
@@ -106,6 +144,37 @@ export function HistoryPage() {
           ))}
         </div>
       )}
+
+      {/* Video Modal */}
+      <Modal
+        isOpen={!!selectedVideoUrl || isLoadingVideo}
+        onClose={handleCloseVideo}
+        title={`${selectedWorkoutName} - Replay`}
+      >
+        {isLoadingVideo ? (
+          <div className="flex items-center justify-center py-12">
+            <LoadingSpinner size="lg" />
+            <span className="ml-3 text-gray-400">Loading video...</span>
+          </div>
+        ) : selectedVideoUrl ? (
+          <div className="space-y-4">
+            <video
+              src={selectedVideoUrl}
+              controls
+              autoPlay
+              className="w-full aspect-video rounded-lg bg-black"
+            />
+            <div className="flex justify-end">
+              <button
+                onClick={handleCloseVideo}
+                className="px-4 py-2 bg-dark-700 hover:bg-dark-600 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </Modal>
     </div>
   )
 }

@@ -24,7 +24,7 @@ export class PushupDetector extends BaseDetector {
 
   // Debouncing to prevent rapid rep counting
   private lastRepTime = 0
-  private readonly REP_COOLDOWN_MS = 800 // Minimum 800ms between reps
+  private readonly REP_COOLDOWN_MS = 600 // Minimum 600ms between reps (faster for consecutive reps)
 
   // Angle smoothing buffer
   private angleHistory: number[] = []
@@ -117,11 +117,16 @@ export class PushupDetector extends BaseDetector {
     const { score, feedback } = this.validateForm(pose)
     const quality = this.qualityFromScore(score)
 
-    // Thresholds with HYSTERESIS to prevent rapid state changes
-    const ANGLE_UP_ENTER = PUSHUP_THRESHOLDS.ELBOW_ANGLE_TOP + 5    // 155° - must clearly extend to enter UP
-    const ANGLE_UP_EXIT = PUSHUP_THRESHOLDS.ELBOW_ANGLE_TOP - 5     // 145° - can drop slightly while in UP
-    const ANGLE_DOWN_ENTER = PUSHUP_THRESHOLDS.ELBOW_ANGLE_BOTTOM - 5  // 125° - must clearly bend to enter DOWN
-    const ANGLE_DOWN_EXIT = PUSHUP_THRESHOLDS.ELBOW_ANGLE_BOTTOM + 5   // 135° - can rise slightly while in DOWN
+    // Initialize lastRepStartTime on first detection (FIX: prevents huge duration on first rep)
+    if (this.lastRepStartTime === 0) {
+      this.lastRepStartTime = pose.timestamp
+    }
+
+    // Thresholds with reduced HYSTERESIS for better detection
+    const ANGLE_UP_ENTER = PUSHUP_THRESHOLDS.ELBOW_ANGLE_TOP       // 150° - extend to enter UP
+    const ANGLE_UP_EXIT = PUSHUP_THRESHOLDS.ELBOW_ANGLE_TOP - 10   // 140° - can drop before exiting UP
+    const ANGLE_DOWN_ENTER = PUSHUP_THRESHOLDS.ELBOW_ANGLE_BOTTOM  // 130° - bend to enter DOWN
+    const ANGLE_DOWN_EXIT = PUSHUP_THRESHOLDS.ELBOW_ANGLE_BOTTOM + 10  // 140° - can rise before exiting DOWN
 
     // Debug logging every 300ms
     const now = Date.now()
@@ -166,10 +171,6 @@ export class PushupDetector extends BaseDetector {
 
     if (angle < ANGLE_DOWN_ENTER) {
       // Arms bent = DOWN position (bottom of push-up)
-      if (this.stage === null) {
-        // First detection - user starting in down position
-        this.lastRepStartTime = pose.timestamp
-      }
       this.stage = 'down'
       this.currentPhase = 'bottom'
     } else if (this.stage === 'down' && angle > ANGLE_DOWN_EXIT) {

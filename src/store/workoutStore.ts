@@ -29,6 +29,7 @@ interface WorkoutState {
   resumeWorkout: () => void
   endWorkout: () => void
   resetWorkout: () => void
+  restartWorkout: () => void
 
   incrementRep: () => void
   decrementRep: () => void
@@ -120,6 +121,27 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       debugPoseDetected: false,
       debugFrameCount: 0,
     }),
+
+  restartWorkout: () =>
+    set((state) => ({
+      isActive: false,
+      isPaused: false,
+      // Keep currentExercise and isCameraMode
+      currentExercise: state.currentExercise,
+      isCameraMode: state.isCameraMode,
+      startTime: null,
+      elapsedMs: 0,
+      repCount: 0,
+      repHistory: [],
+      currentRepPhase: 'start',
+      isRecording: false,
+      recordingBlob: null,
+      formFeedback: [],
+      formScore: 0,
+      debugElbowAngle: 0,
+      debugPoseDetected: false,
+      debugFrameCount: 0,
+    })),
 
   incrementRep: () => set((state) => ({ repCount: state.repCount + 1 })),
   decrementRep: () =>
