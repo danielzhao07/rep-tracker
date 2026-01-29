@@ -10,10 +10,14 @@ import { VideoStorageRepository } from '@/repositories/VideoStorageRepository'
 import { MetricsCalculatorService } from '@/services/metrics/MetricsCalculatorService'
 import { showToast } from '@/components/shared/Toast'
 import { formatDuration } from '@/utils/helpers'
-import { Save, Trash2, RotateCcw, Video, VideoOff } from 'lucide-react'
+import { Save, Trash2, RotateCcw, Video, VideoOff, Download } from 'lucide-react'
 import { ROUTES } from '@/utils/constants'
 
-export function WorkoutCompleteView() {
+interface WorkoutCompleteViewProps {
+  onRetry?: () => void
+}
+
+export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const {
@@ -97,8 +101,26 @@ export function WorkoutCompleteView() {
     navigate(ROUTES.HOME)
   }
 
-  const handleRetry = () => {
+  const handleRetryWorkout = () => {
     resetWorkout()
+    onRetry?.()
+  }
+
+  const handleDownloadVideo = () => {
+    if (!videoUrl || !recordingBlob) return
+
+    const exerciseName = currentExercise?.name.toLowerCase().replace(/\s+/g, '-') || 'workout'
+    const timestamp = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+    const filename = `${exerciseName}-${timestamp}-${repCount}reps.webm`
+
+    const link = document.createElement('a')
+    link.href = videoUrl
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+
+    showToast('Video downloaded!', 'success')
   }
 
   return (
@@ -109,12 +131,24 @@ export function WorkoutCompleteView() {
       </div>
 
       {videoUrl && (
-        <div className="rounded-lg overflow-hidden bg-dark-900">
-          <video
-            src={videoUrl}
-            controls
-            className="w-full aspect-video"
-          />
+        <div className="space-y-3">
+          <div className="rounded-lg overflow-hidden bg-dark-900">
+            <video
+              src={videoUrl}
+              controls
+              className="w-full aspect-video"
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleDownloadVideo}
+            >
+              <Download size={16} />
+              <span className="ml-2">Download Video</span>
+            </Button>
+          </div>
         </div>
       )}
 
@@ -197,7 +231,7 @@ export function WorkoutCompleteView() {
             {recordingBlob ? 'Save without Video' : 'Save Workout'}
           </span>
         </Button>
-        <Button variant="ghost" onClick={handleRetry}>
+        <Button variant="ghost" onClick={handleRetryWorkout}>
           <RotateCcw size={18} />
           <span className="ml-2">Retry</span>
         </Button>

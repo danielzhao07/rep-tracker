@@ -195,6 +195,11 @@ export class PoseDetectionService {
    * Draw skeleton using MediaPipe's DrawingUtils
    * Draws GREEN skeleton matching user's Python implementation style
    * Only draws landmarks with high visibility to prevent glitching
+   *
+   * ⚠️ CRITICAL: Use MANUAL drawing approach (do NOT use drawingUtils.drawLandmarks/drawConnectors)
+   * Even though Google examples use DrawingUtils methods directly, they DO NOT work reliably here.
+   * Manual drawing with visibility filtering is required for stable skeleton rendering.
+   * See DEVELOPMENT.md for detailed explanation.
    */
   private drawSkeleton(results: PoseLandmarkerResult): void {
     if (!this.canvasCtx || !this.drawingUtils) return

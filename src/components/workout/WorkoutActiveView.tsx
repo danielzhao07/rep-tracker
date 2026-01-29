@@ -33,16 +33,49 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
   const { stream } = useCameraStore()
   const [elapsed, setElapsed] = useState(0)
   const [detectionStarted, setDetectionStarted] = useState(false)
-  
+  const [showAutoEndWarning, setShowAutoEndWarning] = useState(false)
+  const [autoEndCountdown, setAutoEndCountdown] = useState(0)
+
   // Store video/canvas refs to start detection when initialization completes
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const lastRepCountRef = useRef(0)
+  const lastRepTimeRef = useRef(Date.now())
+  const autoEndTimerRef = useRef<number | null>(null)
+  const hasPlayedWarningSound = useRef(false)
 
   const { isInitialized, isLoading, initialize, startDetection, stopDetection } =
     usePoseDetection(currentExercise?.detectorType || 'pushup')
 
+  // Create beep sound for inactivity warning
+  const playWarningBeep = useCallback(() => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+
+    oscillator.frequency.value = 800 // 800Hz beep
+    oscillator.type = 'sine'
+
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
+
+    oscillator.start(audioContext.currentTime)
+    oscillator.stop(audioContext.currentTime + 0.3)
+  }, [])
+
   const { startRecording, stopRecording, pauseRecording, resumeRecording } =
     useVideoRecording()
+
+  // Define handleEnd early so it can be used in useEffects
+  const handleEnd = useCallback(async () => {
+    stopDetection()
+    await stopRecording()
+    endWorkout()
+    onEnd()
+  }, [stopDetection, stopRecording, endWorkout, onEnd])
 
   // Initialize pose detection when in camera mode
   useEffect(() => {
@@ -70,19 +103,77 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
     return () => clearInterval(interval)
   }, [startTime, isPaused])
 
+  // Auto-end workout after inactivity (10 seconds with no new reps)
+  useEffect(() => {
+    if (!isCameraMode || isPaused || repCount === 0) {
+      // Don't auto-end in manual mode, when paused, or if no reps completed yet
+      return
+    }
+
+    // Reset timer when rep count changes
+    if (repCount !== lastRepCountRef.current) {
+      lastRepCountRef.current = repCount
+      lastRepTimeRef.current = Date.now()
+      setShowAutoEndWarning(false)
+      setAutoEndCountdown(0)
+      hasPlayedWarningSound.current = false
+
+      if (autoEndTimerRef.current) {
+        clearTimeout(autoEndTimerRef.current)
+        autoEndTimerRef.current = null
+      }
+    }
+
+    // Check for inactivity every second
+    const inactivityCheck = setInterval(() => {
+      const timeSinceLastRep = Date.now() - lastRepTimeRef.current
+      const INACTIVITY_THRESHOLD = 7000 // 7 seconds (faster detection)
+      const WARNING_THRESHOLD = 4000 // Show warning at 4 seconds
+
+      if (timeSinceLastRep >= INACTIVITY_THRESHOLD) {
+        // Auto-end workout
+        console.log('⏰ Auto-ending workout due to inactivity')
+        handleEnd()
+      } else if (timeSinceLastRep >= WARNING_THRESHOLD) {
+        // Show warning and countdown
+        const secondsLeft = Math.ceil((INACTIVITY_THRESHOLD - timeSinceLastRep) / 1000)
+
+        // Play beep sound once when warning first appears
+        if (!hasPlayedWarningSound.current) {
+          playWarningBeep()
+          hasPlayedWarningSound.current = true
+        }
+
+        setShowAutoEndWarning(true)
+        setAutoEndCountdown(secondsLeft)
+      } else {
+        setShowAutoEndWarning(false)
+        setAutoEndCountdown(0)
+        hasPlayedWarningSound.current = false
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(inactivityCheck)
+      if (autoEndTimerRef.current) {
+        clearTimeout(autoEndTimerRef.current)
+      }
+    }
+  }, [isCameraMode, isPaused, repCount, handleEnd, playWarningBeep])
+
   const handleVideoReady = useCallback(
     (video: HTMLVideoElement, canvas: HTMLCanvasElement) => {
       console.log('📹 Video feed ready')
       videoRef.current = video
       canvasRef.current = canvas
-      
+
       // If already initialized, start detection immediately
       if (isInitialized && !detectionStarted) {
         console.log('🚀 Pose detection already initialized, starting immediately...')
         startDetection(video, canvas)
         setDetectionStarted(true)
       }
-      
+
       // Start recording with composite canvas (video + skeleton overlay)
       if (stream) {
         startRecording(stream, video, canvas)
@@ -99,13 +190,6 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
       pauseWorkout()
       pauseRecording()
     }
-  }
-
-  const handleEnd = async () => {
-    stopDetection()
-    await stopRecording()
-    endWorkout()
-    onEnd()
   }
 
   if (isLoading) {
@@ -129,6 +213,30 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
           {formatDuration(elapsed)}
         </span>
       </div>
+
+      {showAutoEndWarning && (
+        <div className="bg-yellow-500/20 border border-yellow-500 rounded-lg p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold">
+              {autoEndCountdown}
+            </div>
+            <p className="text-yellow-200 font-medium">
+              No reps detected. Workout will end automatically in {autoEndCountdown} second{autoEndCountdown !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              lastRepTimeRef.current = Date.now()
+              setShowAutoEndWarning(false)
+              hasPlayedWarningSound.current = false
+            }}
+          >
+            Keep Going
+          </Button>
+        </div>
+      )}
 
       {isCameraMode && stream ? (
         <VideoFeed stream={stream} onVideoReady={handleVideoReady} />

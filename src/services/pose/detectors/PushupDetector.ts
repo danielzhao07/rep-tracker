@@ -117,6 +117,11 @@ export class PushupDetector extends BaseDetector {
     const { score, feedback } = this.validateForm(pose)
     const quality = this.qualityFromScore(score)
 
+    // Initialize lastRepStartTime on first detection (FIX: prevents huge duration on first rep)
+    if (this.lastRepStartTime === 0) {
+      this.lastRepStartTime = pose.timestamp
+    }
+
     // Thresholds with HYSTERESIS to prevent rapid state changes
     const ANGLE_UP_ENTER = PUSHUP_THRESHOLDS.ELBOW_ANGLE_TOP + 5    // 155° - must clearly extend to enter UP
     const ANGLE_UP_EXIT = PUSHUP_THRESHOLDS.ELBOW_ANGLE_TOP - 5     // 145° - can drop slightly while in UP
@@ -166,10 +171,6 @@ export class PushupDetector extends BaseDetector {
 
     if (angle < ANGLE_DOWN_ENTER) {
       // Arms bent = DOWN position (bottom of push-up)
-      if (this.stage === null) {
-        // First detection - user starting in down position
-        this.lastRepStartTime = pose.timestamp
-      }
       this.stage = 'down'
       this.currentPhase = 'bottom'
     } else if (this.stage === 'down' && angle > ANGLE_DOWN_EXIT) {

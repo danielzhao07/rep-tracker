@@ -50,6 +50,16 @@ export function WorkoutPage() {
     navigate(ROUTES.HOME)
   }, [stopCamera, navigate])
 
+  const handleRetry = useCallback(() => {
+    // Go back to setup phase for camera mode, or directly to active for manual
+    if (isCameraMode) {
+      initializeCamera()
+      setPhase('setup')
+    } else {
+      setPhase('active')
+    }
+  }, [isCameraMode, initializeCamera])
+
   if (!currentExercise) return null
 
   return (
@@ -67,7 +77,7 @@ export function WorkoutPage() {
 
       {phase === 'active' && <WorkoutActiveView onEnd={handleEndWorkout} />}
 
-      {phase === 'complete' && <WorkoutCompleteView />}
+      {phase === 'complete' && <WorkoutCompleteView onRetry={handleRetry} />}
     </div>
   )
 }

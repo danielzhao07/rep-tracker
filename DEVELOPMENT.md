@@ -210,6 +210,58 @@ If you are an AI agent working on this codebase:
 3. **ALWAYS** reference the official MediaPipe Tasks Vision docs
 4. **NEVER** suggest using `@mediapipe/pose` or other legacy packages
 5. **VERIFY** package.json has correct dependencies before coding
+6. **CRITICAL: Use MANUAL skeleton drawing approach** (see below)
+
+### 🚨 SKELETON DRAWING: Use Manual Approach Only
+
+**DO NOT use DrawingUtils' drawLandmarks() or drawConnectors() methods directly.**
+
+Even though Google's official examples use:
+```typescript
+drawingUtils.drawLandmarks(landmarks, { radius: ... })
+drawingUtils.drawConnectors(landmarks, PoseLandmarker.POSE_CONNECTIONS)
+```
+
+**This approach DOES NOT WORK reliably in this project.**
+
+**✅ CORRECT: Manual drawing with visibility filtering**
+```typescript
+const MIN_VISIBILITY = 0.6
+
+// Draw connections manually
+for (const connection of PoseLandmarker.POSE_CONNECTIONS) {
+  const startLandmark = landmarks[connection.start]
+  const endLandmark = landmarks[connection.end]
+
+  if ((startLandmark?.visibility ?? 0) > MIN_VISIBILITY &&
+      (endLandmark?.visibility ?? 0) > MIN_VISIBILITY) {
+    this.canvasCtx.beginPath()
+    this.canvasCtx.moveTo(startLandmark.x * canvas.width, startLandmark.y * canvas.height)
+    this.canvasCtx.lineTo(endLandmark.x * canvas.width, endLandmark.y * canvas.height)
+    this.canvasCtx.stroke()
+  }
+}
+
+// Draw landmark circles manually
+for (let i = 0; i < landmarks.length; i++) {
+  const lm = landmarks[i]
+  if ((lm.visibility ?? 0) > MIN_VISIBILITY) {
+    const x = lm.x * canvas.width
+    const y = lm.y * canvas.height
+    this.canvasCtx.beginPath()
+    this.canvasCtx.arc(x, y, radius, 0, 2 * Math.PI)
+    this.canvasCtx.fill()
+  }
+}
+```
+
+**Why manual approach:**
+- More reliable skeleton rendering
+- Explicit visibility control prevents glitching
+- Works consistently in this project's environment
+- DrawingUtils methods caused skeleton to stop rendering
+
+See `src/services/pose/PoseDetectionService.ts` lines 199-298 for the complete working implementation.
 
 ---
 
