@@ -103,10 +103,10 @@ INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 VALUES (
   'workout-videos',
   'workout-videos',
-  false,
+  true,  -- Public bucket so videos can be played back
   104857600,  -- 100MB
   ARRAY['video/webm', 'video/mp4']
-);
+) ON CONFLICT (id) DO UPDATE SET public = true;
 
 -- Storage policies: users can only access their own folder
 CREATE POLICY "Users can upload own videos"

@@ -66,6 +66,7 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
       let savedVideoUrl: string | null = null
 
       if (includeVideo && recordingBlob) {
+        showToast('Uploading video to cloud...', 'info')
         const videoRepo = new VideoStorageRepository()
         const workoutId = crypto.randomUUID()
         savedVideoUrl = await videoRepo.uploadVideo(
@@ -73,6 +74,7 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
           workoutId,
           recordingBlob
         )
+        console.log('✅ Video saved to cloud:', savedVideoUrl)
       }
 
       await saveWorkout({
@@ -87,11 +89,12 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
         notes: null,
       })
 
-      showToast('Workout saved!', 'success')
+      showToast(includeVideo ? 'Workout & video saved!' : 'Workout saved!', 'success')
       resetWorkout()
       navigate(ROUTES.HISTORY)
-    } catch {
-      showToast('Failed to save workout', 'error')
+    } catch (err) {
+      console.error('❌ Save failed:', err)
+      showToast('Failed to save workout. Check console for details.', 'error')
     } finally {
       setIsSaving(false)
     }
