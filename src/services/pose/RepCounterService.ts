@@ -1,6 +1,9 @@
 import type { Pose, RepCountResult, ExerciseDetectorType, Rep } from '@/types'
 import { BaseDetector } from './detectors/BaseDetector'
 import { PushupDetector } from './detectors/PushupDetector'
+import { BicepCurlDetector } from './detectors/BicepCurlDetector'
+import { AlternatingBicepCurlDetector } from './detectors/AlternatingBicepCurlDetector'
+import { SquatDetector } from './detectors/SquatDetector'
 
 export class RepCounterService {
   private detector: BaseDetector
@@ -13,6 +16,12 @@ export class RepCounterService {
     switch (type) {
       case 'pushup':
         return new PushupDetector()
+      case 'bicep-curl':
+        return new BicepCurlDetector()
+      case 'alternating-bicep-curl':
+        return new AlternatingBicepCurlDetector()
+      case 'squat':
+        return new SquatDetector()
       default:
         return new PushupDetector()
     }

@@ -12,6 +12,10 @@ interface WorkoutState {
   repHistory: Rep[]
   currentRepPhase: RepPhase
 
+  // For alternating exercises
+  leftArmCount: number
+  rightArmCount: number
+
   isCameraMode: boolean
   isRecording: boolean
   recordingBlob: Blob | null
@@ -37,6 +41,9 @@ interface WorkoutState {
   addRep: (rep: Rep) => void
   setRepPhase: (phase: RepPhase) => void
 
+  // For alternating exercises
+  setArmCounts: (left: number, right: number) => void
+
   updateFormFeedback: (feedback: string[]) => void
   setFormScore: (score: number) => void
   
@@ -58,6 +65,9 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
   repCount: 0,
   repHistory: [],
   currentRepPhase: 'start',
+
+  leftArmCount: 0,
+  rightArmCount: 0,
 
   isCameraMode: false,
   isRecording: false,
@@ -81,6 +91,8 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       repCount: 0,
       repHistory: [],
       currentRepPhase: 'start',
+      leftArmCount: 0,
+      rightArmCount: 0,
       isCameraMode: cameraMode,
       formFeedback: [],
       formScore: 0,
@@ -112,6 +124,8 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       repCount: 0,
       repHistory: [],
       currentRepPhase: 'start',
+      leftArmCount: 0,
+      rightArmCount: 0,
       isCameraMode: false,
       isRecording: false,
       recordingBlob: null,
@@ -134,6 +148,8 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       repCount: 0,
       repHistory: [],
       currentRepPhase: 'start',
+      leftArmCount: 0,
+      rightArmCount: 0,
       isRecording: false,
       recordingBlob: null,
       formFeedback: [],
@@ -153,6 +169,9 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       repCount: state.repCount + 1,
     })),
   setRepPhase: (phase) => set({ currentRepPhase: phase }),
+
+  setArmCounts: (left, right) =>
+    set({ leftArmCount: left, rightArmCount: right }),
 
   updateFormFeedback: (feedback) => set({ formFeedback: feedback }),
   setFormScore: (score) => set({ formScore: score }),

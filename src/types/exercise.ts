@@ -1,6 +1,6 @@
 export type ExerciseCategory = 'upper-body' | 'lower-body' | 'core' | 'full-body'
 
-export type ExerciseDetectorType = 'pushup'
+export type ExerciseDetectorType = 'pushup' | 'bicep-curl' | 'alternating-bicep-curl' | 'squat'
 
 export interface Exercise {
   id: string

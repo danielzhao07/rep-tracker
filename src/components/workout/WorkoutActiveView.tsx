@@ -28,6 +28,8 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
     resumeWorkout,
     endWorkout,
     isCameraMode,
+    leftArmCount,
+    rightArmCount,
   } = useWorkoutStore()
 
   const { stream } = useCameraStore()
@@ -254,7 +256,11 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <RepCounter count={repCount} />
+          <RepCounter
+            count={repCount}
+            leftArmCount={leftArmCount}
+            rightArmCount={rightArmCount}
+          />
 
           {!isCameraMode && (
             <div className="flex items-center justify-center gap-4">

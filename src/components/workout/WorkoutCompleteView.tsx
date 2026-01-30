@@ -27,6 +27,8 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
     repHistory,
     recordingBlob,
     formScore,
+    leftArmCount,
+    rightArmCount,
     incrementRep,
     decrementRep,
     resetWorkout,
@@ -158,6 +160,8 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
 
       <RepCounter
         count={repCount}
+        leftArmCount={leftArmCount}
+        rightArmCount={rightArmCount}
         onIncrement={incrementRep}
         onDecrement={decrementRep}
         editable

@@ -37,6 +37,9 @@ export interface RepCountResult {
   phase: RepPhase
   quality: RepQuality
   feedback: string[]
+  // Optional arm counts for alternating exercises
+  leftArmCount?: number
+  rightArmCount?: number
 }
 
 export interface FormIssue {

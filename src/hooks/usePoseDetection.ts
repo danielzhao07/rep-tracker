@@ -12,7 +12,7 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
   const [isInitialized, setIsInitialized] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const { addRep, setRepPhase, updateFormFeedback, setFormScore, setDebugInfo } =
+  const { addRep, setRepPhase, updateFormFeedback, setFormScore, setDebugInfo, setArmCounts } =
     useWorkoutStore()
 
   const initialize = useCallback(async () => {
@@ -75,6 +75,11 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
         setRepPhase(result.phase)
         updateFormFeedback(result.feedback)
 
+        // Update arm counts if present (for alternating exercises)
+        if (result.leftArmCount !== undefined && result.rightArmCount !== undefined) {
+          setArmCounts(result.leftArmCount, result.rightArmCount)
+        }
+
         // Check if a NEW rep was completed by comparing with last known count
         if (result.count > lastRepCountRef.current) {
           const history = repCounterRef.current!.getRepHistory()
@@ -91,7 +96,7 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
       poseServiceRef.current.startDetection(videoElement, canvas)
       console.log('✅ Pose detection started successfully')
     },
-    [addRep, setRepPhase, updateFormFeedback, setFormScore, setDebugInfo]
+    [addRep, setRepPhase, updateFormFeedback, setFormScore, setDebugInfo, setArmCounts]
   )
 
   const stopDetection = useCallback(() => {
