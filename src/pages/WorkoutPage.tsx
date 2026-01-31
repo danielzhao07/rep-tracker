@@ -1,21 +1,26 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CameraSetupModal } from '@/components/workout/CameraSetupModal'
+import { SquatDifficultyModal } from '@/components/workout/SquatDifficultyModal'
 import { WorkoutActiveView } from '@/components/workout/WorkoutActiveView'
 import { WorkoutCompleteView } from '@/components/workout/WorkoutCompleteView'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { useCameraStore } from '@/store/cameraStore'
 import { useAudioCues } from '@/hooks/useAudioCues'
 import { ROUTES } from '@/utils/constants'
+import type { SquatDifficultyMode } from '@/utils/constants'
 
-type WorkoutPhase = 'setup' | 'active' | 'complete'
+type WorkoutPhase = 'difficulty-select' | 'setup' | 'active' | 'complete'
 
 export function WorkoutPage() {
   const navigate = useNavigate()
-  const { currentExercise, isCameraMode } = useWorkoutStore()
+  const { currentExercise, isCameraMode, setSquatDifficulty } = useWorkoutStore()
   const { stream, initializeCamera, stopCamera } = useCameraStore()
   const { isEnabled, toggleAudio } = useAudioCues()
   const [phase, setPhase] = useState<WorkoutPhase>('setup')
+
+  // Check if this is a squat exercise with camera mode
+  const isSquatWithCamera = currentExercise?.detectorType === 'squat' && isCameraMode
 
   useEffect(() => {
     if (!currentExercise) {
@@ -24,7 +29,13 @@ export function WorkoutPage() {
     }
 
     if (isCameraMode) {
-      initializeCamera()
+      // For squats, show difficulty selection first
+      if (currentExercise.detectorType === 'squat') {
+        setPhase('difficulty-select')
+      } else {
+        initializeCamera()
+        setPhase('setup')
+      }
     } else {
       setPhase('active')
     }
@@ -35,6 +46,17 @@ export function WorkoutPage() {
       stopCamera()
     }
   }, [stopCamera])
+
+  const handleDifficultySelect = useCallback((difficulty: SquatDifficultyMode) => {
+    setSquatDifficulty(difficulty)
+    initializeCamera()
+    setPhase('setup')
+  }, [setSquatDifficulty, initializeCamera])
+
+  const handleCloseDifficultyModal = useCallback(() => {
+    stopCamera()
+    navigate(ROUTES.HOME)
+  }, [stopCamera, navigate])
 
   const handleStartWorkout = useCallback(() => {
     setPhase('active')
@@ -51,19 +73,31 @@ export function WorkoutPage() {
   }, [stopCamera, navigate])
 
   const handleRetry = useCallback(() => {
-    // Go back to setup phase for camera mode, or directly to active for manual
+    // Go back to difficulty select for squats, setup for others, or directly to active for manual
     if (isCameraMode) {
-      initializeCamera()
-      setPhase('setup')
+      if (currentExercise?.detectorType === 'squat') {
+        setPhase('difficulty-select')
+      } else {
+        initializeCamera()
+        setPhase('setup')
+      }
     } else {
       setPhase('active')
     }
-  }, [isCameraMode, initializeCamera])
+  }, [isCameraMode, currentExercise, initializeCamera])
 
   if (!currentExercise) return null
 
   return (
     <div>
+      {phase === 'difficulty-select' && isSquatWithCamera && (
+        <SquatDifficultyModal
+          isOpen
+          onSelect={handleDifficultySelect}
+          onClose={handleCloseDifficultyModal}
+        />
+      )}
+
       {phase === 'setup' && isCameraMode && (
         <CameraSetupModal
           isOpen

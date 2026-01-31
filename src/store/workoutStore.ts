@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { Exercise, Rep, RepPhase } from '@/types'
+import type { SquatDifficultyMode } from '@/utils/constants'
 
 interface WorkoutState {
   isActive: boolean
@@ -15,6 +16,9 @@ interface WorkoutState {
   // For alternating exercises
   leftArmCount: number
   rightArmCount: number
+
+  // For squat difficulty selection
+  squatDifficulty: SquatDifficultyMode
 
   isCameraMode: boolean
   isRecording: boolean
@@ -44,6 +48,9 @@ interface WorkoutState {
   // For alternating exercises
   setArmCounts: (left: number, right: number) => void
 
+  // For squat difficulty
+  setSquatDifficulty: (difficulty: SquatDifficultyMode) => void
+
   updateFormFeedback: (feedback: string[]) => void
   setFormScore: (score: number) => void
   
@@ -68,6 +75,8 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
 
   leftArmCount: 0,
   rightArmCount: 0,
+
+  squatDifficulty: 'ninety-degree',
 
   isCameraMode: false,
   isRecording: false,
@@ -172,6 +181,8 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
 
   setArmCounts: (left, right) =>
     set({ leftArmCount: left, rightArmCount: right }),
+
+  setSquatDifficulty: (difficulty) => set({ squatDifficulty: difficulty }),
 
   updateFormFeedback: (feedback) => set({ formFeedback: feedback }),
   setFormScore: (score) => set({ formScore: score }),

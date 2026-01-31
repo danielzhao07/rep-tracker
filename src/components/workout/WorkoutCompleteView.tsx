@@ -35,6 +35,18 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
     restartWorkout,
   } = useWorkoutStore()
 
+  // Debug: Log what exercise we have when component loads
+  console.log('🏋️ WorkoutCompleteView loaded with:', {
+    currentExercise: currentExercise ? {
+      id: currentExercise.id,
+      name: currentExercise.name,
+      detectorType: currentExercise.detectorType
+    } : null,
+    repCount,
+    hasRecording: !!recordingBlob,
+    user: user ? user.id : 'no user'
+  })
+
   const { saveWorkout } = useHistoryStore()
   const [isSaving, setIsSaving] = useState(false)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
@@ -61,7 +73,22 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
   }, [recordingBlob])
 
   const handleSave = async (includeVideo: boolean) => {
-    if (!user || !currentExercise) return
+    if (!user || !currentExercise) {
+      console.error('❌ Cannot save: Missing user or exercise', { user, currentExercise })
+      showToast('Missing user or exercise data', 'error')
+      return
+    }
+
+    console.log('💾 Saving workout:', {
+      userId: user.id,
+      exerciseId: currentExercise.id,
+      exerciseName: currentExercise.name,
+      repCount,
+      durationMs: elapsedMs,
+      formScore: metrics.overallScore || formScore,
+      avgTimePerRep,
+      includeVideo,
+    })
 
     setIsSaving(true)
     try {
@@ -71,6 +98,7 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
         showToast('Uploading video to cloud...', 'info')
         const videoRepo = new VideoStorageRepository()
         const workoutId = crypto.randomUUID()
+        console.log('📹 Uploading video for workout:', workoutId)
         savedVideoUrl = await videoRepo.uploadVideo(
           user.id,
           workoutId,
@@ -79,7 +107,7 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
         console.log('✅ Video saved to cloud:', savedVideoUrl)
       }
 
-      await saveWorkout({
+      const workoutData = {
         userId: user.id,
         exerciseId: currentExercise.id,
         repCount,
@@ -89,13 +117,21 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
         videoUrl: savedVideoUrl,
         manualEntry: false,
         notes: null,
-      })
+      }
+
+      console.log('💾 Calling saveWorkout with:', workoutData)
+      const result = await saveWorkout(workoutData)
+      console.log('✅ Workout saved successfully:', result)
 
       showToast(includeVideo ? 'Workout & video saved!' : 'Workout saved!', 'success')
       resetWorkout()
       navigate(ROUTES.HISTORY)
     } catch (err) {
       console.error('❌ Save failed:', err)
+      console.error('Error details:', {
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+      })
       showToast('Failed to save workout. Check console for details.', 'error')
     } finally {
       setIsSaving(false)
@@ -160,8 +196,8 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
 
       <RepCounter
         count={repCount}
-        leftArmCount={leftArmCount}
-        rightArmCount={rightArmCount}
+        leftArmCount={currentExercise?.detectorType === 'alternating-bicep-curl' ? leftArmCount : undefined}
+        rightArmCount={currentExercise?.detectorType === 'alternating-bicep-curl' ? rightArmCount : undefined}
         onIncrement={incrementRep}
         onDecrement={decrementRep}
         editable

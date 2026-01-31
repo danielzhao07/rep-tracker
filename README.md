@@ -17,12 +17,38 @@ Before working on pose detection or rep counting:
 # Install dependencies
 npm install
 
+# Set up Supabase database
+# 1. Create a Supabase project
+# 2. Run ALL migrations in supabase/migrations/ in order (001, 002, etc.)
+# 3. If exercises are missing, run: supabase/fix_missing_exercises.sql
+# See "Database Setup" section below for details
+
 # Start dev server
 npm run dev
 
 # Build for production
 npm run build
 ```
+
+### Database Setup
+
+**IMPORTANT:** After creating your Supabase project, you MUST run all migrations:
+
+1. **Run migrations in order:**
+   - `001_initial_schema.sql` - Creates tables and seeds exercises
+   - `002_frontend_redesign_schema.sql` - Adds user preferences & routines
+   - `003_exercises_rls_safe.sql` - Adds RLS policy for exercises
+
+2. **If workouts won't save (foreign key error):**
+   - Run `supabase/fix_missing_exercises.sql` in Supabase SQL Editor
+   - This inserts missing exercises and fixes RLS policies
+   - **Symptoms:** "Key is not present in table exercises" error
+
+3. **Verify setup:**
+   ```sql
+   SELECT id, name FROM exercises ORDER BY name;
+   ```
+   Should show: Push-ups, Bicep Curls (Both Arms), Alternating Bicep Curls, Squats
 
 ### Key Technologies
 

@@ -49,24 +49,64 @@ export const ALTERNATING_BICEP_CURL_THRESHOLDS = {
   INACTIVITY_WARNING_MS: 10000,
 } as const
 
+// Squat difficulty modes
+export type SquatDifficultyMode = 'easy' | 'ninety-degree' | 'atg'
+
+export const SQUAT_DIFFICULTY_THRESHOLDS = {
+  easy: {
+    KNEE_ANGLE_SQUATTING: 115,        // Easy - just a slight bend
+    KNEE_ANGLE_SQUATTING_EXIT: 125,
+    HIP_ANGLE_SQUATTING: 115,
+    MIN_HIP_DROP_FRONT: 0.02,         // Very easy front view - just 2% drop
+    MIN_HIP_DROP_FRONT_EXIT: 0.01,
+  },
+  'ninety-degree': {
+    KNEE_ANGLE_SQUATTING: 82,         // 90 degree - must reach parallel or below
+    KNEE_ANGLE_SQUATTING_EXIT: 92,
+    HIP_ANGLE_SQUATTING: 82,
+    MIN_HIP_DROP_FRONT: 0.10,         // Slightly easier for front view
+    MIN_HIP_DROP_FRONT_EXIT: 0.07,
+  },
+  atg: {
+    KNEE_ANGLE_SQUATTING: 55,         // ATG - ass to grass, very deep (stricter)
+    KNEE_ANGLE_SQUATTING_EXIT: 65,
+    HIP_ANGLE_SQUATTING: 55,
+    MIN_HIP_DROP_FRONT: 0.22,         // 22% hip drop required for front view
+    MIN_HIP_DROP_FRONT_EXIT: 0.18,
+  },
+} as const
+
 export const SQUAT_THRESHOLDS = {
-  // Side view: Knee and hip angle thresholds
-  KNEE_ANGLE_STANDING: 165,   // Knees extended when standing
-  KNEE_ANGLE_SQUATTING: 100,  // Knees bent when squatting (below parallel)
-  HIP_ANGLE_STANDING: 165,    // Hips extended when standing
-  HIP_ANGLE_SQUATTING: 100,   // Hips bent when squatting
+  // Side view: Knee angle thresholds (default to 90-degree mode)
+  KNEE_ANGLE_STANDING: 160,         // Knees extended when standing
+  KNEE_ANGLE_STANDING_EXIT: 150,    // Hysteresis: still standing until below this
+  KNEE_ANGLE_SQUATTING: 95,         // Default: 90 degree mode
+  KNEE_ANGLE_SQUATTING_EXIT: 105,   // Hysteresis: still squatting until above this
+
+  // Side view: Hip angle thresholds (backup detection)
+  HIP_ANGLE_STANDING: 160,          // Hips extended when standing
+  HIP_ANGLE_SQUATTING: 95,          // Hips bent when squatting
 
   // Front view: Hip vertical position thresholds
-  MIN_HIP_DROP_FRONT: 0.15,   // Hips must drop at least 15% of frame height (front view)
+  MIN_HIP_DROP_FRONT: 0.10,         // Hips must drop at least 10% (RELAXED from 15%)
+  MIN_HIP_DROP_FRONT_EXIT: 0.07,    // Hysteresis for front view
 
   // View detection
-  MIN_HIP_WIDTH_FRONT: 0.12,  // Hip distance threshold for front view (12% of frame)
+  MIN_HIP_WIDTH_FRONT: 0.05,        // Hip distance threshold for front view (lowered for better detection)
 
-  // Position validation (prevent cheating)
-  MAX_KNEE_ANGLE_DIFF: 35,           // Both knees should move together (relaxed from 30)
-  MIN_KNEE_VISIBILITY: 0.5,          // Knees should be visible
-  MIN_HIP_DEPTH: 0.13,               // Hips must drop at least 13% of frame height (side view)
-  MAX_TORSO_LEAN: 120,               // Torso shouldn't lean too far forward (relaxed from 130)
+  // Position validation (prevent cheating but not too strict)
+  MAX_KNEE_ANGLE_DIFF: 45,          // Both knees should move together (RELAXED from 35)
+  MIN_KNEE_VISIBILITY: 0.4,         // Knees should be visible (RELAXED from 0.5)
+  MIN_HIP_DEPTH: 0.08,              // Hips must drop at least 8% (RELAXED from 13%)
+  MAX_TORSO_LEAN: 100,              // Torso shouldn't lean too far (RELAXED from 120)
+
+  // Smoothing and timing
+  ANGLE_SMOOTHING_WINDOW: 5,        // Frames to smooth over
+  REP_COOLDOWN_MS: 500,             // Minimum time between reps
+
+  // Adaptive calibration
+  CALIBRATION_FRAMES: 30,           // Frames to establish standing baseline
+  ADAPTIVE_DEPTH_RATIO: 0.60,       // Detect down when 60% of max depth reached
 
   // Inactivity warning
   INACTIVITY_WARNING_MS: 10000,

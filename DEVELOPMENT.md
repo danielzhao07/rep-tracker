@@ -265,7 +265,116 @@ See `src/services/pose/PoseDetectionService.ts` lines 199-298 for the complete w
 
 ---
 
+---
+
+## Database Setup & Common Issues
+
+### 🚨 CRITICAL: Database Migrations Must Be Applied
+
+After creating your Supabase project, you MUST run all migrations in order. Failing to do this will cause workout saves to fail.
+
+#### Required Migrations (Run in Order)
+
+1. **`001_initial_schema.sql`** - Creates core tables and seeds exercises
+   - Creates: `exercises`, `workouts`, `workout_reps` tables
+   - Seeds: Push-ups, Bicep Curls (Both Arms), Alternating Bicep Curls, Squats
+   - Sets up: Storage bucket for workout videos
+
+2. **`002_frontend_redesign_schema.sql`** - Adds user preferences & routines
+   - Creates: `routines`, `routine_exercises`, `user_goals`, `user_preferences` tables
+
+3. **`003_exercises_rls_safe.sql`** - Adds RLS policy for exercises table
+   - Enables RLS on exercises table
+   - Creates policy: "Anyone can view exercises"
+
+#### How to Apply Migrations
+
+**Option 1: Supabase Dashboard (Recommended for First Time)**
+1. Open Supabase Dashboard → SQL Editor
+2. Copy contents of `supabase/migrations/001_initial_schema.sql`
+3. Paste and click "Run"
+4. Repeat for `002_frontend_redesign_schema.sql`
+5. Repeat for `003_exercises_rls_safe.sql`
+
+**Option 2: Supabase CLI**
+```bash
+# Link your project (one-time setup)
+npx supabase link --project-ref YOUR_PROJECT_REF
+
+# Apply all migrations
+npx supabase db push
+```
+
+#### Verify Migrations Worked
+
+Run this in Supabase SQL Editor:
+```sql
+-- Should show 4 exercises
+SELECT id, name, detector_type FROM exercises ORDER BY name;
+
+-- Should show RLS policy exists
+SELECT policyname FROM pg_policies WHERE tablename = 'exercises';
+```
+
+### Common Error: "Key is not present in table exercises"
+
+**Error Message:**
+```
+❌ Supabase insert error: {
+  code: '23503',
+  details: 'Key is not present in table "exercises".',
+  message: 'insert or update on table "workouts" violates foreign key constraint "workouts_exercise_id_fkey"'
+}
+```
+
+**Cause:** The exercises table is missing data or RLS is blocking access.
+
+**Solution:** Run `supabase/fix_missing_exercises.sql` in Supabase SQL Editor:
+```sql
+-- This file inserts all exercises and fixes RLS policy
+-- Located at: supabase/fix_missing_exercises.sql
+```
+
+After running, verify:
+```sql
+SELECT id, name FROM exercises ORDER BY name;
+```
+Should return:
+- Alternating Bicep Curls (`b3c4d5e6-f7a8-9012-bcde-f12345678902`)
+- Bicep Curls (Both Arms) (`b2c3d4e5-f6a7-8901-bcde-f12345678901`)
+- Push-ups (`a1b2c3d4-e5f6-7890-abcd-ef1234567890`)
+- Squats (`c3d4e5f6-a7b8-9012-cdef-123456789012`)
+
+### Exercise IDs Reference
+
+When implementing new detectors, use these exact IDs:
+
+```typescript
+export const EXERCISE_IDS = {
+  PUSHUPS: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+  BICEP_CURL_BOTH: 'b2c3d4e5-f6a7-8901-bcde-f12345678901',
+  BICEP_CURL_ALTERNATING: 'b3c4d5e6-f7a8-9012-bcde-f12345678902',
+  SQUATS: 'c3d4e5f6-a7b8-9012-cdef-123456789012',
+} as const
+```
+
+### Troubleshooting Checklist
+
+If workouts won't save:
+- [ ] Check browser console for `❌ Supabase insert error`
+- [ ] Verify exercises exist: `SELECT * FROM exercises`
+- [ ] Check RLS policy exists: `SELECT * FROM pg_policies WHERE tablename = 'exercises'`
+- [ ] Run `fix_missing_exercises.sql` if exercises are missing
+- [ ] Verify Supabase environment variables in `.env.local` are correct
+
+---
+
 ## Version History
+
+- **2025-01-30**: Added database setup section and troubleshooting guide
+  - Documented migration requirements
+  - Added fix for missing exercises error
+  - Added exercise IDs reference
 
 - **2025-01-28**: Migrated from legacy `@mediapipe/pose` to modern `@mediapipe/tasks-vision`
   - Fixed skeleton rendering

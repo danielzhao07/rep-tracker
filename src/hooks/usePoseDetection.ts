@@ -87,6 +87,10 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
           if (lastRep) {
             console.log(`🔥 Rep ${result.count} detected!`, lastRep)
             addRep(lastRep)
+            // For alternating exercises, set total count directly from detector
+            // (addRep increments by 1, but alternating exercises track left+right separately)
+            const { setRepCount } = useWorkoutStore.getState()
+            setRepCount(result.count)
             setFormScore(lastRep.formScore)
           }
           lastRepCountRef.current = result.count
