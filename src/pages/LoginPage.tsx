@@ -25,10 +25,9 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10 mb-4">
-            <Activity className="text-green-500" size={32} />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img src="/jakd-logo.png" alt="JAKD" className="h-32" style={{ filter: 'invert(1) brightness(2)' }} />
           </div>
-          <h1 className="text-2xl font-bold">Rep Tracker</h1>
           <p className="text-gray-400 mt-1">Sign in to your account</p>
         </div>
 

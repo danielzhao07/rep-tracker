@@ -17,9 +17,8 @@ export function NavBar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo - only on desktop */}
-          <div className="hidden md:flex items-center gap-1 mr-8">
-            <Dumbbell className="text-green-500" size={24} />
-            <span className="font-semibold text-lg">Rep Tracker</span>
+          <div className="hidden md:flex items-center gap-2 mr-8">
+            <img src="/jakd-logo.png" alt="JAKD" className="h-20" style={{ filter: 'invert(1) brightness(2)' }} />
           </div>
 
           {/* Navigation Items */}
