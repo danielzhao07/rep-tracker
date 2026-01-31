@@ -13,7 +13,9 @@ import { HomePage } from '@/pages/HomePage'
 import { WorkoutPage } from '@/pages/WorkoutPage'
 import { ManualEntryPage } from '@/pages/ManualEntryPage'
 import { HistoryPage } from '@/pages/HistoryPage'
-import { AnalyticsPage } from '@/pages/AnalyticsPage'
+import { StartWorkoutPage } from '@/pages/StartWorkoutPage'
+import { ExercisesPage } from '@/pages/ExercisesPage'
+import { ProfilePage } from '@/pages/ProfilePage'
 import { ROUTES } from '@/utils/constants'
 
 const queryClient = new QueryClient({
@@ -101,11 +103,31 @@ function AppRoutes() {
         }
       />
       <Route
-        path={ROUTES.ANALYTICS}
+        path={ROUTES.WORKOUT_START}
         element={
           <ProtectedRoute>
             <AppLayout>
-              <AnalyticsPage />
+              <StartWorkoutPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.EXERCISES}
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <ExercisesPage />
+            </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PROFILE}
+        element={
+          <ProtectedRoute>
+            <AppLayout>
+              <ProfilePage />
             </AppLayout>
           </ProtectedRoute>
         }

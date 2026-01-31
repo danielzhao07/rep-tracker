@@ -28,6 +28,9 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
     resumeWorkout,
     endWorkout,
     isCameraMode,
+    leftArmCount,
+    rightArmCount,
+    squatDifficulty,
   } = useWorkoutStore()
 
   const { stream } = useCameraStore()
@@ -208,12 +211,33 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
     )
   }
 
+  // Get squat difficulty label
+  const getSquatDifficultyLabel = () => {
+    switch (squatDifficulty) {
+      case 'easy': return { label: 'Easy', color: 'bg-green-500/20 text-green-400 border-green-500' }
+      case 'ninety-degree': return { label: '90°', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500' }
+      case 'atg': return { label: 'ATG', color: 'bg-red-500/20 text-red-400 border-red-500' }
+      default: return null
+    }
+  }
+
+  const squatDifficultyBadge = currentExercise?.detectorType === 'squat' && isCameraMode 
+    ? getSquatDifficultyLabel() 
+    : null
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
-          {currentExercise?.name || 'Workout'}
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold">
+            {currentExercise?.name || 'Workout'}
+          </h1>
+          {squatDifficultyBadge && (
+            <span className={`px-2 py-0.5 text-xs font-medium rounded border ${squatDifficultyBadge.color}`}>
+              {squatDifficultyBadge.label}
+            </span>
+          )}
+        </div>
         <span className="text-2xl font-mono text-gray-300 tabular-nums">
           {formatDuration(elapsed)}
         </span>
@@ -254,7 +278,11 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <RepCounter count={repCount} />
+          <RepCounter
+            count={repCount}
+            leftArmCount={currentExercise?.detectorType === 'alternating-bicep-curl' ? leftArmCount : undefined}
+            rightArmCount={currentExercise?.detectorType === 'alternating-bicep-curl' ? rightArmCount : undefined}
+          />
 
           {!isCameraMode && (
             <div className="flex items-center justify-center gap-4">

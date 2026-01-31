@@ -351,8 +351,27 @@ START → TOP (extended) → ECCENTRIC (lowering) → BOTTOM [REP++] → CONCENT
 
 ## Database Schema (Supabase)
 
+### 🚨 CRITICAL: Setup Requirements
+
+**Before running the app, you MUST apply all database migrations in order:**
+
+1. **`supabase/migrations/001_initial_schema.sql`** - Core schema + exercise seeds
+2. **`supabase/migrations/002_frontend_redesign_schema.sql`** - User features
+3. **`supabase/migrations/003_exercises_rls_safe.sql`** - RLS policies
+
+**If you get "Key is not present in table exercises" error:**
+- Run `supabase/fix_missing_exercises.sql` in Supabase SQL Editor
+- This inserts all exercises and fixes RLS policies
+- See `DEVELOPMENT.md` for detailed troubleshooting steps
+
 ### exercises table
 - id (UUID PK), name, category, description, thumbnail_url, detector_type, created_at
+- **RLS Policy**: "Anyone can view exercises" (SELECT allowed for all authenticated users)
+- **Seeded Data**:
+  - Push-ups (`a1b2c3d4-e5f6-7890-abcd-ef1234567890`)
+  - Bicep Curls Both Arms (`b2c3d4e5-f6a7-8901-bcde-f12345678901`)
+  - Alternating Bicep Curls (`b3c4d5e6-f7a8-9012-bcde-f12345678902`)
+  - Squats (`c3d4e5f6-a7b8-9012-cdef-123456789012`)
 
 ### workouts table
 - id (UUID PK), user_id (FK auth.users), exercise_id (FK exercises), rep_count, duration_ms
@@ -363,6 +382,24 @@ START → TOP (extended) → ECCENTRIC (lowering) → BOTTOM [REP++] → CONCENT
 - id (UUID PK), workout_id (FK workouts), rep_number, duration_ms
 - quality, form_score, feedback (JSONB), created_at
 - RLS: Inherited from workout ownership
+
+### routines table
+- id (UUID PK), user_id (FK auth.users), name, description, is_active, created_at, updated_at
+- RLS: Users can only CRUD their own routines
+
+### user_goals table
+- id (UUID PK), user_id (FK auth.users), goal_type, target_value, current_value, start_date, end_date, is_active, created_at
+- RLS: Users can only CRUD their own goals
+
+### user_preferences table
+- user_id (UUID PK FK auth.users), form_strictness, rep_detection_sensitivity, default_rest_seconds, camera_position, notifications_enabled, created_at, updated_at
+- RLS: Users can only CRUD their own preferences
+
+### Storage Buckets
+- **workout-videos** (public bucket, 100MB limit)
+  - MIME types: video/webm, video/mp4
+  - Folder structure: `{user_id}/{workout_id}.webm`
+  - RLS: Users can only upload/view/delete videos in their own folder
 
 ---
 
@@ -486,6 +523,12 @@ rep-tracker-project/
 - Set up TailwindCSS with custom theme
 - Install all dependencies
 - Create project folder structure
+- **Set up Supabase Database** (CRITICAL)
+  - Create Supabase project
+  - Run migrations in order: 001, 002, 003
+  - Verify exercises table has 4 rows
+  - Test RLS policies
+  - Configure storage bucket for videos
 - Configure Supabase client and environment variables
 - Set up React Router with protected routes
 - Create AuthStore and AuthService
@@ -543,6 +586,25 @@ rep-tracker-project/
 
 ## Document Version
 
-**Version**: 1.0 (Initial Plan)
-**Last Updated**: 2026-01-28
+**Version**: 1.2 (Database Setup Documentation Added)
+**Last Updated**: 2026-01-30
 **Status**: Ready for Implementation
+
+### Changelog
+
+**v1.2** (2026-01-30)
+- Added critical database setup requirements section
+- Documented all database tables with RLS policies
+- Added exercise IDs reference and seeded data
+- Added storage bucket configuration details
+- Updated Phase 1 to emphasize database setup as critical step
+- Added troubleshooting reference for common "exercises" foreign key error
+
+**v1.1** (2026-01-29)
+- Updated detector implementations (BicepCurlDetector, AlternatingBicepCurlDetector)
+- Added support for multiple exercises beyond push-ups
+
+**v1.0** (2026-01-28)
+- Initial project plan
+- MediaPipe Tasks Vision integration
+- MVP scope definition

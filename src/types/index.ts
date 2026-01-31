@@ -1,3 +1,6 @@
 export * from './exercise'
 export * from './pose'
 export * from './workout'
+export * from './routine'
+export * from './goal'
+export * from './preferences'

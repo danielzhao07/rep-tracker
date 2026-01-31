@@ -90,13 +90,20 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
         notes: workout.notes,
       }
 
+      console.log('📊 historyStore.saveWorkout - Inserting workout:', insert)
+
       const { data, error } = await supabase
         .from('workouts')
         .insert(insert)
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Supabase insert error:', error)
+        throw error
+      }
+
+      console.log('✅ Workout inserted successfully:', data)
 
       const saved = mapRow(data as WorkoutRow)
 
@@ -105,8 +112,10 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
         isLoading: false,
       }))
 
+      console.log('✅ Workout added to store, total workouts:', get().workouts.length)
       return saved
     } catch (err) {
+      console.error('❌ historyStore.saveWorkout error:', err)
       set({
         error: err instanceof Error ? err.message : 'Failed to save workout',
         isLoading: false,

@@ -6,6 +6,10 @@ interface RepCounterProps {
   onDecrement?: () => void
   editable?: boolean
   size?: 'normal' | 'large'
+  // For alternating exercises
+  leftArmCount?: number
+  rightArmCount?: number
+  showArmCounts?: boolean
 }
 
 export function RepCounter({
@@ -14,7 +18,56 @@ export function RepCounter({
   onDecrement,
   editable = false,
   size = 'large',
+  leftArmCount,
+  rightArmCount,
+  showArmCounts = true,
 }: RepCounterProps) {
+  const hasArmCounts = leftArmCount !== undefined && rightArmCount !== undefined
+
+  if (hasArmCounts && showArmCounts) {
+    // Show arm counts for alternating exercises
+    return (
+      <div className="text-center space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          {/* Left Arm */}
+          <div className="bg-dark-800 rounded-lg p-4 border border-gray-700">
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
+              Left Arm
+            </p>
+            <span className="text-3xl font-bold text-blue-400 tabular-nums">
+              {leftArmCount}
+            </span>
+          </div>
+
+          {/* Right Arm */}
+          <div className="bg-dark-800 rounded-lg p-4 border border-gray-700">
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">
+              Right Arm
+            </p>
+            <span className="text-3xl font-bold text-blue-400 tabular-nums">
+              {rightArmCount}
+            </span>
+          </div>
+        </div>
+
+        {/* Total */}
+        <div>
+          <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">
+            Total Reps
+          </p>
+          <span className={
+            size === 'large'
+              ? 'text-6xl font-bold text-green-500 tabular-nums'
+              : 'text-4xl font-bold text-green-500 tabular-nums'
+          }>
+            {count}
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  // Regular rep counter (non-alternating)
   return (
     <div className="text-center">
       <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">

@@ -16,13 +16,35 @@ CREATE TABLE exercises (
 
 -- Seed data: Push-ups (MVP exercise)
 INSERT INTO exercises (id, name, category, description, detector_type)
-VALUES (
-  'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  'Push-ups',
-  'upper-body',
-  'Classic push-up exercise targeting chest, triceps, and shoulders.',
-  'pushup'
-);
+VALUES
+  (
+    'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    'Push-ups',
+    'upper-body',
+    'Classic push-up exercise targeting chest, triceps, and shoulders.',
+    'pushup'
+  ),
+  (
+    'b2c3d4e5-f6a7-8901-bcde-f12345678901',
+    'Bicep Curls (Both Arms)',
+    'upper-body',
+    'Bicep curl exercise with both arms curling together. Tracks reps when both arms complete the curl.',
+    'bicep-curl'
+  ),
+  (
+    'b3c4d5e6-f7a8-9012-bcde-f12345678902',
+    'Alternating Bicep Curls',
+    'upper-body',
+    'Alternating bicep curls where each arm curls independently. Tracks left and right arm reps separately.',
+    'alternating-bicep-curl'
+  ),
+  (
+    'c3d4e5f6-a7b8-9012-cdef-123456789012',
+    'Squats',
+    'lower-body',
+    'Bodyweight squat exercise targeting quads, glutes, and hamstrings.',
+    'squat'
+  );
 
 -- ============================================
 -- WORKOUTS TABLE
