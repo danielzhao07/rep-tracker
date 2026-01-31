@@ -7,7 +7,7 @@
  * - angle < 120 = DOWN position (arms bent)
  */
 export const PUSHUP_THRESHOLDS = {
-  // Original working thresholds from Python implementation
+  // Orig  // Original working thresholds from Python implementation
   ELBOW_ANGLE_TOP: 155,    // Arms extended = UP position (slightly relaxed from 160 for better detection)
   ELBOW_ANGLE_BOTTOM: 120, // Arms bent = DOWN position (original value)
 
@@ -68,11 +68,11 @@ export const SQUAT_DIFFICULTY_THRESHOLDS = {
     MIN_HIP_DROP_FRONT_EXIT: 0.07,
   },
   atg: {
-    KNEE_ANGLE_SQUATTING: 55,         // ATG - ass to grass, very deep (stricter)
-    KNEE_ANGLE_SQUATTING_EXIT: 65,
-    HIP_ANGLE_SQUATTING: 55,
-    MIN_HIP_DROP_FRONT: 0.22,         // 22% hip drop required for front view
-    MIN_HIP_DROP_FRONT_EXIT: 0.18,
+    KNEE_ANGLE_SQUATTING: 78,         // ATG - must go well below 90° (parallel)
+    KNEE_ANGLE_SQUATTING_EXIT: 85,
+    HIP_ANGLE_SQUATTING: 78,
+    MIN_HIP_DROP_FRONT: 0.16,         // 16% hip drop required for front view
+    MIN_HIP_DROP_FRONT_EXIT: 0.12,
   },
 } as const
 
