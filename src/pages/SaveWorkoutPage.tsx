@@ -177,7 +177,7 @@ export function SaveWorkoutPage() {
   const [showDeleteVideoModal, setShowDeleteVideoModal] = useState(false)
   
   // Debug: log saved videos
-  console.log('📹 SaveWorkoutPage - savedVideos:', savedVideos)
+  console.log('[SaveWorkout] savedVideos:', savedVideos)
   const [videoToDelete, setVideoToDelete] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
@@ -244,7 +244,7 @@ export function SaveWorkoutPage() {
       
       // Save videos to workouts table (for history videos section)
       if (savedVideos && savedVideos.length > 0) {
-        console.log('📹 Saving', savedVideos.length, 'videos to workouts table')
+        console.log('[SaveWorkout] Saving', savedVideos.length, 'videos to workouts table')
         const videoRepo = new VideoStorageRepository()
         
         for (const video of savedVideos) {
@@ -252,9 +252,9 @@ export function SaveWorkoutPage() {
             // Upload video to storage
             let videoUrl: string | null = null
             if (video.videoBlob) {
-              console.log('📹 Uploading video for', video.exerciseName)
+              console.log('[SaveWorkout] Uploading video for', video.exerciseName)
               videoUrl = await videoRepo.uploadWorkoutVideo(user.id, video.videoBlob)
-              console.log('📹 Video uploaded:', videoUrl)
+              console.log('[SaveWorkout] Video uploaded:', videoUrl)
             }
             
             // Find the exercise to get duration info
@@ -274,9 +274,9 @@ export function SaveWorkoutPage() {
               manualEntry: false,
               notes: `From ${routineName || 'Quick Workout'} - Set ${video.setIndex + 1}`,
             })
-            console.log('📹 Workout entry saved for', video.exerciseName)
+            console.log('[SaveWorkout] Workout entry saved for', video.exerciseName)
           } catch (videoError) {
-            console.error('📹 Failed to save video workout:', videoError)
+            console.error('[SaveWorkout] Failed to save video workout:', videoError)
             // Continue with other videos even if one fails
           }
         }

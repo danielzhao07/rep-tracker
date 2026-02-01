@@ -1,122 +1,117 @@
 # Rep Tracker - AI-Powered Fitness Tracker
 
-Computer vision-powered fitness tracker using MediaPipe Tasks Vision for automatic push-up rep counting.
+A computer vision-powered fitness tracking application that uses MediaPipe Tasks Vision for automatic rep counting with real-time form feedback.
 
-## ⚠️ CRITICAL FOR DEVELOPERS & AI AGENTS
+## Features
 
-**This project uses MediaPipe Tasks Vision API (modern) - NOT the legacy API.**
+- **Real-time pose detection** with skeleton visualization
+- **Automatic rep counting** for push-ups, bicep curls, and squats
+- **Form analysis and scoring** with instant feedback
+- **Video recording** with pose overlay for review
+- **Workout history** with interactive D3.js charts
+- **Goal tracking** with progress visualization
+- **Cloud sync** via Supabase for cross-device access
+- **Dark theme UI** with modern, minimalist design
 
-Before working on pose detection or rep counting:
-1. **Read `DEVELOPMENT.md`** - Contains critical API information
-2. **Use `@mediapipe/tasks-vision`** - Never use legacy packages
-3. **Reference official docs** - Links in DEVELOPMENT.md
+## Supported Exercises
 
-### Quick Start
+| Exercise | Detection Method | Notes |
+|----------|-----------------|-------|
+| Push-ups | Elbow angle tracking | Full range of motion detection |
+| Bicep Curls (Both Arms) | Simultaneous arm tracking | Both arms must move together |
+| Alternating Bicep Curls | Individual arm tracking | Tracks each arm separately |
+| Squats | Hip drop + knee angle | Front and side view support |
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 + TypeScript |
+| Build Tool | Vite |
+| Styling | TailwindCSS |
+| State Management | Zustand |
+| Backend | Supabase (Auth, PostgreSQL, Storage) |
+| Computer Vision | MediaPipe Tasks Vision |
+| Charts | D3.js |
+| Icons | Lucide React |
+
+## Quick Start
 
 ```bash
 # Install dependencies
 npm install
 
-# Set up Supabase database
-# 1. Create a Supabase project
-# 2. Run ALL migrations in supabase/migrations/ in order (001, 002, etc.)
-# 3. If exercises are missing, run: supabase/fix_missing_exercises.sql
-# See "Database Setup" section below for details
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
 
-# Start dev server
+# Start development server
 npm run dev
 
 # Build for production
 npm run build
 ```
 
-### Database Setup
+## Environment Variables
 
-**IMPORTANT:** After creating your Supabase project, you MUST run all migrations:
+Create a `.env.local` file with:
 
-1. **Run migrations in order:**
-   - `001_initial_schema.sql` - Creates tables and seeds exercises
-   - `002_frontend_redesign_schema.sql` - Adds user preferences & routines
-   - `003_exercises_rls_safe.sql` - Adds RLS policy for exercises
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-2. **If workouts won't save (foreign key error):**
-   - Run `supabase/fix_missing_exercises.sql` in Supabase SQL Editor
-   - This inserts missing exercises and fixes RLS policies
-   - **Symptoms:** "Key is not present in table exercises" error
+## Database Setup
 
-3. **Verify setup:**
-   ```sql
-   SELECT id, name FROM exercises ORDER BY name;
-   ```
-   Should show: Push-ups, Bicep Curls (Both Arms), Alternating Bicep Curls, Squats
+After creating your Supabase project, run the migrations in order:
 
-### Key Technologies
+1. `supabase/migrations/001_initial_schema.sql` - Core tables and exercise seeds
+2. `supabase/migrations/002_frontend_redesign_schema.sql` - User preferences and routines
+3. `supabase/migrations/003_exercises_rls_safe.sql` - Row-level security policies
 
-- **React 18 + TypeScript** - Frontend framework
-- **Vite** - Build tool and dev server
-- **MediaPipe Tasks Vision** - Pose detection (⚠️ Modern API only!)
-- **Supabase** - Backend, database & authentication
-- **TailwindCSS** - Utility-first CSS framework
-- **Zustand** - Lightweight state management
-- **D3.js** - Data visualization and charts
-- **Lucide React** - Icon library
-- **React Router** - Client-side routing
+If exercises are missing, run `supabase/fix_missing_exercises.sql`.
 
-### Project Documentation
-
-- **`PROJECT_PLAN.md`** - Complete project specifications
-- **`DEVELOPMENT.md`** - Development guide & MediaPipe API requirements ⚠️
-- **`.claude/plans/`** - Implementation plans
-
----
-
-## 🚨 MediaPipe API Warning
-
-**ONLY use:** `@mediapipe/tasks-vision@0.10.14`
-
-**NEVER use:**
-- ❌ `@mediapipe/pose` (broken/deprecated)
-- ❌ `@mediapipe/camera_utils` (deprecated)
-- ❌ `@mediapipe/drawing_utils` (deprecated)
-
-See `DEVELOPMENT.md` for complete details.
-
----
-
-## Features
-
-- ✅ Real-time pose detection with skeleton visualization
-- ✅ Automatic rep counting for push-ups, bicep curls, and squats
-- ✅ Video recording with pose overlay
-- ✅ Form feedback and scoring
-- ✅ Workout history tracking with interactive charts
-- ✅ D3.js powered data visualizations:
-  - Muscle distribution hexagon chart
-  - Form score progress tracking
-  - Reps per workout trends
-  - Period-based statistics (week, month, 3 months, year)
-- ✅ Dark theme UI with Tailwind CSS
-- ✅ User authentication and cloud sync via Supabase
-
-## Architecture
+## Project Structure
 
 ```
 src/
-├── services/pose/
-│   ├── PoseDetectionService.ts  # MediaPipe Tasks Vision integration
-│   ├── RepCounterService.ts     # Rep counting orchestration
-│   └── detectors/
-│       ├── PushupDetector.ts    # Push-up specific logic
-│       ├── BicepCurlDetector.ts # Bicep curl detection
-│       └── SquatDetector.ts     # Squat detection
-├── components/
-│   ├── workout/                 # Workout UI components
-│   ├── charts/                  # D3.js chart components
-│   └── shared/                  # Reusable UI components
-├── hooks/                       # React hooks
-├── store/                       # Zustand state management
-└── repositories/                # Data access layer
+├── components/       # React components
+│   ├── workout/      # Workout UI (VideoFeed, RepCounter, etc.)
+│   ├── exercise/     # Exercise selection components
+│   ├── profile/      # User profile components
+│   └── shared/       # Reusable UI components
+├── services/         # Core services
+│   ├── pose/         # MediaPipe integration and detectors
+│   ├── video/        # Video recording service
+│   ├── audio/        # Audio cue service
+│   └── metrics/      # Form analysis calculations
+├── store/            # Zustand state management
+├── repositories/     # Data access layer
+├── hooks/            # Custom React hooks
+├── pages/            # Page components
+├── types/            # TypeScript type definitions
+└── utils/            # Helper functions and constants
 ```
+
+## Development
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed development guidelines, including:
+
+- MediaPipe API usage (important: use Tasks Vision API only)
+- Database setup and troubleshooting
+- Testing checklist
+- Common pitfalls and solutions
+
+## Deployment
+
+The app is designed for deployment on Vercel with Supabase as the backend:
+
+1. Push to GitHub repository
+2. Connect repository to Vercel
+3. Configure environment variables in Vercel dashboard
+4. Deploy
+
+For custom domains, configure DNS settings in your domain provider.
 
 ## License
 

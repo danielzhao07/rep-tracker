@@ -153,7 +153,7 @@ export class AlternatingBicepCurlDetector extends BaseDetector {
         this.leftRepCount++
         this.lastLeftRepTime = now
         this.lastRepOrStartTime = now
-        console.log(`🎉 LEFT ARM REP ${this.leftRepCount}! (angle: ${leftAngle.toFixed(1)}°)`)
+        console.log(`[AltCurl] LEFT ARM REP ${this.leftRepCount}! (angle: ${leftAngle.toFixed(1)})`)
 
         // Update total rep count and history
         this.repCount = this.leftRepCount + this.rightRepCount
@@ -171,7 +171,7 @@ export class AlternatingBicepCurlDetector extends BaseDetector {
       this.leftStage = 'down'
     } else if (leftArmCurled) {
       if (this.leftStage !== 'up') {
-        console.log(`⬆️ LEFT ARM CURLED (${leftAngle.toFixed(1)}°)`)
+        console.log(`[AltCurl] LEFT ARM CURLED (${leftAngle.toFixed(1)})`)
       }
       this.leftStage = 'up'
     }
@@ -186,7 +186,7 @@ export class AlternatingBicepCurlDetector extends BaseDetector {
         this.rightRepCount++
         this.lastRightRepTime = now
         this.lastRepOrStartTime = now
-        console.log(`🎉 RIGHT ARM REP ${this.rightRepCount}! (angle: ${rightAngle.toFixed(1)}°)`)
+        console.log(`[AltCurl] RIGHT ARM REP ${this.rightRepCount}! (angle: ${rightAngle.toFixed(1)})`)
 
         // Update total rep count and history
         this.repCount = this.leftRepCount + this.rightRepCount
@@ -204,7 +204,7 @@ export class AlternatingBicepCurlDetector extends BaseDetector {
       this.rightStage = 'down'
     } else if (rightArmCurled) {
       if (this.rightStage !== 'up') {
-        console.log(`⬆️ RIGHT ARM CURLED (${rightAngle.toFixed(1)}°)`)
+        console.log(`[AltCurl] RIGHT ARM CURLED (${rightAngle.toFixed(1)})`)
       }
       this.rightStage = 'up'
     }

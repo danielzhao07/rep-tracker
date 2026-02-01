@@ -200,7 +200,7 @@ export class BicepCurlDetector extends BaseDetector {
         this.repCount++
         this.lastRepTime = now
         this.lastRepOrStartTime = now
-        console.log(`🎉 REP ${this.repCount} COMPLETED! (BOTH ARMS) Avg Angle: ${primaryAngle.toFixed(1)}°`)
+        console.log(`[BicepCurl] REP ${this.repCount} COMPLETED! (BOTH ARMS) Avg Angle: ${primaryAngle.toFixed(1)}`)
 
         this.repHistory.push({
           number: this.repCount,
@@ -223,7 +223,7 @@ export class BicepCurlDetector extends BaseDetector {
       const wasNotUp = (this.leftStage !== 'up' || this.rightStage !== 'up')
 
       if (wasNotUp) {
-        console.log(`⬆️ BOTH ARMS CURLED - Avg Angle: ${primaryAngle.toFixed(1)}°`)
+        console.log(`[BicepCurl] BOTH ARMS CURLED - Avg Angle: ${primaryAngle.toFixed(1)}`)
       }
       this.leftStage = 'up'
       this.rightStage = 'up'

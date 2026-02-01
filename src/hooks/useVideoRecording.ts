@@ -18,7 +18,7 @@ export function useVideoRecording() {
       videoElement?: HTMLVideoElement,
       skeletonCanvas?: HTMLCanvasElement
     ) => {
-      console.log('📹 useVideoRecording.startRecording called with:', {
+      console.log('[VideoRecording] startRecording called with:', {
         hasStream: !!stream,
         hasVideoElement: !!videoElement,
         hasSkeletonCanvas: !!skeletonCanvas
@@ -26,33 +26,33 @@ export function useVideoRecording() {
       const service = new VideoRecordingService()
       service.startRecording(stream, videoElement, skeletonCanvas)
       serviceRef.current = service
-      console.log('📹 Service ref set:', !!serviceRef.current)
+      console.log('[VideoRecording] Service ref set:', !!serviceRef.current)
       setIsRecording(true)
     },
     [setIsRecording]
   )
 
   const stopRecording = useCallback(async () => {
-    console.log('📹 useVideoRecording.stopRecording called, serviceRef:', !!serviceRef.current)
+    console.log('[VideoRecording] stopRecording called, serviceRef:', !!serviceRef.current)
     if (!serviceRef.current) {
-      console.log('📹 No service ref, returning null')
+      console.log('[VideoRecording] No service ref, returning null')
       return null
     }
 
     try {
       const blob = await serviceRef.current.stopRecording()
-      console.log('📹 Got blob from service:', blob ? `${blob.size} bytes` : 'null')
+      console.log('[VideoRecording] Got blob from service:', blob ? `${blob.size} bytes` : 'null')
       if (blob && blob.size > 0) {
         setRecordingBlob(blob)
-        console.log('📹 setRecordingBlob called with valid blob')
+        console.log('[VideoRecording] setRecordingBlob called with valid blob')
       } else {
-        console.log('📹 Blob is empty or null, not setting')
+        console.log('[VideoRecording] Blob is empty or null, not setting')
       }
       setIsRecording(false)
       serviceRef.current = null
       return blob
     } catch (error) {
-      console.error('📹 Error stopping recording:', error)
+      console.error('[VideoRecording] Error stopping recording:', error)
       setIsRecording(false)
       serviceRef.current = null
       return null

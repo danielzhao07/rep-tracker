@@ -168,10 +168,10 @@ export class PushupDetector extends BaseDetector {
     // Debug logging
     const now = Date.now()
     if (now - this.lastLogTime > 1000) {
-      console.log(`📐 Position Check:`)
+      console.log(`[Pushup] Position Check:`)
       console.log(`   Wrist visibility: ${wristVisibility.toFixed(2)}`)
       console.log(`   Shoulder-Hip Y diff: ${shoulderHipYDiff.toFixed(3)} (max: ${PUSHUP_THRESHOLDS.MAX_SHOULDER_HIP_Y_DIFF})`)
-      console.log(`   Knee angle: ${kneeAngle.toFixed(1)}° (min: ${PUSHUP_THRESHOLDS.MIN_KNEE_ANGLE}°)`)
+      console.log(`   Knee angle: ${kneeAngle.toFixed(1)} (min: ${PUSHUP_THRESHOLDS.MIN_KNEE_ANGLE})`)
     }
 
     // Validation checks
@@ -236,7 +236,7 @@ export class PushupDetector extends BaseDetector {
     if (timeSinceLastRepOrStart > PUSHUP_THRESHOLDS.INACTIVITY_WARNING_MS && this.repCount === 0) {
       if (now - this.lastLogTime > 2000) {
         const { angle } = this.calculateElbowAngle(pose)
-        console.log(`⏱️ No reps detected for ${Math.floor(timeSinceLastRepOrStart / 1000)}s - Current angle: ${angle.toFixed(0)}°`)
+        console.log(`[Pushup] No reps detected for ${Math.floor(timeSinceLastRepOrStart / 1000)}s - Current angle: ${angle.toFixed(0)}`)
       }
       // Continue with normal detection - don't block! This allows detection to start after inactivity
     }
@@ -273,8 +273,8 @@ export class PushupDetector extends BaseDetector {
 
     // Debug logging every 300ms
     if (now - this.lastLogTime > 300) {
-      const positionStatus = this.isInValidPushupPosition ? '✅' : '❌'
-      console.log(`🏋️ [${side}] Position: ${positionStatus} | Angle: ${angle.toFixed(1)}° | Stage: ${this.stage ?? 'null'} | Reps: ${this.repCount}`)
+      const positionStatus = this.isInValidPushupPosition ? 'OK' : 'INVALID'
+      console.log(`[Pushup] [${side}] Position: ${positionStatus} | Angle: ${angle.toFixed(1)} | Stage: ${this.stage ?? 'null'} | Reps: ${this.repCount}`)
       console.log(`   Thresholds - UP: >${ANGLE_UP_ENTER}° | DOWN: <${ANGLE_DOWN_ENTER}°`)
       this.lastLogTime = now
     }
@@ -307,7 +307,7 @@ export class PushupDetector extends BaseDetector {
 
           if (verticalMovement < PUSHUP_THRESHOLDS.MIN_SHOULDER_VERTICAL_MOVEMENT) {
             bodyMovedCorrectly = false
-            console.log(`❌ REP REJECTED - Body movement too small: ${(verticalMovement * 100).toFixed(1)}% (need: ${(PUSHUP_THRESHOLDS.MIN_SHOULDER_VERTICAL_MOVEMENT * 100).toFixed(1)}%)`)
+            console.log(`[Pushup] REP REJECTED - Body movement too small: ${(verticalMovement * 100).toFixed(1)}% (need: ${(PUSHUP_THRESHOLDS.MIN_SHOULDER_VERTICAL_MOVEMENT * 100).toFixed(1)}%)`)
           }
         } else {
           // First few reps - don't have baseline yet, be lenient
@@ -323,7 +323,7 @@ export class PushupDetector extends BaseDetector {
           this.repCount++
           this.lastRepTime = now
           this.lastRepOrStartTime = now  // Reset inactivity timer
-          console.log(`🎉 REP ${this.repCount} COMPLETED! (angle: ${angle.toFixed(1)}°, movement: ${(verticalMovement * 100).toFixed(1)}%)`)
+          console.log(`[Pushup] REP ${this.repCount} COMPLETED! (angle: ${angle.toFixed(1)}, movement: ${(verticalMovement * 100).toFixed(1)}%)`)
 
           this.repHistory.push({
             number: this.repCount,
@@ -336,12 +336,12 @@ export class PushupDetector extends BaseDetector {
           })
           this.lastRepStartTime = pose.timestamp
         } else if (!bothArmsMoving) {
-          console.log(`❌ REP REJECTED - Both arms not synchronized`)
+          console.log(`[Pushup] REP REJECTED - Both arms not synchronized`)
         } else if (!this.isInValidPushupPosition) {
-          console.log(`❌ REP REJECTED - Invalid position (sitting/kneeling/knee push-up)`)
+          console.log(`[Pushup] REP REJECTED - Invalid position (sitting/kneeling/knee push-up)`)
         }
       } else if (this.stage === 'down' && !canCountRep) {
-        console.log(`⏳ Rep cooldown active (${timeSinceLastRep}ms / ${this.REP_COOLDOWN_MS}ms)`)
+        console.log(`[Pushup] Rep cooldown active (${timeSinceLastRep}ms / ${this.REP_COOLDOWN_MS}ms)`)
       }
 
       // Record shoulder position at top
@@ -358,7 +358,7 @@ export class PushupDetector extends BaseDetector {
       // Record shoulder position at bottom
       this.shoulderYAtBottom = currentShoulderY
       if (this.stage !== 'down') {
-        console.log(`⬇️ DOWN POSITION DETECTED (angle: ${angle.toFixed(1)}° < ${ANGLE_DOWN_ENTER}°)`)
+        console.log(`[Pushup] DOWN POSITION DETECTED (angle: ${angle.toFixed(1)} < ${ANGLE_DOWN_ENTER})`)
       }
       this.stage = 'down'
       this.currentPhase = 'bottom'

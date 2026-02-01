@@ -15,7 +15,7 @@ export class PreferencesRepository {
       if (error.code === 'PGRST116') {
         return null
       }
-      console.error('❌ Failed to fetch preferences:', error.message)
+      console.error('[Preferences] Failed to fetch preferences:', error.message)
       throw error
     }
 
@@ -37,7 +37,7 @@ export class PreferencesRepository {
       .single()
 
     if (error) {
-      console.error('❌ Failed to create preferences:', error.message)
+      console.error('[Preferences] Failed to create preferences:', error.message)
       throw error
     }
 
@@ -74,7 +74,7 @@ export class PreferencesRepository {
       .single()
 
     if (error) {
-      console.error('❌ Failed to update preferences:', error.message)
+      console.error('[Preferences] Failed to update preferences:', error.message)
       throw error
     }
 

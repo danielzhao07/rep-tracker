@@ -83,11 +83,11 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
 
   // Debug: Log what exercise we have when component loads
   useEffect(() => {
-    console.log('🏋️ WorkoutCompleteView mounted/updated with recordingBlob:', 
+    console.log('[WorkoutComplete] mounted/updated with recordingBlob:', 
       recordingBlob ? `${recordingBlob.size} bytes` : 'null')
   }, [recordingBlob])
 
-  console.log('🏋️ WorkoutCompleteView render with:', {
+  console.log('[WorkoutComplete] render with:', {
     currentExercise: currentExercise ? {
       id: currentExercise.id,
       name: currentExercise.name,
@@ -127,12 +127,12 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
 
   const handleSave = async (includeVideo: boolean) => {
     if (!user || !currentExercise) {
-      console.error('❌ Cannot save: Missing user or exercise', { user, currentExercise })
+      console.error('[WorkoutComplete] Cannot save: Missing user or exercise', { user, currentExercise })
       showToast('Missing user or exercise data', 'error')
       return
     }
 
-    console.log('💾 Saving workout:', {
+    console.log('[WorkoutComplete] Saving workout:', {
       userId: user.id,
       exerciseId: currentExercise.id,
       exerciseName: currentExercise.name,
@@ -151,13 +151,13 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
         showToast('Uploading video to cloud...', 'info')
         const videoRepo = new VideoStorageRepository()
         const workoutId = crypto.randomUUID()
-        console.log('📹 Uploading video for workout:', workoutId)
+        console.log('[WorkoutComplete] Uploading video for workout:', workoutId)
         savedVideoUrl = await videoRepo.uploadVideo(
           user.id,
           workoutId,
           recordingBlob
         )
-        console.log('✅ Video saved to cloud:', savedVideoUrl)
+        console.log('[WorkoutComplete] Video saved to cloud:', savedVideoUrl)
       }
 
       const workoutData = {
@@ -172,15 +172,15 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
         notes: null,
       }
 
-      console.log('💾 Calling saveWorkout with:', workoutData)
+      console.log('[WorkoutComplete] Calling saveWorkout with:', workoutData)
       const result = await saveWorkout(workoutData)
-      console.log('✅ Workout saved successfully:', result)
+      console.log('[WorkoutComplete] Workout saved successfully:', result)
 
       showToast(includeVideo ? 'Workout & video saved!' : 'Workout saved!', 'success')
       resetWorkout()
       navigate(ROUTES.HISTORY)
     } catch (err) {
-      console.error('❌ Save failed:', err)
+      console.error('[WorkoutComplete] Save failed:', err)
       console.error('Error details:', {
         message: err instanceof Error ? err.message : 'Unknown error',
         stack: err instanceof Error ? err.stack : undefined,
@@ -193,7 +193,7 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
 
   // Handle logging reps and returning to the active workout
   const handleLogAndReturn = () => {
-    console.log('📹 handleLogAndReturn called with:', {
+    console.log('[WorkoutComplete] handleLogAndReturn called with:', {
       videoTrackingContext,
       repCount,
       hasRecordingBlob: !!recordingBlob,
@@ -211,20 +211,20 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
     
     // If there's a video, ask if they want to save it (use contextToSave since logRepsFromVideo clears it)
     if (recordingBlob && contextToSave && currentExercise) {
-      console.log('📹 Showing save video modal, saving context:', contextToSave)
+      console.log('[WorkoutComplete] Showing save video modal, saving context:', contextToSave)
       setSavedVideoContext(contextToSave)
       setShowSaveVideoModal(true)
       return
     }
     
-    console.log('📹 No video to save, returning directly')
+    console.log('[WorkoutComplete] No video to save, returning directly')
     // No video, just return
     resetWorkout()
     navigate(returnTo || ROUTES.WORKOUT_ACTIVE)
   }
 
   const handleSaveVideoAndReturn = () => {
-    console.log('📹 handleSaveVideoAndReturn called with:', {
+    console.log('[WorkoutComplete] handleSaveVideoAndReturn called with:', {
       hasRecordingBlob: !!recordingBlob,
       recordingBlobSize: recordingBlob?.size,
       savedVideoContext,
@@ -234,7 +234,7 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
     // Use savedVideoContext which was stored before logRepsFromVideo cleared the original
     if (recordingBlob && savedVideoContext && currentExercise) {
       const videoUrl = URL.createObjectURL(recordingBlob)
-      console.log('📹 Creating video with URL:', videoUrl)
+      console.log('[WorkoutComplete] Creating video with URL:', videoUrl)
       addSavedVideo({
         exerciseId: savedVideoContext.exerciseId,
         exerciseName: currentExercise.name,
@@ -244,10 +244,10 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
         videoBlob: recordingBlob,
         videoUrl,
       })
-      console.log('📹 Video added to savedVideos')
+      console.log('[WorkoutComplete] Video added to savedVideos')
       showToast('Video saved!', 'success')
     } else {
-      console.log('📹 Missing required data for saving video!')
+      console.log('[WorkoutComplete] Missing required data for saving video!')
     }
     setShowSaveVideoModal(false)
     setSavedVideoContext(null)

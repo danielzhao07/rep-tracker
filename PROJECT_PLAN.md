@@ -1,230 +1,68 @@
-# Rep Tracker Project Plan
+# Rep Tracker - Project Plan
 
-## ⚠️ CRITICAL: MediaPipe API Requirements
+## Overview
 
-**DO NOT USE LEGACY MEDIAPIPE PACKAGES - THEY ARE BROKEN AND DEPRECATED**
-
-This project uses the **MODERN MediaPipe Tasks Vision API** (`@mediapipe/tasks-vision`).
-
-### ❌ NEVER USE THESE (Legacy/Broken):
-- `@mediapipe/pose` - DEPRECATED, DOES NOT WORK
-- `@mediapipe/camera_utils` - DEPRECATED
-- `@mediapipe/drawing_utils` - DEPRECATED
-
-### ✅ ALWAYS USE THIS (Modern):
-- `@mediapipe/tasks-vision` - CURRENT, SUPPORTED API
-
-### 📚 Required Documentation References:
-When working on pose detection or rep counting, **ALWAYS reference these official sources**:
-1. **MediaPipe Tasks Vision Overview**: https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker
-2. **Web/JavaScript Guide**: https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker/web_js
-3. **Working Example**: https://codepen.io/mediapipe-preview/pen/abRLMxN
-
-**Key Classes to Use:**
-- `PoseLandmarker` (for pose detection)
-- `FilesetResolver` (for loading WASM files)
-- `DrawingUtils` (for drawing skeleton)
+A production-ready fitness rep tracker using computer vision (MediaPipe Tasks Vision) for automatic rep counting with form analysis. Features a minimalistic dark theme with real-time feedback and cloud sync.
 
 ---
 
-## Executive Summary
-
-A professional, production-ready fitness rep tracker using computer vision (MediaPipe Tasks Vision) to automatically count reps during workouts. The app features a minimalistic dark theme (black, gray, green accents), accurate pose detection, video replay capabilities, form analysis, and comprehensive metrics.
-
----
-
-## Clarified Requirements (User Input)
-
-### MVP Scope
-- **Primary Target**: Desktop/Laptop (responsive design, but optimized for desktop first)
-- **Exercise Priority**: Push-ups ONLY for MVP (get one exercise perfect before expanding)
-- **Timeline**: 3-4 weeks balanced approach
-- **Authentication**: Email/password login required (Supabase Auth)
-- **Data Storage**: Full cloud sync (videos + metadata via Supabase)
-- **Privacy**: Private workouts only (no sharing features in MVP)
-
-### User Experience Requirements
-- Option to track exercise by camera OR manual entry
-- Video replay after workout completion
-- Option to save workout (with video) or discard
-- Real-time form feedback and metrics
-- Editable rep count after completing workout
-- Camera setup time (countdown: 5 seconds)
-- Audio cues before and when workout starts
-- Pause/End controls during workout
-- Accurate and precise rep detection
-
-### Design Requirements
-- Minimalistic colors: Green (#10b981), Black (#000000), Gray shades
-- Dark theme ONLY (no light mode for MVP)
-- Minimal gradients (use sparingly)
-- 1-2 accent colors maximum
-- Clean typography (Inter font family)
-- Good spacing and breathing room
-- Minimalist icons (lucide-react)
-- NO cluttered layouts, NO Comic Sans, NO Bootstrap generic look, NO excessive animations
-
----
-
-## Tech Stack Summary (Quick Reference)
+## Tech Stack
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Frontend Framework** | React 18 + TypeScript | Component architecture, type safety |
-| **Build Tool** | Vite | Fast dev server, optimized builds |
-| **Styling** | TailwindCSS | Utility-first, minimalistic dark theme |
-| **State Management** | Zustand | Lightweight client state (camera, workout) |
-| **Server State** | React Query (TanStack) | Supabase data caching, optimistic updates |
-| **Backend** | Supabase | Auth, PostgreSQL database, file storage |
-| **Computer Vision** | MediaPipe Tasks Vision | 33-point pose detection, rep counting (modern API) |
-| **Video** | MediaRecorder API | Browser-native video recording |
-| **Audio** | Web Audio API | Text-to-speech countdown cues |
-| **Charts & Visualization** | D3.js | Data visualization, interactive charts, muscle distribution |
-| **Icons** | lucide-react | Minimalist icon library |
-| **Testing** | Vitest + Playwright | Unit, integration, E2E tests |
-| **Deployment** | Vercel | Serverless hosting, CI/CD |
-
-### Key Dependencies (package.json)
-```json
-{
-  "dependencies": {
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "react-router-dom": "^6.22.0",
-    "@supabase/supabase-js": "^2.39.0",
-    "@supabase/auth-helpers-react": "^0.5.0",
-    "@tanstack/react-query": "^5.17.0",
-    "zustand": "^4.5.0",
-    "@mediapipe/tasks-vision": "^0.10.14",
-    "d3": "^7.9.0",
-    "lucide-react": "^0.338.0",
-    "clsx": "^2.1.0",
-    "date-fns": "^3.3.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.0",
-    "typescript": "^5.3.0",
-    "vite": "^5.0.0",
-    "tailwindcss": "^3.4.0",
-    "vitest": "^1.2.0",
-    "@playwright/test": "^1.41.0",
-    "eslint": "^8.56.0",
-    "prettier": "^3.2.0"
-  }
-}
-```
+| Frontend | React 18 + TypeScript | Component architecture |
+| Build | Vite | Fast builds and HMR |
+| Styling | TailwindCSS | Utility-first dark theme |
+| State | Zustand | Client state management |
+| Server State | React Query | Caching and optimistic updates |
+| Backend | Supabase | Auth, database, file storage |
+| Vision | MediaPipe Tasks Vision | 33-point pose detection |
+| Video | MediaRecorder API | Browser-native recording |
+| Audio | Web Audio API | Countdown and cue playback |
+| Charts | D3.js | Data visualization |
+| Icons | Lucide React | Minimalist icons |
 
 ---
 
-## MCP Integration Strategy
+## MediaPipe API Requirements
 
-### Available MCP Servers
-1. **Context7** - Documentation and API reference lookups
-2. **GitHub** - Version control operations, PR management
-3. **Playwright** - End-to-end testing, browser automation
-4. **Brave Search** - Technical documentation searches, best practices research
-5. **File System** - File operations and project structure management
-6. **Chrome DevTools** - Performance profiling, debugging pose detection pipeline
-7. **Supabase** - Direct Supabase project management, database queries, storage operations
+**Use:** `@mediapipe/tasks-vision` (modern, supported)
 
-### Supabase MCP Capabilities
-- Execute SQL queries directly on Supabase database
-- Manage database tables, columns, indexes
-- Set up and test row-level security (RLS) policies
-- Manage Supabase Storage buckets and files
-- View project configuration and settings
-- Test authentication flows
-- Debug database performance
+**Do not use:** Legacy packages (`@mediapipe/pose`, `@mediapipe/camera_utils`, `@mediapipe/drawing_utils`)
 
-**Use Cases in This Project**:
-- Create database schema (exercises, workouts, workout_reps tables)
-- Set up RLS policies to ensure users only see their own data
-- Configure storage bucket for workout videos
-- Query workout data for testing and debugging
-- Validate data integrity during development
-
-### MCP Usage Plan by Phase
-
-#### Development Phase
-- **Supabase MCP**: Create database tables, set up row-level security policies, configure storage buckets
-- **Brave Search**: Research MediaPipe Pose best practices, rep counting algorithms, pose detection thresholds
-- **Context7**: Quick access to MediaPipe API docs, React hooks patterns, TypeScript definitions, Supabase SDK documentation
-- **File System**: Scaffold project structure, manage assets and video files
-
-#### Implementation Phase
-- **Supabase MCP**: Query database directly, test RLS policies, manage storage buckets, debug authentication flows
-- **GitHub**: Commit management, branch strategy, PR reviews
-- **Chrome DevTools**: Profile pose detection performance, optimize video processing pipeline, debug canvas rendering
-- **File System**: Manage video recordings, exercise presets, local development files
-
-#### Testing Phase
-- **Supabase MCP**: Verify RLS policies work correctly, test data access permissions, validate storage uploads
-- **Playwright**: Automated E2E tests for camera permissions, rep counting accuracy, video recording flows
-- **Chrome DevTools**: Performance testing under different lighting conditions, frame rate monitoring
-- **Context7**: Reference testing best practices for computer vision applications, Supabase testing patterns
-
-#### Deployment Phase
-- **Supabase MCP**: Configure production environment variables, set up CORS policies, validate database migrations
-- **GitHub**: CI/CD pipeline setup, automated deployments
-- **Playwright**: Pre-deployment smoke tests
-- **Brave Search**: Research hosting options for MediaPipe applications, WASM optimization, Vercel + Supabase integration
-
-### MCP Quick Reference (Use During Implementation)
-
-| Task | MCP Server | Tool/Command |
-|------|-----------|-------------|
-| Look up MediaPipe API | Context7 | `resolve-library-id` then `query-docs` |
-| Look up Supabase SDK docs | Context7 | `resolve-library-id` then `query-docs` |
-| Look up React/TailwindCSS docs | Context7 | `resolve-library-id` then `query-docs` |
-| Create DB tables | Supabase | `apply_migration` or `execute_sql` |
-| Test RLS policies | Supabase | `execute_sql` |
-| Configure storage bucket | Supabase | Use Supabase MCP tools |
-| Get project URL/keys | Supabase | `get_project_url`, `get_publishable_keys` |
-| Search for best practices | Brave Search | `brave_web_search` |
-| Run E2E tests | Playwright | Browser automation tools |
-| Profile performance | Chrome DevTools | Performance trace tools |
-| Git operations | GitHub | PR/commit/branch tools |
-
-**IMPORTANT**: Always use Context7 (`resolve-library-id` + `query-docs`) to look up current API documentation before implementing unfamiliar library integrations. Always use Supabase MCP for database operations instead of manual SQL in the dashboard.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for implementation details.
 
 ---
 
-## Architecture Design
-
-### Abstraction Layers
+## Architecture
 
 ```
 Presentation Layer (React)
-  - UI Components (buttons, cards, layouts)
-  - Pages (Login, Home, Workout, History)
-  - Design System (tokens, spacing, typography)
+├── UI Components
+├── Pages
+└── Design System
 
-Application/Business Logic Layer
-  - Exercise State Management (Zustand)
-  - Auth State Management (Zustand + Supabase)
-  - Rep Counting State Machine
-  - Workout Session Orchestrator
-  - Form Validation Rules
+Application Layer
+├── State Management (Zustand)
+├── Rep Counting State Machine
+└── Workout Session Orchestrator
 
-Core Services Layer
-  - PoseDetectionService (MediaPipe wrapper)
-  - RepCounterService (algorithm logic)
-  - VideoRecordingService (MediaRecorder)
-  - AudioCueService (TTS + audio playback)
-  - MetricsCalculatorService (form analysis)
-  - AuthService (Supabase Auth wrapper)
+Services Layer
+├── PoseDetectionService
+├── RepCounterService
+├── VideoRecordingService
+├── AudioCueService
+└── MetricsCalculatorService
 
-Data Access Layer (API Layer)
-  - WorkoutRepository (Supabase queries)
-  - VideoStorageRepository (Supabase Storage)
-  - UserRepository (user profile CRUD)
-  - SupabaseClient (singleton instance)
+Data Layer
+├── WorkoutRepository
+├── VideoStorageRepository
+└── UserRepository
 
-Infrastructure Layer
-  - Browser APIs (Camera, MediaRecorder, Canvas)
-  - MediaPipe WASM Runtime
-  - Supabase Backend (Auth, PostgreSQL, Storage)
-  - React Query (server state caching)
+Infrastructure
+├── Browser APIs
+├── MediaPipe WASM
+└── Supabase Backend
 ```
 
 ---
@@ -233,378 +71,171 @@ Infrastructure Layer
 
 ```
 App
-├── SupabaseProvider (context for auth state)
 ├── Router
-│   ├── LoginPage
-│   │   ├── LoginForm
-│   │   └── SignUpLink
-│   │
-│   ├── SignUpPage
-│   │   └── SignUpForm
-│   │
-│   ├── ProtectedRoute (wrapper requiring auth)
-│   │
-│   ├── HomePage (protected)
-│   │   ├── ExerciseLibrarySection
-│   │   │   ├── ExerciseCard (repeatable)
-│   │   │   └── SearchBar
-│   │   └── QuickStartButton
-│   │
+│   ├── LoginPage / SignUpPage
+│   ├── HomePage
+│   │   └── ExerciseLibrary
 │   ├── WorkoutPage
 │   │   ├── CameraSetupModal
-│   │   │   ├── CountdownTimer (3-2-1-Go)
-│   │   │   └── AudioToggle
 │   │   ├── WorkoutActiveView
-│   │   │   ├── VideoFeed (camera + pose overlay)
-│   │   │   ├── RepCounter (large display)
-│   │   │   ├── TimerDisplay
-│   │   │   ├── FormFeedbackPanel
-│   │   │   └── ControlBar
-│   │   │       ├── PauseButton
-│   │   │       ├── EndButton
-│   │   │       └── ManualAdjustButton
+│   │   │   ├── VideoFeed
+│   │   │   ├── RepCounter
+│   │   │   └── FormFeedbackPanel
 │   │   └── WorkoutCompleteView
-│   │       ├── VideoReplayPlayer
-│   │       ├── WorkoutSummary
-│   │       │   ├── RepCountDisplay (editable)
-│   │       │   ├── DurationDisplay
-│   │       │   ├── FormScoreCard
-│   │       │   └── MetricsGrid
-│   │       └── ActionButtons
-│   │           ├── SaveButton
-│   │           ├── DiscardButton
-│   │           └── RetryButton
-│   │
 │   ├── ManualEntryPage
-│   │   ├── ExerciseSelector
-│   │   ├── RepInput
-│   │   ├── WeightInput
-│   │   └── NotesInput
-│   │
 │   ├── HistoryPage
-│   │   ├── WorkoutHistoryList
-│   │   │   └── WorkoutHistoryCard (repeatable)
-│   │   └── FilterControls
-│   │
-│   └── AnalyticsPage
-│       ├── ProgressCharts
-│       └── PersonalRecords
-│
-├── SharedComponents
-│   ├── Button (primary, secondary, ghost variants)
-│   ├── Card (dark background, subtle border)
-│   ├── Modal
-│   ├── Toast (notifications)
-│   ├── LoadingSpinner
-│   └── Icon (minimalist, from lucide-react)
-│
-└── Layout
-    ├── NavBar
-    └── PageContainer
+│   ├── AnalyticsPage
+│   └── ProfilePage
+└── SharedComponents
+    ├── Button, Card, Modal
+    ├── Toast, LoadingSpinner
+    └── NavBar, PageContainer
 ```
 
 ---
 
-## State Management (Zustand Stores)
+## State Management (Zustand)
 
 ### AuthStore
-- user, session, isLoading, error
-- signIn, signUp, signOut, refreshSession
+- User session and authentication state
 
 ### WorkoutStore
-- isActive, isPaused, currentExercise, startTime
-- repCount, repHistory, currentRepPhase
-- isCameraReady, cameraError, videoStream
-- isRecording, recordingBlob
-- formFeedback, formScore
-- startWorkout, pauseWorkout, resumeWorkout, endWorkout
-- incrementRep, decrementRep, updateFormFeedback
+- Active workout state (exercise, reps, form score)
+- Camera and recording state
+- Pose detection results
 
-### CameraStore
-- devices, selectedDevice, stream, permissions
-- initializeCamera, stopCamera, switchCamera
+### WorkoutSessionStore
+- Multi-exercise session tracking
+- Saved videos management
+- Session completion state
 
 ### HistoryStore
-- workouts, filters
-- loadWorkouts, saveWorkout, deleteWorkout, updateFilters
+- Workout history with filters
+- CRUD operations
+
+### ProfileStore
+- User preferences
+- Goals management
 
 ---
 
-## Pose Detection Logic (Push-ups)
+## Database Schema
 
-### Key Landmarks
-- LEFT_SHOULDER, LEFT_ELBOW, LEFT_WRIST, LEFT_HIP, LEFT_KNEE
+### Tables
 
-### Rep Counting State Machine
-```
-START → TOP (extended) → ECCENTRIC (lowering) → BOTTOM [REP++] → CONCENTRIC (raising) → TOP (repeat)
-```
+| Table | Purpose |
+|-------|---------|
+| exercises | Exercise definitions (seeded) |
+| workouts | Individual workout entries |
+| workout_reps | Per-rep metrics (optional) |
+| workout_sessions | Multi-exercise sessions |
+| routines | User-created routines |
+| user_goals | Goal tracking |
+| user_preferences | User settings |
 
-### Thresholds
-- Bottom: elbow angle < 90 degrees
-- Top: elbow angle > 160 degrees
-- Good form: body alignment (shoulder-hip-knee) >= 160 degrees
-- Warning: body alignment 140-160 degrees
-- Poor form: body alignment < 140 degrees (hip sag)
+### Storage
 
----
-
-## Database Schema (Supabase)
-
-### 🚨 CRITICAL: Setup Requirements
-
-**Before running the app, you MUST apply all database migrations in order:**
-
-1. **`supabase/migrations/001_initial_schema.sql`** - Core schema + exercise seeds
-2. **`supabase/migrations/002_frontend_redesign_schema.sql`** - User features
-3. **`supabase/migrations/003_exercises_rls_safe.sql`** - RLS policies
-
-**If you get "Key is not present in table exercises" error:**
-- Run `supabase/fix_missing_exercises.sql` in Supabase SQL Editor
-- This inserts all exercises and fixes RLS policies
-- See `DEVELOPMENT.md` for detailed troubleshooting steps
-
-### exercises table
-- id (UUID PK), name, category, description, thumbnail_url, detector_type, created_at
-- **RLS Policy**: "Anyone can view exercises" (SELECT allowed for all authenticated users)
-- **Seeded Data**:
-  - Push-ups (`a1b2c3d4-e5f6-7890-abcd-ef1234567890`)
-  - Bicep Curls Both Arms (`b2c3d4e5-f6a7-8901-bcde-f12345678901`)
-  - Alternating Bicep Curls (`b3c4d5e6-f7a8-9012-bcde-f12345678902`)
-  - Squats (`c3d4e5f6-a7b8-9012-cdef-123456789012`)
-
-### workouts table
-- id (UUID PK), user_id (FK auth.users), exercise_id (FK exercises), rep_count, duration_ms
-- form_score, avg_time_per_rep, video_url, manual_entry, notes, created_at
-- RLS: Users can only CRUD their own workouts
-
-### workout_reps table
-- id (UUID PK), workout_id (FK workouts), rep_number, duration_ms
-- quality, form_score, feedback (JSONB), created_at
-- RLS: Inherited from workout ownership
-
-### routines table
-- id (UUID PK), user_id (FK auth.users), name, description, is_active, created_at, updated_at
-- RLS: Users can only CRUD their own routines
-
-### user_goals table
-- id (UUID PK), user_id (FK auth.users), goal_type, target_value, current_value, start_date, end_date, is_active, created_at
-- RLS: Users can only CRUD their own goals
-
-### user_preferences table
-- user_id (UUID PK FK auth.users), form_strictness, rep_detection_sensitivity, default_rest_seconds, camera_position, notifications_enabled, created_at, updated_at
-- RLS: Users can only CRUD their own preferences
-
-### Storage Buckets
-- **workout-videos** (public bucket, 100MB limit)
-  - MIME types: video/webm, video/mp4
-  - Folder structure: `{user_id}/{workout_id}.webm`
-  - RLS: Users can only upload/view/delete videos in their own folder
+- **Bucket:** `workout-videos`
+- **Structure:** `{user_id}/{workout_id}.webm`
+- **Limits:** 100MB per file
 
 ---
 
 ## Design System
 
-### Color Palette
-- black: #000000
-- darkGray.900: #0a0a0a, .800: #1a1a1a, .700: #2a2a2a
-- gray.600: #3a3a3a, .500: #4a4a4a, .400: #6a6a6a, .300: #8a8a8a
-- green.500: #10b981 (primary), .600: #059669 (hover), .400: #34d399 (success)
-- error: #ef4444, warning: #f59e0b
+### Colors
+- Background: #000000, #0a0a0a, #1a1a1a
+- Surface: #2a2a2a, #3a3a3a
+- Text: #ffffff, #8a8a8a
+- Primary: #10b981 (green)
+- Error: #ef4444
+- Warning: #f59e0b
 
 ### Typography
-- Font family: Inter, system-ui, sans-serif
-- Mono: JetBrains Mono, monospace
-- Sizes: xs 12px, sm 14px, base 16px, lg 18px, xl 20px, 2xl 24px, 4xl 36px, 6xl 60px
+- Font: Inter, system-ui
+- Mono: JetBrains Mono
 
 ### Spacing
 - Card padding: 16-24px
 - Section gaps: 24-32px
-- Component internal: 8-12px
-- Page margins: 24-48px
-- Border radius: 8px (rounded-lg)
+- Border radius: 8px
+
+---
+
+## Rep Detection Logic
+
+### Push-ups
+- Track elbow angle (both arms)
+- Down: angle < 90 degrees
+- Up: angle > 160 degrees
+- Validate body alignment and movement
+
+### Bicep Curls
+- Track elbow angle
+- Down: angle > 150 degrees
+- Up: angle < 50 degrees
+- Both arms or alternating modes
+
+### Squats
+- Track hip drop (front view) or knee angle (side view)
+- Auto-calibrate standing position
+- Validate depth before counting
 
 ---
 
 ## Project Structure
+
 ```
-rep-tracker-project/
-├── src/
-│   ├── main.tsx
-│   ├── App.tsx
-│   ├── pages/
-│   │   ├── HomePage.tsx
-│   │   ├── WorkoutPage.tsx
-│   │   ├── ManualEntryPage.tsx
-│   │   ├── HistoryPage.tsx
-│   │   └── AnalyticsPage.tsx
-│   ├── components/
-│   │   ├── workout/
-│   │   │   ├── CameraSetupModal.tsx
-│   │   │   ├── WorkoutActiveView.tsx
-│   │   │   ├── VideoFeed.tsx
-│   │   │   ├── RepCounter.tsx
-│   │   │   ├── FormFeedbackPanel.tsx
-│   │   │   └── WorkoutCompleteView.tsx
-│   │   ├── exercise/
-│   │   │   ├── ExerciseCard.tsx
-│   │   │   ├── ExerciseLibrary.tsx
-│   │   │   └── ExerciseSelector.tsx
-│   │   └── shared/
-│   │       ├── Button.tsx
-│   │       ├── Card.tsx
-│   │       ├── Modal.tsx
-│   │       ├── Toast.tsx
-│   │       └── LoadingSpinner.tsx
-│   ├── services/
-│   │   ├── pose/
-│   │   │   ├── PoseDetectionService.ts
-│   │   │   ├── RepCounterService.ts
-│   │   │   ├── detectors/
-│   │   │   │   ├── PushupDetector.ts
-│   │   │   │   └── BaseDetector.ts
-│   │   │   └── utils/
-│   │   │       ├── angleCalculation.ts
-│   │   │       └── landmarkUtils.ts
-│   │   ├── video/
-│   │   │   └── VideoRecordingService.ts
-│   │   ├── audio/
-│   │   │   └── AudioCueService.ts
-│   │   └── metrics/
-│   │       └── MetricsCalculatorService.ts
-│   ├── store/
-│   │   ├── authStore.ts
-│   │   ├── workoutStore.ts
-│   │   ├── cameraStore.ts
-│   │   └── historyStore.ts
-│   ├── lib/
-│   │   ├── supabase.ts
-│   │   └── supabaseTypes.ts
-│   ├── repositories/
-│   │   ├── WorkoutRepository.ts
-│   │   ├── VideoStorageRepository.ts
-│   │   └── UserRepository.ts
-│   ├── types/
-│   │   ├── exercise.ts
-│   │   ├── pose.ts
-│   │   ├── workout.ts
-│   │   └── index.ts
-│   ├── hooks/
-│   │   ├── useCamera.ts
-│   │   ├── usePoseDetection.ts
-│   │   ├── useVideoRecording.ts
-│   │   └── useAudioCues.ts
-│   ├── utils/
-│   │   ├── constants.ts
-│   │   └── helpers.ts
-│   └── styles/
-│       └── globals.css
-├── public/
-│   └── exercise-thumbnails/
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-├── tailwind.config.js
-├── .gitignore
-├── .env.local
-└── PROJECT_PLAN.md
+src/
+├── components/
+│   ├── workout/
+│   ├── exercise/
+│   ├── profile/
+│   └── shared/
+├── services/
+│   ├── pose/
+│   │   ├── PoseDetectionService.ts
+│   │   ├── RepCounterService.ts
+│   │   └── detectors/
+│   ├── video/
+│   ├── audio/
+│   └── metrics/
+├── store/
+├── repositories/
+├── hooks/
+├── pages/
+├── types/
+├── utils/
+└── styles/
 ```
 
 ---
 
-## Implementation Phases
+## Deployment
 
-### Phase 1: Foundation & Authentication (Days 1-3)
-- Initialize Vite + React + TypeScript project
-- Set up TailwindCSS with custom theme
-- Install all dependencies
-- Create project folder structure
-- **Set up Supabase Database** (CRITICAL)
-  - Create Supabase project
-  - Run migrations in order: 001, 002, 003
-  - Verify exercises table has 4 rows
-  - Test RLS policies
-  - Configure storage bucket for videos
-- Configure Supabase client and environment variables
-- Set up React Router with protected routes
-- Create AuthStore and AuthService
-- Build LoginPage and SignUpPage
-- Create design system components (Button, Card, Modal, Input)
+### Platform
+- **Hosting:** Vercel
+- **Backend:** Supabase
+- **Domain:** Custom domain via DNS configuration
 
-### Phase 2: Camera & Pose Detection (Days 4-6)
-- Implement CameraStore
-- Create useCamera hook
-- Integrate MediaPipe Pose
-- Create PoseDetectionService wrapper
-- Build VideoFeed component with canvas overlay
-- Implement angle calculation utilities
+### Environment Variables
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+```
 
-### Phase 3: Rep Counting Logic (Days 7-9)
-- Design BaseDetector abstract class
-- Implement PushupDetector with state machine
-- Create RepCounterService
-- Implement form validation logic
-- Create MetricsCalculatorService
-
-### Phase 4: Workout Flow (Days 10-12)
-- Create WorkoutStore
-- Build CameraSetupModal with countdown
-- Implement AudioCueService
-- Create WorkoutActiveView, RepCounter, FormFeedbackPanel
-- Implement pause/resume functionality
-
-### Phase 5: Video Recording & Cloud Upload (Days 13-15)
-- Implement VideoRecordingService
-- Create VideoStorageRepository
-- Implement video upload flow
-- Build video replay player
-
-### Phase 6: Workout Completion & Persistence (Days 16-17)
-- Create WorkoutCompleteView
-- Build WorkoutSummary with editable metrics
-- Implement WorkoutRepository
-- Implement optimistic updates with React Query
-
-### Phase 7: Manual Entry (Day 18)
-- Create ManualEntryPage with forms
-
-### Phase 8: History & Analytics (Days 19-20)
-- Create HistoryPage with workout list
-- Create AnalyticsPage with Recharts
-
-### Phase 9: Polish & UX (Days 21-22)
-- Refine UI, loading states, toast notifications, error handling
-
-### Phase 10: Testing & Deployment (Days 23-24)
-- E2E tests, performance profiling, deploy to Vercel
+### Build Command
+```bash
+npm run build
+```
 
 ---
 
-## Document Version
+## Version History
 
-**Version**: 1.2 (Database Setup Documentation Added)
-**Last Updated**: 2026-01-30
-**Status**: Ready for Implementation
-
-### Changelog
-
-**v1.2** (2026-01-30)
-- Added critical database setup requirements section
-- Documented all database tables with RLS policies
-- Added exercise IDs reference and seeded data
-- Added storage bucket configuration details
-- Updated Phase 1 to emphasize database setup as critical step
-- Added troubleshooting reference for common "exercises" foreign key error
-
-**v1.1** (2026-01-29)
-- Updated detector implementations (BicepCurlDetector, AlternatingBicepCurlDetector)
-- Added support for multiple exercises beyond push-ups
-
-**v1.0** (2026-01-28)
-- Initial project plan
-- MediaPipe Tasks Vision integration
-- MVP scope definition
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | 2026-01-28 | Initial release with push-ups |
+| 1.1 | 2026-01-29 | Added bicep curls and squats |
+| 1.2 | 2026-01-30 | Database setup documentation |
+| 1.3 | 2026-02-01 | Production-ready cleanup |

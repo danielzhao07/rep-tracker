@@ -75,10 +75,10 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
   // Define handleEnd early so it can be used in useEffects
   const handleEnd = useCallback(async () => {
-    console.log('📹 handleEnd called - stopping detection and recording')
+    console.log('[WorkoutActive] handleEnd called - stopping detection and recording')
     stopDetection()
     const blob = await stopRecording()
-    console.log('📹 Recording stopped, blob:', blob ? `${blob.size} bytes` : 'null')
+    console.log('[WorkoutActive] Recording stopped, blob:', blob ? `${blob.size} bytes` : 'null')
     endWorkout()
     onEnd()
   }, [stopDetection, stopRecording, endWorkout, onEnd])
@@ -93,7 +93,7 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
   // Start detection when BOTH video is ready AND pose detection is initialized
   useEffect(() => {
     if (isInitialized && videoRef.current && canvasRef.current && !detectionStarted) {
-      console.log('🚀 Both video and pose detection ready, starting...')
+      console.log('[WorkoutActive] Both video and pose detection ready, starting...')
       startDetection(videoRef.current, canvasRef.current)
       setDetectionStarted(true)
     }
@@ -139,7 +139,7 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
       if (timeSinceLastRep >= INACTIVITY_THRESHOLD) {
         // Auto-end workout
-        console.log('⏰ Auto-ending workout due to inactivity')
+        console.log('[WorkoutActive] Auto-ending workout due to inactivity')
         handleEnd()
       } else if (timeSinceLastRep >= WARNING_THRESHOLD) {
         // Show warning and countdown
@@ -173,23 +173,23 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
   const handleVideoReady = useCallback(
     (video: HTMLVideoElement, canvas: HTMLCanvasElement) => {
-      console.log('📹 Video feed ready')
+      console.log('[WorkoutActive] Video feed ready')
       videoRef.current = video
       canvasRef.current = canvas
 
       // If already initialized, start detection immediately
       if (isInitialized && !detectionStarted) {
-        console.log('🚀 Pose detection already initialized, starting immediately...')
+        console.log('[WorkoutActive] Pose detection already initialized, starting immediately...')
         startDetection(video, canvas)
         setDetectionStarted(true)
       }
 
       // Start recording with composite canvas (video + skeleton overlay)
       if (stream) {
-        console.log('📹 Starting recording with stream')
+        console.log('[WorkoutActive] Starting recording with stream')
         startRecording(stream, video, canvas)
       } else {
-        console.log('📹 No stream available for recording!')
+        console.log('[WorkoutActive] No stream available for recording!')
       }
     },
     [isInitialized, detectionStarted, startDetection, stream, startRecording]

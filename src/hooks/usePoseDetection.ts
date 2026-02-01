@@ -18,7 +18,7 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
   const initialize = useCallback(async () => {
     setIsLoading(true)
     try {
-      console.log('🔄 Initializing pose detection...')
+      console.log('[PoseDetection] Initializing...')
       const poseService = new PoseDetectionService()
       await poseService.initialize()
       poseServiceRef.current = poseService
@@ -29,9 +29,9 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
       frameCountRef.current = 0
 
       setIsInitialized(true)
-      console.log('✅ Pose detection initialized successfully')
+      console.log('[PoseDetection] Initialized successfully')
     } catch (err) {
-      console.error('❌ Failed to initialize pose detection:', err)
+      console.error('[PoseDetection] Failed to initialize:', err)
     } finally {
       setIsLoading(false)
     }
@@ -40,11 +40,11 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
   const startDetection = useCallback(
     (videoElement: HTMLVideoElement, canvas?: HTMLCanvasElement) => {
       if (!poseServiceRef.current || !repCounterRef.current) {
-        console.warn('⚠️ Cannot start detection: services not initialized')
+        console.warn('[PoseDetection] Cannot start: services not initialized')
         return
       }
 
-      console.log('🎥 Starting pose detection on video element...')
+      console.log('[PoseDetection] Starting on video element...')
       console.log('   Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight)
       console.log('   Video readyState:', videoElement.readyState)
 
@@ -85,7 +85,7 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
           const history = repCounterRef.current!.getRepHistory()
           const lastRep = history[history.length - 1]
           if (lastRep) {
-            console.log(`🔥 Rep ${result.count} detected!`, lastRep)
+            console.log(`[Rep] ${result.count} detected!`, lastRep)
             addRep(lastRep)
             // For alternating exercises, set total count directly from detector
             // (addRep increments by 1, but alternating exercises track left+right separately)
@@ -98,13 +98,13 @@ export function usePoseDetection(exerciseType: ExerciseDetectorType) {
       })
 
       poseServiceRef.current.startDetection(videoElement, canvas)
-      console.log('✅ Pose detection started successfully')
+      console.log('[PoseDetection] Started successfully')
     },
     [addRep, setRepPhase, updateFormFeedback, setFormScore, setDebugInfo, setArmCounts]
   )
 
   const stopDetection = useCallback(() => {
-    console.log('🛑 Stopping pose detection...')
+    console.log('[PoseDetection] Stopping...')
     poseServiceRef.current?.stopDetection()
     setDebugInfo(0, false, 0)
   }, [setDebugInfo])

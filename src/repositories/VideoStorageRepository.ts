@@ -10,7 +10,7 @@ export class VideoStorageRepository {
   ): Promise<string> {
     const path = `${userId}/${workoutId}.webm`
     
-    console.log(`📤 Uploading video to Supabase Storage...`)
+    console.log(`[Storage] Uploading video to Supabase Storage...`)
     console.log(`   Bucket: ${this.bucket}`)
     console.log(`   Path: ${path}`)
     console.log(`   Size: ${(blob.size / 1024 / 1024).toFixed(2)} MB`)
@@ -23,7 +23,7 @@ export class VideoStorageRepository {
       })
 
     if (error) {
-      console.error('❌ Video upload failed:', error.message)
+      console.error('[Storage] Video upload failed:', error.message)
       throw error
     }
 
@@ -32,7 +32,7 @@ export class VideoStorageRepository {
       .from(this.bucket)
       .getPublicUrl(path)
 
-    console.log(`✅ Video uploaded successfully!`)
+    console.log(`[Storage] Video uploaded successfully!`)
     console.log(`   Public URL: ${urlData.publicUrl}`)
 
     // Store the path instead of URL - we'll generate signed URLs on retrieval

@@ -28,7 +28,7 @@ export class VideoRecordingService {
 
     // If we have both video element and skeleton canvas, create composite
     if (videoElement && skeletonCanvas) {
-      console.log('🎬 Starting composite recording (video + skeleton)')
+      console.log('[Recording] Starting composite recording (video + skeleton)')
       
       // Create composite canvas
       this.compositeCanvas = document.createElement('canvas')
@@ -43,7 +43,7 @@ export class VideoRecordingService {
       // Get stream from composite canvas
       recordingStream = this.compositeCanvas.captureStream(30) // 30 fps
     } else {
-      console.log('🎬 Starting simple recording (raw stream)')
+      console.log('[Recording] Starting simple recording (raw stream)')
       recordingStream = stream
     }
 
@@ -61,7 +61,7 @@ export class VideoRecordingService {
 
     this.mediaRecorder.start(1000) // Collect data every second
     this.startTime = Date.now()
-    console.log('✅ Recording started')
+    console.log('[Recording] Started')
   }
 
   private drawCompositeFrame(): void {
@@ -116,7 +116,7 @@ export class VideoRecordingService {
         this.compositeCtx = null
         this.videoElement = null
         this.skeletonCanvas = null
-        console.log('✅ Recording stopped, blob size:', (blob.size / 1024 / 1024).toFixed(2), 'MB')
+        console.log('[Recording] Stopped, blob size:', (blob.size / 1024 / 1024).toFixed(2), 'MB')
         resolve(blob)
       }
 

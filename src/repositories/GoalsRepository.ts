@@ -10,7 +10,7 @@ export class GoalsRepository {
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('❌ Failed to fetch goals:', error.message)
+      console.error('[Goals] Failed to fetch goals:', error.message)
       throw error
     }
 
@@ -26,7 +26,7 @@ export class GoalsRepository {
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('❌ Failed to fetch active goals:', error.message)
+      console.error('[Goals] Failed to fetch active goals:', error.message)
       throw error
     }
 
@@ -49,7 +49,7 @@ export class GoalsRepository {
       .single()
 
     if (error) {
-      console.error('❌ Failed to create goal:', error.message)
+      console.error('[Goals] Failed to create goal:', error.message)
       throw error
     }
 
@@ -77,7 +77,7 @@ export class GoalsRepository {
       .single()
 
     if (error) {
-      console.error('❌ Failed to update goal:', error.message)
+      console.error('[Goals] Failed to update goal:', error.message)
       throw error
     }
 
@@ -92,7 +92,7 @@ export class GoalsRepository {
       .eq('user_id', userId)
 
     if (error) {
-      console.error('❌ Failed to delete goal:', error.message)
+      console.error('[Goals] Failed to delete goal:', error.message)
       throw error
     }
   }
@@ -107,7 +107,7 @@ export class GoalsRepository {
       .single()
 
     if (fetchError) {
-      console.error('❌ Failed to fetch goal for increment:', fetchError.message)
+      console.error('[Goals] Failed to fetch goal for increment:', fetchError.message)
       throw fetchError
     }
 

@@ -32,14 +32,14 @@ export class PoseDetectionService {
   private lastVideoTime = -1
 
   async initialize(): Promise<void> {
-    console.log('🔄 Initializing MediaPipe Tasks Vision PoseLandmarker...')
+    console.log('[PoseDetection] Initializing MediaPipe Tasks Vision PoseLandmarker...')
 
     try {
       // Load WASM files for MediaPipe Tasks Vision
       const vision = await FilesetResolver.forVisionTasks(
         'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
       )
-      console.log('✅ WASM files loaded')
+      console.log('[PoseDetection] WASM files loaded')
 
       // Create PoseLandmarker (equivalent to Python's mp.tasks.vision.PoseLandmarker)
       this.poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
@@ -55,9 +55,9 @@ export class PoseDetectionService {
         minTrackingConfidence: 0.5,
       })
 
-      console.log('✅ MediaPipe Tasks Vision PoseLandmarker initialized successfully')
+      console.log('[PoseDetection] MediaPipe Tasks Vision PoseLandmarker initialized successfully')
     } catch (error) {
-      console.error('❌ Failed to initialize PoseLandmarker:', error)
+      console.error('[PoseDetection] Failed to initialize PoseLandmarker:', error)
       throw error
     }
   }
@@ -67,7 +67,7 @@ export class PoseDetectionService {
     canvas?: HTMLCanvasElement
   ): void {
     console.log(
-      '🎬 Starting detection with video:',
+      '[PoseDetection] Starting detection with video:',
       videoElement.videoWidth,
       'x',
       videoElement.videoHeight

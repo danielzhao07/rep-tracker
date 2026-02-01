@@ -130,7 +130,7 @@ export class SquatDetector extends BaseDetector {
     // Log hip width for debugging
     const now = Date.now()
     if (now - this.lastLogTime > 1000) {
-      console.log(`👁️ View detection - Hip width: ${(hipWidth * 100).toFixed(1)}% | Threshold: ${(SQUAT_THRESHOLDS.MIN_HIP_WIDTH_FRONT * 100).toFixed(1)}% | Front view: ${hipWidth > SQUAT_THRESHOLDS.MIN_HIP_WIDTH_FRONT}`)
+      console.log(`[Squat] View detection - Hip width: ${(hipWidth * 100).toFixed(1)}% | Threshold: ${(SQUAT_THRESHOLDS.MIN_HIP_WIDTH_FRONT * 100).toFixed(1)}% | Front view: ${hipWidth > SQUAT_THRESHOLDS.MIN_HIP_WIDTH_FRONT}`)
     }
 
     // If hips are far apart horizontally, user is facing front
@@ -308,7 +308,7 @@ export class SquatDetector extends BaseDetector {
 
     // Log calibration progress
     if (this.calibrationFrames <= 5 || this.calibrationFrames % 10 === 0) {
-      console.log(`🎯 Calibrating frame ${this.calibrationFrames}/${SQUAT_THRESHOLDS.CALIBRATION_FRAMES} | Hip Y: ${(hipY * 100).toFixed(1)}% | Baseline: ${(this.standingHipY * 100).toFixed(1)}% | Knee: ${kneeAngle.toFixed(1)}°`)
+      console.log(`[Squat] Calibrating frame ${this.calibrationFrames}/${SQUAT_THRESHOLDS.CALIBRATION_FRAMES} | Hip Y: ${(hipY * 100).toFixed(1)}% | Baseline: ${(this.standingHipY * 100).toFixed(1)}% | Knee: ${kneeAngle.toFixed(1)}`)
     }
 
     // In MediaPipe: Y=0 is top of image, Y=1 is bottom
@@ -322,8 +322,8 @@ export class SquatDetector extends BaseDetector {
 
     if (this.calibrationFrames >= SQUAT_THRESHOLDS.CALIBRATION_FRAMES) {
       this.isCalibrated = true
-      console.log(`✅ Squat calibration complete:`)
-      console.log(`   Standing knee angle: ${this.standingKneeAngle?.toFixed(1)}°`)
+      console.log(`[Squat] Calibration complete:`)
+      console.log(`   Standing knee angle: ${this.standingKneeAngle?.toFixed(1)}`)
       console.log(`   Standing hip Y: ${(this.standingHipY! * 100).toFixed(1)}% (lower = standing higher)`)
     }
   }
@@ -453,13 +453,13 @@ export class SquatDetector extends BaseDetector {
       const viewLabel = this.isFrontView ? 'FRONT' : 'SIDE'
 
       if (this.isFrontView) {
-        console.log(`🦵 [${viewLabel}] ${positionStatus} | HipY: ${(currentHipY * 100).toFixed(1)}% | Baseline: ${this.standingHipY ? (this.standingHipY * 100).toFixed(1) : 'N/A'}% | Drop: ${(hipDrop * 100).toFixed(1)}% | Stage: ${this.stage ?? 'null'} | Reps: ${this.repCount}`)
+        console.log(`[Squat] [${viewLabel}] ${positionStatus} | HipY: ${(currentHipY * 100).toFixed(1)}% | Baseline: ${this.standingHipY ? (this.standingHipY * 100).toFixed(1) : 'N/A'}% | Drop: ${(hipDrop * 100).toFixed(1)}% | Stage: ${this.stage ?? 'null'} | Reps: ${this.repCount}`)
         console.log(`   DOWN threshold: >${(downThreshold * 100).toFixed(1)}% | UP threshold: <${(upThreshold * 100).toFixed(1)}% | isDown: ${isDownPosition} | isUp: ${isUpPosition}`)
       } else {
-        console.log(`🦵 [${viewLabel} - ${side}] ${positionStatus} | Knee: ${kneeAngle.toFixed(1)}° (raw: ${rawKneeAngle.toFixed(1)}°) | Hip: ${hipAngle.toFixed(1)}° | Stage: ${this.stage ?? 'null'} | Reps: ${this.repCount}`)
-        console.log(`   DOWN threshold: <${downThreshold.toFixed(0)}° | UP threshold: >${upThreshold.toFixed(0)}°`)
+        console.log(`[Squat] [${viewLabel} - ${side}] ${positionStatus} | Knee: ${kneeAngle.toFixed(1)} (raw: ${rawKneeAngle.toFixed(1)}) | Hip: ${hipAngle.toFixed(1)} | Stage: ${this.stage ?? 'null'} | Reps: ${this.repCount}`)
+        console.log(`   DOWN threshold: <${downThreshold.toFixed(0)} | UP threshold: >${upThreshold.toFixed(0)}`)
         if (this.maxDepthKneeAngle !== null) {
-          console.log(`   Max depth seen: ${this.maxDepthKneeAngle.toFixed(1)}° | Deepest this rep: ${this.deepestKneeAngleThisRep?.toFixed(1) ?? 'N/A'}°`)
+          console.log(`   Max depth seen: ${this.maxDepthKneeAngle.toFixed(1)} | Deepest this rep: ${this.deepestKneeAngleThisRep?.toFixed(1) ?? 'N/A'}`)
         }
       }
       this.lastLogTime = now
@@ -496,7 +496,7 @@ export class SquatDetector extends BaseDetector {
           this.viewLocked = true  // Lock view after first successful rep
 
           const viewLabel = this.isFrontView ? 'FRONT' : 'SIDE'
-          console.log(`🎉 REP ${this.repCount} COMPLETED! [${viewLabel}] (depth: ${depthInfo})`)
+          console.log(`[Squat] REP ${this.repCount} COMPLETED! [${viewLabel}] (depth: ${depthInfo})`)
 
           this.repHistory.push({
             number: this.repCount,
@@ -509,7 +509,7 @@ export class SquatDetector extends BaseDetector {
           })
           this.lastRepStartTime = pose.timestamp
         } else {
-          console.log(`❌ REP REJECTED - Depth insufficient: ${depthInfo}`)
+          console.log(`[Squat] REP REJECTED - Depth insufficient: ${depthInfo}`)
         }
       }
 
@@ -526,8 +526,8 @@ export class SquatDetector extends BaseDetector {
     if (isDownPosition && this.stage !== 'down') {
       // Transitioning to DOWN position (squatting)
       const viewLabel = this.isFrontView ? 'FRONT' : 'SIDE'
-      const depthValue = this.isFrontView ? `${(hipDrop * 100).toFixed(1)}%` : `${kneeAngle.toFixed(1)}°`
-      console.log(`⬇️ DOWN POSITION DETECTED [${viewLabel}] (${depthValue})`)
+      const depthValue = this.isFrontView ? `${(hipDrop * 100).toFixed(1)}%` : `${kneeAngle.toFixed(1)}`
+      console.log(`[Squat] DOWN POSITION DETECTED [${viewLabel}] (${depthValue})`)
       this.stage = 'down'
       this.currentPhase = 'bottom'
     } else if (this.stage === 'down' && !isDownPosition && !isUpPosition) {
@@ -539,7 +539,7 @@ export class SquatDetector extends BaseDetector {
     const timeSinceLastRepOrStart = now - this.lastRepOrStartTime
     if (timeSinceLastRepOrStart > SQUAT_THRESHOLDS.INACTIVITY_WARNING_MS && this.repCount === 0) {
       if (now - this.lastLogTime > 5000) {
-        console.log(`⏱️ No reps detected for ${Math.floor(timeSinceLastRepOrStart / 1000)}s - Current knee angle: ${kneeAngle.toFixed(0)}°, Down threshold: ${downThreshold.toFixed(0)}°`)
+        console.log(`[Squat] No reps detected for ${Math.floor(timeSinceLastRepOrStart / 1000)}s - Current knee angle: ${kneeAngle.toFixed(0)}, Down threshold: ${downThreshold.toFixed(0)}`)
       }
     }
 
