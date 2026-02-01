@@ -77,9 +77,9 @@ function ToastItem({
   return (
     <div
       className={clsx(
-        'flex items-center gap-3 px-4 py-3 rounded-lg border min-w-[300px]',
+        'flex items-center gap-3 px-4 py-3 rounded-lg border min-w-[300px] transition-all duration-200',
         {
-          'bg-green-500/10 border-green-500/20 text-green-400':
+          'bg-cyan-500/10 border-cyan-500/20 text-cyan-400':
             toast.type === 'success',
           'bg-red-500/10 border-red-500/20 text-red-400':
             toast.type === 'error',

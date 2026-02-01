@@ -53,10 +53,14 @@ npm run build
 ### Key Technologies
 
 - **React 18 + TypeScript** - Frontend framework
+- **Vite** - Build tool and dev server
 - **MediaPipe Tasks Vision** - Pose detection (⚠️ Modern API only!)
-- **Supabase** - Backend & auth
-- **TailwindCSS** - Styling
-- **Zustand** - State management
+- **Supabase** - Backend, database & authentication
+- **TailwindCSS** - Utility-first CSS framework
+- **Zustand** - Lightweight state management
+- **D3.js** - Data visualization and charts
+- **Lucide React** - Icon library
+- **React Router** - Client-side routing
 
 ### Project Documentation
 
@@ -82,11 +86,17 @@ See `DEVELOPMENT.md` for complete details.
 ## Features
 
 - ✅ Real-time pose detection with skeleton visualization
-- ✅ Automatic push-up rep counting
+- ✅ Automatic rep counting for push-ups, bicep curls, and squats
 - ✅ Video recording with pose overlay
 - ✅ Form feedback and scoring
-- ✅ Workout history tracking
-- ✅ Dark theme UI
+- ✅ Workout history tracking with interactive charts
+- ✅ D3.js powered data visualizations:
+  - Muscle distribution hexagon chart
+  - Form score progress tracking
+  - Reps per workout trends
+  - Period-based statistics (week, month, 3 months, year)
+- ✅ Dark theme UI with Tailwind CSS
+- ✅ User authentication and cloud sync via Supabase
 
 ## Architecture
 
@@ -96,10 +106,16 @@ src/
 │   ├── PoseDetectionService.ts  # MediaPipe Tasks Vision integration
 │   ├── RepCounterService.ts     # Rep counting orchestration
 │   └── detectors/
-│       └── PushupDetector.ts    # Push-up specific logic
-├── components/workout/          # Workout UI components
+│       ├── PushupDetector.ts    # Push-up specific logic
+│       ├── BicepCurlDetector.ts # Bicep curl detection
+│       └── SquatDetector.ts     # Squat detection
+├── components/
+│   ├── workout/                 # Workout UI components
+│   ├── charts/                  # D3.js chart components
+│   └── shared/                  # Reusable UI components
 ├── hooks/                       # React hooks
-└── store/                       # Zustand state management
+├── store/                       # Zustand state management
+└── repositories/                # Data access layer
 ```
 
 ## License

@@ -7,7 +7,7 @@ export function NavBar() {
   const navItems = [
     { to: ROUTES.HOME, icon: Home, label: 'Home', isCenterButton: false },
     { to: ROUTES.HISTORY, icon: Clock, label: 'History', isCenterButton: false },
-    { to: ROUTES.WORKOUT_START, icon: Plus, label: '', isCenterButton: true },
+    { to: ROUTES.WORKOUT, icon: Plus, label: '', isCenterButton: true },
     { to: ROUTES.EXERCISES, icon: Dumbbell, label: 'Exercises', isCenterButton: false },
     { to: ROUTES.PROFILE, icon: User, label: 'Profile', isCenterButton: false },
   ]
@@ -17,9 +17,8 @@ export function NavBar() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo - only on desktop */}
-          <div className="hidden md:flex items-center gap-1 mr-8">
-            <Dumbbell className="text-green-500" size={24} />
-            <span className="font-semibold text-lg">Rep Tracker</span>
+          <div className="hidden md:flex items-center gap-2 mr-8">
+            <img src="/jakd-logo.png" alt="JAKD" className="h-20" style={{ filter: 'invert(1) brightness(2)' }} />
           </div>
 
           {/* Navigation Items */}
@@ -39,18 +38,18 @@ export function NavBar() {
                       : isCenterButton
                       ? ''
                       : isActive
-                      ? 'text-green-500'
-                      : 'text-gray-400 hover:text-white'
+                      ? 'text-cyan-400'
+                      : 'text-gray-400 hover:text-cyan-300 transition-all duration-200'
                   )
                 }
               >
                 {isCenterButton ? (
                   // Large circular center button
                   <div className={clsx(
-                    'flex items-center justify-center rounded-full transition-all',
+                    'flex items-center justify-center rounded-full transition-all duration-200 transform hover:scale-110 active:scale-95',
                     'w-14 h-14 md:w-10 md:h-10',
-                    'bg-green-500 hover:bg-green-600',
-                    'shadow-lg shadow-green-500/50'
+                    'bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400',
+                    'shadow-lg shadow-cyan-500/50 hover:shadow-cyan-500/70'
                   )}>
                     <Icon size={28} className="text-black md:w-5 md:h-5" />
                   </div>

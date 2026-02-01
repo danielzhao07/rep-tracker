@@ -30,7 +30,7 @@ export function VideoFeed({ stream, onVideoReady, showOverlay = true }: VideoFee
   // Phase color indicator
   const getPhaseColor = (phase: string) => {
     switch (phase) {
-      case 'top': return 'bg-green-500'
+      case 'top': return 'bg-cyan-500'
       case 'eccentric': return 'bg-yellow-500'
       case 'bottom': return 'bg-red-500'
       case 'concentric': return 'bg-blue-500'
@@ -40,7 +40,7 @@ export function VideoFeed({ stream, onVideoReady, showOverlay = true }: VideoFee
 
   // Get angle bar color based on value
   const getAngleBarColor = (angle: number) => {
-    if (angle > 150) return 'bg-green-500' // Extended
+    if (angle > 150) return 'bg-cyan-500' // Extended
     if (angle > 120) return 'bg-yellow-500' // Mid
     if (angle > 100) return 'bg-orange-500' // Lowering
     return 'bg-red-500' // Bottom
@@ -95,7 +95,7 @@ export function VideoFeed({ stream, onVideoReady, showOverlay = true }: VideoFee
         {/* Detection status */}
         <div className="bg-black/80 px-3 py-2 rounded-lg text-xs">
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${debugPoseDetected ? 'bg-green-500' : 'bg-red-500'}`} />
+            <div className={`w-2 h-2 rounded-full ${debugPoseDetected ? 'bg-cyan-500' : 'bg-red-500'}`} />
             <span className="text-gray-300">
               {debugPoseDetected ? 'Pose detected' : 'No pose'}
             </span>
@@ -105,7 +105,7 @@ export function VideoFeed({ stream, onVideoReady, showOverlay = true }: VideoFee
       </div>
       
       {/* Rep count overlay - right side */}
-      <div className="absolute top-4 right-4 bg-green-500 text-black font-bold text-3xl px-5 py-3 rounded-lg shadow-lg z-20">
+      <div className="absolute top-4 right-4 bg-cyan-500 text-black font-bold text-3xl px-5 py-3 rounded-lg shadow-lg shadow-cyan-500/50 z-20 animate-pulse">
         {repCount}
       </div>
 

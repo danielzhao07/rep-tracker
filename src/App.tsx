@@ -11,6 +11,10 @@ import { LoginPage } from '@/pages/LoginPage'
 import { SignUpPage } from '@/pages/SignUpPage'
 import { HomePage } from '@/pages/HomePage'
 import { WorkoutPage } from '@/pages/WorkoutPage'
+import { WorkoutHomePage } from '@/pages/WorkoutHomePage'
+import { CreateRoutinePage } from '@/pages/CreateRoutinePage'
+import { AddExercisesToRoutinePage } from '@/pages/AddExercisesToRoutinePage'
+import { CreateExercisePage } from '@/pages/CreateExercisePage'
 import { ManualEntryPage } from '@/pages/ManualEntryPage'
 import { HistoryPage } from '@/pages/HistoryPage'
 import { StartWorkoutPage } from '@/pages/StartWorkoutPage'
@@ -77,8 +81,40 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <AppLayout>
-              <WorkoutPage />
+              <WorkoutHomePage />
             </AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.WORKOUT_START}
+        element={
+          <ProtectedRoute>
+            <WorkoutPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.WORKOUT_CREATE_ROUTINE}
+        element={
+          <ProtectedRoute>
+            <CreateRoutinePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.WORKOUT_ADD_EXERCISES}
+        element={
+          <ProtectedRoute>
+            <AddExercisesToRoutinePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.WORKOUT_CREATE_EXERCISE}
+        element={
+          <ProtectedRoute>
+            <CreateExercisePage />
           </ProtectedRoute>
         }
       />
@@ -98,16 +134,6 @@ function AppRoutes() {
           <ProtectedRoute>
             <AppLayout>
               <HistoryPage />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.WORKOUT_START}
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <StartWorkoutPage />
             </AppLayout>
           </ProtectedRoute>
         }

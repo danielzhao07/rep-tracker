@@ -9,7 +9,7 @@ export function LoadingSpinner({ size = 'md', className }: LoadingSpinnerProps) 
   return (
     <div
       className={clsx(
-        'animate-spin rounded-full border-2 border-gray-600 border-t-green-500',
+        'animate-spin rounded-full border-2 border-gray-600 border-t-cyan-500',
         {
           'h-4 w-4': size === 'sm',
           'h-8 w-8': size === 'md',

@@ -89,7 +89,7 @@ export function ManualEntryPage() {
               required
               min={1}
               max={999}
-              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full bg-dark-800 border border-cyan-700/40 rounded-lg px-4 py-2.5 text-white placeholder-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent shadow-[0_0_0_2px_#0891b233] transition-all duration-200"
               placeholder="Number of reps"
             />
           </div>
@@ -106,7 +106,7 @@ export function ManualEntryPage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
               placeholder="Any notes about this workout"
             />
           </div>

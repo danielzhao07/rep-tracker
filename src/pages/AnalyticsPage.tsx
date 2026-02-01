@@ -69,7 +69,7 @@ export function AnalyticsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <Card>
           <div className="flex items-center gap-3">
-            <Flame className="text-green-500" size={24} />
+            <Flame className="text-cyan-400" size={24} />
             <div>
               <p className="text-2xl font-bold">{stats.totalWorkouts}</p>
               <p className="text-sm text-gray-400">Workouts</p>
@@ -78,7 +78,7 @@ export function AnalyticsPage() {
         </Card>
         <Card>
           <div className="flex items-center gap-3">
-            <TrendingUp className="text-green-500" size={24} />
+            <TrendingUp className="text-cyan-400" size={24} />
             <div>
               <p className="text-2xl font-bold">{stats.totalReps}</p>
               <p className="text-sm text-gray-400">Total Reps</p>
@@ -87,7 +87,7 @@ export function AnalyticsPage() {
         </Card>
         <Card>
           <div className="flex items-center gap-3">
-            <Award className="text-green-500" size={24} />
+            <Award className="text-cyan-400" size={24} />
             <div>
               <p className="text-2xl font-bold">{stats.bestReps}</p>
               <p className="text-sm text-gray-400">Best Set</p>
@@ -96,7 +96,7 @@ export function AnalyticsPage() {
         </Card>
         <Card>
           <div>
-            <p className="text-2xl font-bold text-green-500">
+            <p className="text-2xl font-bold text-cyan-400">
               {stats.avgFormScore}
             </p>
             <p className="text-sm text-gray-400">Avg Form Score</p>

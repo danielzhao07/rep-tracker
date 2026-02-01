@@ -204,7 +204,7 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-600 border-t-green-500 mx-auto mb-4" />
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-600 border-t-cyan-500 mx-auto mb-4" />
           <p className="text-gray-400">Loading pose detection...</p>
         </div>
       </div>
@@ -214,7 +214,7 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
   // Get squat difficulty label
   const getSquatDifficultyLabel = () => {
     switch (squatDifficulty) {
-      case 'easy': return { label: 'Easy', color: 'bg-green-500/20 text-green-400 border-green-500' }
+      case 'easy': return { label: 'Easy', color: 'bg-cyan-500/20 text-cyan-400 border-cyan-500' }
       case 'ninety-degree': return { label: '90°', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500' }
       case 'atg': return { label: 'ATG', color: 'bg-red-500/20 text-red-400 border-red-500' }
       default: return null
@@ -288,13 +288,13 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={decrementRep}
-                className="w-12 h-12 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-green-500 transition-colors"
+                className="w-12 h-12 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-cyan-500 transition-all duration-200 transform hover:scale-110"
               >
                 <Minus size={20} />
               </button>
               <button
                 onClick={incrementRep}
-                className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-black hover:bg-green-600 transition-colors"
+                className="w-12 h-12 rounded-full bg-cyan-500 flex items-center justify-center text-black hover:bg-cyan-400 transition-all duration-200 transform hover:scale-110 shadow-lg shadow-cyan-500/50 hover:shadow-cyan-500/70"
               >
                 <Plus size={20} />
               </button>

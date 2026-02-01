@@ -79,7 +79,7 @@ A professional, production-ready fitness rep tracker using computer vision (Medi
 | **Computer Vision** | MediaPipe Tasks Vision | 33-point pose detection, rep counting (modern API) |
 | **Video** | MediaRecorder API | Browser-native video recording |
 | **Audio** | Web Audio API | Text-to-speech countdown cues |
-| **Charts** | Recharts | Minimalistic progress visualization |
+| **Charts & Visualization** | D3.js | Data visualization, interactive charts, muscle distribution |
 | **Icons** | lucide-react | Minimalist icon library |
 | **Testing** | Vitest + Playwright | Unit, integration, E2E tests |
 | **Deployment** | Vercel | Serverless hosting, CI/CD |
@@ -96,7 +96,7 @@ A professional, production-ready fitness rep tracker using computer vision (Medi
     "@tanstack/react-query": "^5.17.0",
     "zustand": "^4.5.0",
     "@mediapipe/tasks-vision": "^0.10.14",
-    "recharts": "^2.12.0",
+    "d3": "^7.9.0",
     "lucide-react": "^0.338.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.0"

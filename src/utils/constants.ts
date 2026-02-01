@@ -170,4 +170,7 @@ export const ROUTES = {
   EXERCISES: '/exercises',
   PROFILE: '/profile',
   WORKOUT_START: '/workout/start',
+  WORKOUT_CREATE_ROUTINE: '/workout/create-routine',
+  WORKOUT_ADD_EXERCISES: '/workout/create-routine/add-exercises',
+  WORKOUT_CREATE_EXERCISE: '/workout/create-routine/create-exercise',
 } as const

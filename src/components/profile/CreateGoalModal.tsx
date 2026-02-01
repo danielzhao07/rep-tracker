@@ -63,7 +63,7 @@ export function CreateGoalModal({ isOpen, onClose, onCreate }: CreateGoalModalPr
           <select
             value={goalType}
             onChange={(e) => setGoalType(e.target.value as GoalType)}
-            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             {(Object.keys(GOAL_TYPE_LABELS) as GoalType[]).map((type) => (
               <option key={type} value={type}>
@@ -84,7 +84,7 @@ export function CreateGoalModal({ isOpen, onClose, onCreate }: CreateGoalModalPr
             onChange={(e) => setTargetValue(e.target.value)}
             min="1"
             required
-            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
             placeholder="Enter target value"
           />
           <p className="text-xs text-gray-500 mt-1">

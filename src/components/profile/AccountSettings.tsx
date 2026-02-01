@@ -30,7 +30,7 @@ export function AccountSettings({
     <div className="space-y-4">
       {/* Header */}
       <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-        <Settings className="text-green-500" size={20} />
+        <Settings className="text-cyan-400" size={20} />
         Account Settings
       </h3>
 
@@ -39,7 +39,7 @@ export function AccountSettings({
         <div className="flex items-center justify-between py-2">
           <div className="flex items-center gap-3">
             {preferences.notificationsEnabled ? (
-              <Bell className="text-green-500" size={20} />
+              <Bell className="text-cyan-400" size={20} />
             ) : (
               <BellOff className="text-gray-500" size={20} />
             )}
@@ -51,7 +51,7 @@ export function AccountSettings({
           <button
             onClick={() => onUpdateNotifications(!preferences.notificationsEnabled)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              preferences.notificationsEnabled ? 'bg-green-500' : 'bg-gray-600'
+              preferences.notificationsEnabled ? 'bg-cyan-500' : 'bg-gray-600'
             }`}
           >
             <span
@@ -71,7 +71,7 @@ export function AccountSettings({
             <p className="text-sm font-medium text-white">Dark Mode</p>
             <p className="text-xs text-gray-500">Always enabled</p>
           </div>
-          <div className="h-6 w-11 rounded-full bg-green-500 flex items-center justify-center">
+          <div className="h-6 w-11 rounded-full bg-cyan-500 flex items-center justify-center">
             <span className="text-xs text-black font-semibold">✓</span>
           </div>
         </div>

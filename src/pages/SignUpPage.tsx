@@ -36,8 +36,8 @@ export function SignUpPage() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10 mb-4">
-            <Activity className="text-green-500" size={32} />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500/10 mb-4 border border-cyan-500/30">
+            <Activity className="text-cyan-400" size={32} />
           </div>
           <h1 className="text-2xl font-bold">Create Account</h1>
           <p className="text-gray-400 mt-1">Start tracking your workouts</p>
@@ -63,7 +63,7 @@ export function SignUpPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
               placeholder="you@example.com"
             />
           </div>
@@ -82,7 +82,7 @@ export function SignUpPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
               placeholder="Min 6 characters"
             />
           </div>
@@ -101,7 +101,7 @@ export function SignUpPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full bg-dark-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
               placeholder="Repeat password"
             />
           </div>
@@ -120,7 +120,7 @@ export function SignUpPage() {
           Already have an account?{' '}
           <Link
             to={ROUTES.LOGIN}
-            className="text-green-500 hover:text-green-400 transition-colors"
+            className="text-cyan-300 hover:text-cyan-200 transition-colors font-semibold"
           >
             Sign in
           </Link>

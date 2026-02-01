@@ -80,11 +80,11 @@ export function CameraSetupModal({
         {isCountingDown && (
           <div className="text-center">
             {countdown !== null && countdown > 0 ? (
-              <span className="text-6xl font-bold text-green-500">
+              <span className="text-6xl font-bold text-cyan-400 animate-pulse">
                 {countdown}
               </span>
             ) : countdown === 0 ? (
-              <span className="text-4xl font-bold text-green-500">GO!</span>
+              <span className="text-4xl font-bold text-cyan-400 animate-pulse">GO!</span>
             ) : (
               <span className="text-lg text-gray-300">{countdownText}</span>
             )}

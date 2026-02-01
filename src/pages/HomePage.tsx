@@ -36,11 +36,10 @@ export function HomePage() {
   return (
     <div>
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <Activity className="text-green-500" size={28} />
-          <h1 className="text-2xl font-bold">Rep Tracker</h1>
+        <div className="flex items-center justify-center mb-4">
+          <img src="/jakd-logo.png" alt="JAKD" className="h-32 md:h-40" style={{ filter: 'invert(1) brightness(2)' }} />
         </div>
-        <p className="text-gray-400">
+        <p className="text-gray-400 text-center">
           Select an exercise to start your workout
         </p>
       </div>

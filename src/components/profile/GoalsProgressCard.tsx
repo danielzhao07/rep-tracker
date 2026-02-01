@@ -41,7 +41,7 @@ export function GoalsProgressCard({ goals, onCreateGoal, onDeleteGoal }: GoalsPr
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-          <Target className="text-green-500" size={20} />
+          <Target className="text-cyan-400" size={20} />
           Goals & Milestones
         </h3>
         <Button onClick={onCreateGoal} size="sm" className="flex items-center gap-1">
@@ -93,7 +93,7 @@ export function GoalsProgressCard({ goals, onCreateGoal, onDeleteGoal }: GoalsPr
                         {goal.goalType.includes('reps') ? 'reps' : 'workouts'}
                       </span>
                       <span className={`font-semibold ${
-                        progress.isComplete ? 'text-green-500' : 'text-white'
+                        progress.isComplete ? 'text-cyan-400' : 'text-white'
                       }`}>
                         {progress.progress.toFixed(0)}%
                       </span>
@@ -101,7 +101,7 @@ export function GoalsProgressCard({ goals, onCreateGoal, onDeleteGoal }: GoalsPr
                     <div className="h-2 bg-dark-700 rounded-full overflow-hidden">
                       <div
                         className={`h-full transition-all duration-300 ${
-                          progress.isComplete ? 'bg-green-500' : 'bg-green-500/70'
+                          progress.isComplete ? 'bg-cyan-500' : 'bg-cyan-500/70'
                         }`}
                         style={{ width: `${progress.progress}%` }}
                       />
@@ -114,7 +114,7 @@ export function GoalsProgressCard({ goals, onCreateGoal, onDeleteGoal }: GoalsPr
                       <span>{progress.remaining} remaining</span>
                     )}
                     {progress.isComplete && (
-                      <span className="text-green-500 font-semibold">✓ Complete!</span>
+                      <span className="text-cyan-400 font-semibold">✓ Complete!</span>
                     )}
                     {progress.daysRemaining !== undefined && progress.daysRemaining > 0 && (
                       <span>{progress.daysRemaining} days left</span>
