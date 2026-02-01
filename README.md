@@ -1,4 +1,4 @@
-# Rep Tracker - AI-Powered Fitness Tracker
+# JAKD - Video-Powered Fitness Tracker
 
 A computer vision-powered fitness tracking application that uses MediaPipe Tasks Vision for automatic rep counting with real-time form feedback.
 
