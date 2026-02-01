@@ -19,7 +19,7 @@ const difficultyOptions: {
     title: 'Easy Mode',
     description: 'Detects at an easier depth. Good for beginners or warm-ups.',
     icon: '🟢',
-    color: 'border-green-500 hover:bg-green-500/10',
+    color: 'border-cyan-500 hover:bg-cyan-500/10',
   },
   {
     mode: 'ninety-degree',

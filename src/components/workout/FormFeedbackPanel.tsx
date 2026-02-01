@@ -7,14 +7,14 @@ interface FormFeedbackPanelProps {
 
 export function FormFeedbackPanel({ feedback, formScore }: FormFeedbackPanelProps) {
   const getScoreColor = (score: number) => {
-    if (score >= 70) return 'text-green-400'
+    if (score >= 70) return 'text-cyan-400'
     if (score >= 40) return 'text-yellow-400'
     return 'text-red-400'
   }
 
   const getFeedbackIcon = (text: string) => {
     if (text.includes('Good') || text.includes('Great')) {
-      return <CheckCircle size={14} className="text-green-400 flex-shrink-0" />
+      return <CheckCircle size={14} className="text-cyan-400 flex-shrink-0" />
     }
     if (
       text.includes('sagging') ||

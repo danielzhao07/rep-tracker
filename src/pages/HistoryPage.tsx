@@ -372,30 +372,30 @@ export function HistoryPage() {
       <div className="flex gap-2 mb-6 overflow-x-auto">
         <button
           onClick={() => setActiveSection('workouts')}
-          className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+          className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
             activeSection === 'workouts'
-              ? 'bg-green-500 text-white'
-              : 'bg-dark-700 text-gray-400 hover:bg-dark-600'
+              ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+              : 'bg-dark-700 text-gray-400 hover:text-cyan-300 hover:bg-dark-600 border border-cyan-700/20'
           }`}
         >
           Workout History
         </button>
         <button
           onClick={() => setActiveSection('statistics')}
-          className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+          className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
             activeSection === 'statistics'
-              ? 'bg-green-500 text-white'
-              : 'bg-dark-700 text-gray-400 hover:bg-dark-600'
+              ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+              : 'bg-dark-700 text-gray-400 hover:text-cyan-300 hover:bg-dark-600 border border-cyan-700/20'
           }`}
         >
           Statistics
         </button>
         <button
           onClick={() => setActiveSection('videos')}
-          className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+          className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
             activeSection === 'videos'
-              ? 'bg-green-500 text-white'
-              : 'bg-dark-700 text-gray-400 hover:bg-dark-600'
+              ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+              : 'bg-dark-700 text-gray-400 hover:text-cyan-300 hover:bg-dark-600 border border-cyan-700/20'
           }`}
         >
           Videos
@@ -436,20 +436,20 @@ export function HistoryPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setStatsView('calendar')}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg transition-all duration-200 ${
                   statsView === 'calendar'
-                    ? 'bg-green-500 text-white'
-                    : 'bg-dark-700 text-gray-400 hover:bg-dark-600'
+                    ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+                    : 'bg-dark-700 text-gray-400 hover:text-cyan-300 hover:bg-dark-600 border border-cyan-700/20'
                 }`}
               >
                 <Calendar className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setStatsView('charts')}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg transition-all duration-200 ${
                   statsView === 'charts'
-                    ? 'bg-green-500 text-white'
-                    : 'bg-dark-700 text-gray-400 hover:bg-dark-600'
+                    ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+                    : 'bg-dark-700 text-gray-400 hover:text-cyan-300 hover:bg-dark-600 border border-cyan-700/20'
                 }`}
               >
                 <BarChart3 className="w-5 h-5" />
@@ -536,9 +536,9 @@ export function HistoryPage() {
                             !day
                               ? ''
                               : day.isToday
-                              ? 'bg-blue-500/20 text-blue-400 font-semibold ring-2 ring-blue-500'
+                              ? 'bg-cyan-500/20 text-cyan-400 font-semibold ring-2 ring-cyan-500 shadow-lg shadow-cyan-500/30'
                               : day.hasWorkout
-                              ? 'bg-green-500/20 text-green-400 font-semibold'
+                              ? 'bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-500/40'
                               : 'text-gray-400'
                           }`}
                         >
@@ -568,7 +568,7 @@ export function HistoryPage() {
                             !day
                               ? ''
                               : day.hasWorkout
-                              ? 'bg-green-500/20 text-green-400 font-semibold'
+                              ? 'bg-cyan-500/20 text-cyan-300 font-semibold border border-cyan-500/40'
                               : 'text-gray-400'
                           }`}
                         >
@@ -581,11 +581,11 @@ export function HistoryPage() {
                   {/* Legend */}
                   <div className="flex items-center gap-4 text-xs px-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded bg-green-500/20" />
+                      <div className="w-4 h-4 rounded bg-cyan-500/20 border border-cyan-500/40" />
                       <span className="text-gray-400">Workout Day</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded bg-blue-500/20 ring-2 ring-blue-500" />
+                      <div className="w-4 h-4 rounded bg-cyan-500/20 ring-2 ring-cyan-500" />
                       <span className="text-gray-400">Today</span>
                     </div>
                   </div>
@@ -613,9 +613,9 @@ export function HistoryPage() {
                                 !day
                                   ? ''
                                   : day.isToday
-                                  ? 'bg-blue-500 text-white'
+                                  ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/50'
                                   : day.hasWorkout
-                                  ? 'bg-green-500/30 text-green-400'
+                                  ? 'bg-cyan-500/30 text-cyan-300'
                                   : 'bg-gray-800 text-gray-600'
                               }`}
                             >
@@ -701,7 +701,7 @@ export function HistoryPage() {
                     <h4 className="text-gray-400 text-sm mb-1">Workouts</h4>
                     <p className="text-white text-2xl font-semibold">{periodStats.workouts}</p>
                     <p className={`text-sm flex items-center gap-1 ${
-                      periodStats.workouts >= previousPeriodStats.workouts ? 'text-green-500' : 'text-red-500'
+                      periodStats.workouts >= previousPeriodStats.workouts ? 'text-cyan-400' : 'text-red-400'
                     }`}>
                       <TrendingUp className="w-4 h-4" />
                       {periodStats.workouts - previousPeriodStats.workouts >= 0 ? '+' : ''}{periodStats.workouts - previousPeriodStats.workouts}
@@ -714,7 +714,7 @@ export function HistoryPage() {
                       {Math.floor(periodStats.duration / 60000)}min
                     </p>
                     <p className={`text-sm flex items-center gap-1 ${
-                      periodStats.duration >= previousPeriodStats.duration ? 'text-green-500' : 'text-red-500'
+                      periodStats.duration >= previousPeriodStats.duration ? 'text-cyan-400' : 'text-red-400'
                     }`}>
                       <TrendingUp className="w-4 h-4" />
                       {Math.floor((periodStats.duration - previousPeriodStats.duration) / 60000) >= 0 ? '+' : ''}{Math.floor((periodStats.duration - previousPeriodStats.duration) / 60000)}min
@@ -725,7 +725,7 @@ export function HistoryPage() {
                     <h4 className="text-gray-400 text-sm mb-1">Reps</h4>
                     <p className="text-white text-2xl font-semibold">{periodStats.reps}</p>
                     <p className={`text-sm flex items-center gap-1 ${
-                      periodStats.reps >= previousPeriodStats.reps ? 'text-green-500' : 'text-red-500'
+                      periodStats.reps >= previousPeriodStats.reps ? 'text-cyan-400' : 'text-red-400'
                     }`}>
                       <TrendingUp className="w-4 h-4" />
                       {periodStats.reps - previousPeriodStats.reps >= 0 ? '+' : ''}{periodStats.reps - previousPeriodStats.reps}
@@ -736,7 +736,7 @@ export function HistoryPage() {
                     <h4 className="text-gray-400 text-sm mb-1">Sets</h4>
                     <p className="text-white text-2xl font-semibold">{periodStats.sets}</p>
                     <p className={`text-sm flex items-center gap-1 ${
-                      periodStats.sets >= previousPeriodStats.sets ? 'text-green-500' : 'text-red-500'
+                      periodStats.sets >= previousPeriodStats.sets ? 'text-cyan-400' : 'text-red-400'
                     }`}>
                       <TrendingUp className="w-4 h-4" />
                       {periodStats.sets - previousPeriodStats.sets >= 0 ? '+' : ''}{periodStats.sets - previousPeriodStats.sets}
@@ -748,7 +748,7 @@ export function HistoryPage() {
                       <h4 className="text-gray-400 text-sm mb-1">Volume</h4>
                       <p className="text-white text-2xl font-semibold">{periodStats.volume} lbs</p>
                       <p className={`text-sm flex items-center gap-1 ${
-                        periodStats.volume >= previousPeriodStats.volume ? 'text-green-500' : 'text-red-500'
+                        periodStats.volume >= previousPeriodStats.volume ? 'text-cyan-400' : 'text-red-400'
                       }`}>
                         <TrendingUp className="w-4 h-4" />
                         {periodStats.volume - previousPeriodStats.volume >= 0 ? '+' : ''}{periodStats.volume - previousPeriodStats.volume} lbs
@@ -760,7 +760,7 @@ export function HistoryPage() {
                     <h4 className="text-gray-400 text-sm mb-1">Videos</h4>
                     <p className="text-white text-2xl font-semibold">{periodStats.videos}</p>
                     <p className={`text-sm flex items-center gap-1 ${
-                      periodStats.videos >= previousPeriodStats.videos ? 'text-green-500' : 'text-red-500'
+                      periodStats.videos >= previousPeriodStats.videos ? 'text-cyan-400' : 'text-red-400'
                     }`}>
                       <TrendingUp className="w-4 h-4" />
                       {periodStats.videos - previousPeriodStats.videos >= 0 ? '+' : ''}{periodStats.videos - previousPeriodStats.videos}
@@ -799,20 +799,20 @@ export function HistoryPage() {
                 <div className="flex gap-1 bg-dark-900 rounded-lg p-1">
                   <button
                     onClick={() => setVideoStatsView('stats')}
-                    className={`px-3 py-1 text-sm rounded transition-colors ${
+                    className={`px-3 py-1 text-sm rounded transition-all duration-200 ${
                       videoStatsView === 'stats'
-                        ? 'bg-green-500 text-white'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+                        : 'text-gray-400 hover:text-cyan-300 hover:bg-dark-600'
                     }`}
                   >
                     Stats
                   </button>
                   <button
                     onClick={() => setVideoStatsView('charts')}
-                    className={`px-3 py-1 text-sm rounded transition-colors ${
+                    className={`px-3 py-1 text-sm rounded transition-all duration-200 ${
                       videoStatsView === 'charts'
-                        ? 'bg-green-500 text-white'
-                        : 'text-gray-400 hover:text-white'
+                        ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30'
+                        : 'text-gray-400 hover:text-cyan-300 hover:bg-dark-600'
                     }`}
                   >
                     Charts
@@ -833,7 +833,7 @@ export function HistoryPage() {
                 </div>
                 <div>
                   <p className="text-gray-400 text-sm">Avg Form Score</p>
-                  <p className="text-2xl font-bold text-green-500">{videoStats.avgFormScore}</p>
+                  <p className="text-2xl font-bold text-cyan-400">{videoStats.avgFormScore}</p>
                 </div>
                 <div>
                   <p className="text-gray-400 text-sm">Total Duration</p>
@@ -855,7 +855,7 @@ export function HistoryPage() {
               {/* Form Score Chart */}
               {videoStats.formScoreData.length > 0 && (
                 <div className="mb-8">
-                  <h4 className="text-gray-400 text-sm mb-4">Form Score Progress</h4>
+                  <h4 className="text-cyan-400 text-sm mb-4 font-medium">Form Score Progress</h4>
                   <LineChart
                     data={videoStats.formScoreData.map((d, i) => ({
                       index: i,
@@ -864,6 +864,7 @@ export function HistoryPage() {
                     }))}
                     color="rgb(34, 197, 94)"
                     maxValue={100}
+                    height={240}
                   />
                 </div>
               )}
@@ -871,7 +872,7 @@ export function HistoryPage() {
               {/* Reps Chart */}
               {videoStats.repsData.length > 0 && (
                 <div>
-                  <h4 className="text-gray-400 text-sm mb-4">Reps Per Workout</h4>
+                  <h4 className="text-cyan-400 text-sm mb-4 font-medium">Reps Per Workout</h4>
                   <LineChart
                     data={videoStats.repsData.map((d, i) => ({
                       index: i,
@@ -879,6 +880,7 @@ export function HistoryPage() {
                       label: ''
                     }))}
                     color="rgb(59, 130, 246)"
+                    height={240}
                   />
                 </div>
               )}
@@ -910,7 +912,7 @@ export function HistoryPage() {
                     className="w-full flex items-center justify-between p-4 hover:bg-dark-700 transition-colors rounded-lg"
                   >
                     <h3 className="text-white font-semibold flex items-center gap-2">
-                      <Video className="w-5 h-5 text-green-500" />
+                      <Video className="w-5 h-5 text-cyan-400" />
                       {exerciseName}
                       <span className="text-sm text-gray-400 font-normal">
                         ({exerciseWorkouts.length})
@@ -947,13 +949,13 @@ export function HistoryPage() {
                             <div className="flex items-center gap-6">
                               <button
                                 onClick={() => handlePlayVideo(workout.videoUrl!, exerciseName)}
-                                className="flex items-center gap-1 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg transition-colors"
+                                className="flex items-center gap-1 px-3 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg transition-all duration-200 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/50"
                               >
                                 <Play size={16} />
                                 <span className="text-sm">Play</span>
                               </button>
                               <div className="text-right">
-                                <p className="text-2xl font-bold text-green-500">
+                                <p className="text-2xl font-bold text-cyan-400">
                                   {workout.repCount}
                                 </p>
                                 <p className="text-xs text-gray-400">reps</p>

@@ -20,8 +20,8 @@ export function ProfileHeader({ email, displayName }: ProfileHeaderProps) {
     <Card>
       <div className="flex items-center gap-4">
         {/* Avatar */}
-        <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center">
-          <span className="text-2xl font-bold text-green-500">{initials}</span>
+        <div className="w-16 h-16 rounded-full bg-cyan-500/20 flex items-center justify-center">
+          <span className="text-2xl font-bold text-cyan-400">{initials}</span>
         </div>
 
         {/* User Info */}

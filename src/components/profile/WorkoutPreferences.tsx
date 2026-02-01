@@ -18,7 +18,7 @@ export function WorkoutPreferences({ preferences, onUpdate }: WorkoutPreferences
     <div className="space-y-4">
       {/* Header */}
       <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-        <Sliders className="text-green-500" size={20} />
+        <Sliders className="text-cyan-400" size={20} />
         Workout Preferences
       </h3>
 
@@ -33,7 +33,7 @@ export function WorkoutPreferences({ preferences, onUpdate }: WorkoutPreferences
             onChange={(e) =>
               onUpdate({ formStrictness: e.target.value as FormStrictness })
             }
-            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             {(Object.keys(FORM_STRICTNESS_LABELS) as FormStrictness[]).map((level) => (
               <option key={level} value={level}>
@@ -61,7 +61,7 @@ export function WorkoutPreferences({ preferences, onUpdate }: WorkoutPreferences
               onChange={(e) =>
                 onUpdate({ repDetectionSensitivity: parseFloat(e.target.value) })
               }
-              className="flex-1 h-2 bg-dark-700 rounded-lg appearance-none cursor-pointer accent-green-500"
+              className="flex-1 h-2 bg-dark-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
             />
             <span className="text-sm font-semibold text-white w-12 text-right">
               {(preferences.repDetectionSensitivity * 100).toFixed(0)}%
@@ -82,7 +82,7 @@ export function WorkoutPreferences({ preferences, onUpdate }: WorkoutPreferences
             onChange={(e) =>
               onUpdate({ defaultRestSeconds: parseInt(e.target.value) })
             }
-            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             {REST_TIMER_PRESETS.map((seconds) => (
               <option key={seconds} value={seconds}>
@@ -103,7 +103,7 @@ export function WorkoutPreferences({ preferences, onUpdate }: WorkoutPreferences
           <select
             value={preferences.cameraPosition}
             onChange={(e) => onUpdate({ cameraPosition: e.target.value })}
-            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full px-3 py-2 bg-dark-700 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             {CAMERA_POSITIONS.map((pos) => (
               <option key={pos.value} value={pos.value}>

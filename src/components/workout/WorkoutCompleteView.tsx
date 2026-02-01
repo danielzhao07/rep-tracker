@@ -219,7 +219,7 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
         </Card>
         <Card>
           <p className="text-sm text-gray-400 mb-1">Form Score</p>
-          <p className="text-2xl font-bold text-green-500">
+          <p className="text-2xl font-bold text-cyan-400">
             {metrics.overallScore || formScore}/100
           </p>
         </Card>

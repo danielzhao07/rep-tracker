@@ -57,8 +57,8 @@ export function RepCounter({
           </p>
           <span className={
             size === 'large'
-              ? 'text-6xl font-bold text-green-500 tabular-nums'
-              : 'text-4xl font-bold text-green-500 tabular-nums'
+              ? 'text-6xl font-bold text-cyan-400 tabular-nums'
+              : 'text-4xl font-bold text-cyan-400 tabular-nums'
           }>
             {count}
           </span>
@@ -77,7 +77,7 @@ export function RepCounter({
         {editable && (
           <button
             onClick={onDecrement}
-            className="w-10 h-10 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-green-500 transition-colors"
+            className="w-10 h-10 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-cyan-500 transition-all duration-200 transform hover:scale-110"
           >
             <Minus size={18} />
           </button>
@@ -85,8 +85,8 @@ export function RepCounter({
         <span
           className={
             size === 'large'
-              ? 'text-6xl font-bold text-green-500 tabular-nums'
-              : 'text-4xl font-bold text-green-500 tabular-nums'
+              ? 'text-6xl font-bold text-cyan-400 tabular-nums'
+              : 'text-4xl font-bold text-cyan-400 tabular-nums'
           }
         >
           {count}
@@ -94,7 +94,7 @@ export function RepCounter({
         {editable && (
           <button
             onClick={onIncrement}
-            className="w-10 h-10 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-green-500 transition-colors"
+            className="w-10 h-10 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-cyan-500 transition-all duration-200 transform hover:scale-110"
           >
             <Plus size={18} />
           </button>

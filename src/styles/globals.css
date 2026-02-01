@@ -3,12 +3,42 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
     @apply bg-black text-white font-sans antialiased;
   }
 
   * {
     @apply border-gray-600;
+  }
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #0891b2 0%, #06b6d4 100%);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #06b6d4 0%, #22d3ee 100%);
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #0891b2 #1a1a1a;
   }
 }
 

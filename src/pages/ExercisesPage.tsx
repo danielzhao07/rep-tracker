@@ -703,13 +703,6 @@ function ExerciseDetailModal({
           </div>
         )}
       </div>
-      
-      {/* Add Exercise Button */}
-      <div className="p-4 border-t border-dark-700">
-        <button className="w-full bg-blue-600 text-white py-4 rounded-xl font-semibold text-[16px]">
-          Add exercise
-        </button>
-      </div>
     </div>
   )
 }
@@ -723,12 +716,12 @@ function ExerciseListItem({ exercise, onTrendClick }: { exercise: LibraryExercis
         <p className="text-gray-500 text-[14px]">{exercise.muscleGroup}</p>
       </div>
       
-      {/* Trend icon - Green with hover effect */}
+      {/* Trend icon - Cyan with hover effect */}
       <button 
         onClick={onTrendClick}
-        className="w-10 h-10 rounded-full border border-green-600 flex items-center justify-center transition-all hover:bg-green-600 hover:border-green-500 group"
+        className="w-10 h-10 rounded-full border border-cyan-600 flex items-center justify-center transition-all duration-200 hover:bg-cyan-600 hover:border-cyan-500 hover:shadow-lg hover:shadow-cyan-500/50 group transform hover:scale-110"
       >
-        <TrendingUp className="w-5 h-5 text-green-500 group-hover:text-white transition-colors" />
+        <TrendingUp className="w-5 h-5 text-cyan-400 group-hover:text-white transition-colors" />
       </button>
     </div>
   )

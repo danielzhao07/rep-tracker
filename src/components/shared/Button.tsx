@@ -20,14 +20,14 @@ export function Button({
   return (
     <button
       className={clsx(
-        'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95',
         {
-          'bg-green-500 text-black hover:bg-green-600': variant === 'primary',
-          'bg-dark-700 text-white hover:bg-dark-800 border border-gray-600':
+          'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white hover:from-cyan-500 hover:to-cyan-400 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50': variant === 'primary',
+          'bg-dark-700 text-white hover:bg-dark-600 border border-cyan-700/40 hover:border-cyan-500/60':
             variant === 'secondary',
-          'bg-transparent text-gray-300 hover:text-white hover:bg-dark-700':
+          'bg-transparent text-gray-300 hover:text-cyan-300 hover:bg-dark-700':
             variant === 'ghost',
-          'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20':
+          'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40':
             variant === 'danger',
         },
         {
