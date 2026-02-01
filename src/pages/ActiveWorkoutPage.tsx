@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { ChevronDown, MoreVertical, Plus, Check, Clock, Video, Search, X, Volume2, VolumeX, Trash2 } from 'lucide-react'
+import { ChevronDown, MoreVertical, Plus, Minus, Check, Clock, Video, Search, X, Volume2, VolumeX, Trash2 } from 'lucide-react'
 import { Button } from '@/components/shared/Button'
 import { useWorkoutSessionStore, type WorkoutExercise } from '@/store/workoutSessionStore'
 import { useWorkoutStore } from '@/store/workoutStore'
@@ -367,7 +367,7 @@ function ExerciseCard({
   const [editingSet, setEditingSet] = useState<{ index: number; field: 'reps' | 'weight' } | null>(null)
   
   // Determine if exercise uses weight
-  const isBodyweight = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
+  const isBodyweight = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'body weight', 'bodyweight', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
     .some(bw => exercise.exerciseName.toLowerCase().includes(bw))
   
   const hasWeight = !isBodyweight
@@ -392,18 +392,31 @@ function ExerciseCard({
       toggleSetCompletion(exercise.exerciseId, index)
     }
   }
+
+  // Handle increment/decrement reps
+  const handleIncrementReps = (index: number) => {
+    const currentReps = exercise.sets[index].reps ?? 0
+    updateSetReps(exercise.exerciseId, index, currentReps + 1)
+  }
+
+  const handleDecrementReps = (index: number) => {
+    const currentReps = exercise.sets[index].reps ?? 0
+    if (currentReps > 0) {
+      updateSetReps(exercise.exerciseId, index, currentReps - 1)
+    }
+  }
   
   // Calculate column grid based on what columns are visible
-  // Columns: SET(40px) | PREVIOUS(flex) | LBS(60px, optional) | VIDEO(40px, optional) | REPS(60px) | CHECK(36px)
+  // Columns: SET(40px) | PREVIOUS(flex) | LBS(60px, optional) | VIDEO(40px, optional) | REPS(90px with buttons) | CHECK(36px)
   const getGridCols = () => {
     if (hasWeight && isDetectable) {
-      return 'grid-cols-[40px_1fr_60px_40px_60px_36px]'
+      return 'grid-cols-[40px_1fr_60px_40px_90px_36px]'
     } else if (hasWeight) {
-      return 'grid-cols-[40px_1fr_60px_60px_36px]'
+      return 'grid-cols-[40px_1fr_60px_90px_36px]'
     } else if (isDetectable) {
-      return 'grid-cols-[40px_1fr_40px_60px_36px]'
+      return 'grid-cols-[40px_1fr_40px_90px_36px]'
     } else {
-      return 'grid-cols-[40px_1fr_60px_36px]'
+      return 'grid-cols-[40px_1fr_90px_36px]'
     }
   }
   
@@ -464,11 +477,12 @@ function ExerciseCard({
           {exercise.sets.map((set, index) => {
             const isCurrentSet = index === currentSetIndex
             const isCompleted = set.completed
+            const weightEmpty = !set.weight || set.weight.trim() === ''
+            const repsEmpty = set.reps === null || set.reps === undefined || set.reps <= 0
+            const showRedWeight = showInvalidFields && weightEmpty
+            const showRedReps = showInvalidFields && repsEmpty
             
             // Determine row styling
-            // Current set (first incomplete) gets a subtle gray highlight
-            // Completed sets get light green background
-            // Other incomplete sets have normal background
             let rowBgClass = 'bg-dark-800/30'
             if (isCompleted) {
               rowBgClass = 'bg-green-900/20'
@@ -502,36 +516,32 @@ function ExerciseCard({
                 </div>
                 
                 {/* Weight Input (if applicable) */}
-                {hasWeight && (() => {
-                  const weightEmpty = !set.weight || set.weight.trim() === ''
-                  const showRedBorder = showInvalidFields && isCompleted && weightEmpty
-                  return (
-                    <div 
-                      className={`rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
-                        showRedBorder
-                          ? 'bg-red-900/30 border-red-500'
-                          : isCompleted 
-                            ? 'bg-green-900/30 border-green-700/40' 
-                            : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
-                      }`}
-                      onClick={() => setEditingSet({ index, field: 'weight' })}
-                    >
-                      {editingSet?.index === index && editingSet.field === 'weight' ? (
-                        <input
-                          type="text"
-                          value={set.weight}
-                          onChange={(e) => updateSetWeight(exercise.exerciseId, index, e.target.value)}
-                          onBlur={() => setEditingSet(null)}
-                          onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
-                          autoFocus
-                          className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
-                        />
-                      ) : (
-                        <span className={`text-sm ${showRedBorder ? 'text-red-400' : 'text-white'}`}>{set.weight || '-'}</span>
-                      )}
-                    </div>
-                  )
-                })()}
+                {hasWeight && (
+                  <div 
+                    className={`rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
+                      showRedWeight
+                        ? 'bg-red-900/30 border-red-500'
+                        : isCompleted 
+                          ? 'bg-green-900/30 border-green-700/40' 
+                          : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
+                    }`}
+                    onClick={() => setEditingSet({ index, field: 'weight' })}
+                  >
+                    {editingSet?.index === index && editingSet.field === 'weight' ? (
+                      <input
+                        type="text"
+                        value={set.weight}
+                        onChange={(e) => updateSetWeight(exercise.exerciseId, index, e.target.value)}
+                        onBlur={() => setEditingSet(null)}
+                        onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
+                        autoFocus
+                        className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
+                      />
+                    ) : (
+                      <span className={`text-sm ${showRedWeight ? 'text-red-400' : 'text-white'}`}>{set.weight || '-'}</span>
+                    )}
+                  </div>
+                )}
                 
                 {/* Video Icon (if exercise is detectable) */}
                 {isDetectable && (
@@ -546,37 +556,53 @@ function ExerciseCard({
                   </button>
                 )}
                 
-                {/* Reps Input */}
-                {(() => {
-                  const repsEmpty = set.reps === null || set.reps === undefined || set.reps <= 0
-                  const showRedBorder = showInvalidFields && isCompleted && repsEmpty
-                  return (
-                    <div 
-                      className={`rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
-                        showRedBorder
-                          ? 'bg-red-900/30 border-red-500'
-                          : isCompleted 
-                            ? 'bg-green-900/30 border-green-700/40' 
-                            : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
-                      }`}
-                      onClick={() => setEditingSet({ index, field: 'reps' })}
-                    >
-                      {editingSet?.index === index && editingSet.field === 'reps' ? (
-                        <input
-                          type="number"
-                          value={set.reps ?? ''}
-                          onChange={(e) => updateSetReps(exercise.exerciseId, index, e.target.value ? parseInt(e.target.value) : null)}
-                          onBlur={() => setEditingSet(null)}
-                          onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
-                          autoFocus
-                          className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
-                        />
-                      ) : (
-                        <span className={`text-sm ${showRedBorder ? 'text-red-400' : 'text-white'}`}>{set.reps ?? '-'}</span>
-                      )}
-                    </div>
-                  )
-                })()}
+                {/* Reps Input with +/- buttons */}
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleDecrementReps(index)}
+                    className={`w-6 h-6 rounded flex items-center justify-center transition-colors ${
+                      showRedReps
+                        ? 'border border-red-500 text-red-400'
+                        : 'border border-cyan-700/50 text-cyan-400 hover:bg-cyan-900/30'
+                    }`}
+                  >
+                    <Minus size={12} />
+                  </button>
+                  <div 
+                    className={`flex-1 rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
+                      showRedReps
+                        ? 'bg-red-900/30 border-red-500'
+                        : isCompleted 
+                          ? 'bg-green-900/30 border-green-700/40' 
+                          : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
+                    }`}
+                    onClick={() => setEditingSet({ index, field: 'reps' })}
+                  >
+                    {editingSet?.index === index && editingSet.field === 'reps' ? (
+                      <input
+                        type="number"
+                        value={set.reps ?? ''}
+                        onChange={(e) => updateSetReps(exercise.exerciseId, index, e.target.value ? parseInt(e.target.value) : null)}
+                        onBlur={() => setEditingSet(null)}
+                        onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
+                        autoFocus
+                        className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
+                      />
+                    ) : (
+                      <span className={`text-sm ${showRedReps ? 'text-red-400' : 'text-white'}`}>{set.reps ?? '-'}</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleIncrementReps(index)}
+                    className={`w-6 h-6 rounded flex items-center justify-center transition-colors ${
+                      showRedReps
+                        ? 'border border-red-500 text-red-400'
+                        : 'border border-cyan-700/50 text-cyan-400 hover:bg-cyan-900/30'
+                    }`}
+                  >
+                    <Plus size={12} />
+                  </button>
+                </div>
                 
                 {/* Checkmark Button */}
                 <button
@@ -708,9 +734,9 @@ export function ActiveWorkoutPage() {
     return hasWeight && hasReps
   }
 
-  // Count valid completed sets (sets with both weight and reps)
-  const validCompletedSets = exercises.flatMap(ex => 
-    ex.sets.filter(s => s.completed && isSetValid(s))
+  // Check if ANY set (completed or not) has valid data - this makes the workout saveable
+  const hasAnyValidSet = exercises.some(ex => 
+    ex.sets.some(s => isSetValid(s))
   )
   
   const handleFinish = () => {
@@ -724,27 +750,16 @@ export function ActiveWorkoutPage() {
       return
     }
     
-    // Check if there are any completed sets at all
-    const allCompletedSets = exercises.flatMap(ex => ex.sets.filter(s => s.completed))
-    
-    if (allCompletedSets.length === 0) {
-      // No checkmarks at all - show unfinished modal with cancel workout option
-      setShowUnfinishedSetsModal(true)
-      return
-    }
-    
-    // Check if any completed sets are missing weight or reps
-    const invalidSets = allCompletedSets.filter(s => !isSetValid(s))
-    
-    if (invalidSets.length > 0) {
-      // Show red borders and error message
+    // FIRST: Check if at least one set has BOTH weight and reps
+    // This check happens BEFORE the unfinished sets modal
+    if (!hasAnyValidSet) {
       setShowInvalidFields(true)
-      setInvalidWorkoutMessage('Some completed sets are missing weight or reps. Please fill in all fields for completed sets.')
+      setInvalidWorkoutMessage('Please fill in both weight (or BW) and reps for at least one set.')
       setShowInvalidWorkoutModal(true)
       return
     }
     
-    // Check if there are unfinished sets
+    // Check if there are unfinished sets (after we know workout is valid)
     if (unfinishedSets.length > 0) {
       setShowUnfinishedSetsModal(true)
       return
@@ -755,41 +770,21 @@ export function ActiveWorkoutPage() {
 
   // Complete unfinished sets that have valid data (weight/BW AND reps)
   const handleCompleteUnfinishedSets = () => {
-    let hasValidSetsToComplete = false
-    
     exercises.forEach(ex => {
       ex.sets.forEach((set, index) => {
         if (!set.completed && isSetValid(set)) {
           toggleSetCompletion(ex.exerciseId, index)
-          hasValidSetsToComplete = true
         }
       })
     })
     
     setShowUnfinishedSetsModal(false)
-    
-    // If no valid sets could be completed, show error
-    if (!hasValidSetsToComplete && completedSets === 0) {
-      setShowInvalidFields(true)
-      setInvalidWorkoutMessage('No valid sets to complete. Each set needs both weight (or BW) and reps.')
-      setShowInvalidWorkoutModal(true)
-      return
-    }
-    
     navigate('/workout/save')
   }
 
   // Discard unfinished sets (just go to save without completing them)
+  // Only valid sets that are already completed will be saved
   const handleDiscardUnfinishedSets = () => {
-    // Check if we have any valid completed sets before proceeding
-    if (validCompletedSets.length === 0) {
-      setShowUnfinishedSetsModal(false)
-      setShowInvalidFields(true)
-      setInvalidWorkoutMessage('Cannot save workout with no valid sets. Each completed set needs both weight (or BW) and reps.')
-      setShowInvalidWorkoutModal(true)
-      return
-    }
-    
     setShowUnfinishedSetsModal(false)
     navigate('/workout/save')
   }
@@ -862,7 +857,7 @@ export function ActiveWorkoutPage() {
       <div className="sticky top-0 z-30 bg-black border-b border-dark-700">
         <div className="flex items-center justify-between px-4 py-3">
           <button
-            onClick={() => navigate('/workout/save')}
+            onClick={() => navigate('/')}
             className="flex items-center gap-1 text-white"
           >
             <ChevronDown size={20} />
@@ -875,23 +870,23 @@ export function ActiveWorkoutPage() {
         </div>
         
         {/* Stats Row */}
-        <div className="flex items-center justify-between px-6 py-3 border-t border-dark-800">
+        <div className="flex items-center justify-between px-6 py-3 border-t border-dark-600">
           <div>
-            <p className="text-xs text-gray-500">Duration</p>
-            <p className="text-cyan-400 font-semibold">{formatDuration(elapsedSeconds)}</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Duration</p>
+            <p className="text-cyan-400 font-bold">{formatDuration(elapsedSeconds)}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Volume</p>
-            <p className="text-white font-semibold">{Math.round(totalVolume)} lbs</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Volume</p>
+            <p className="text-white font-bold">{Math.round(totalVolume)} lbs</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Sets</p>
-            <p className="text-white font-semibold">{completedSets}</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Sets</p>
+            <p className="text-white font-bold">{completedSets}</p>
           </div>
           <div className="flex gap-1">
             {/* Body outline icons (simplified) */}
-            <div className="w-8 h-12 border border-cyan-500/50 rounded opacity-50" />
-            <div className="w-8 h-12 border border-cyan-500/50 rounded opacity-50" />
+            <div className="w-8 h-12 border border-cyan-400/60 rounded" />
+            <div className="w-8 h-12 border border-cyan-400/60 rounded" />
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Image, AlertTriangle, Edit2, X, Video, Trash2 } from 'lucide-react'
+import { ArrowLeft, Image, AlertTriangle, Edit2, X, Video, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/shared/Button'
 import { useWorkoutSessionStore } from '@/store/workoutSessionStore'
 import { useAuthStore } from '@/store/authStore'
@@ -118,12 +118,12 @@ function DeleteVideoModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60" onClick={onCancel} />
-      <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 text-center">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+      <div className="absolute inset-0 bg-black/70" onClick={onCancel} />
+      <div className="relative bg-dark-800 rounded-2xl w-full max-w-sm p-6 text-center border border-dark-600">
+        <h3 className="text-xl font-semibold text-white mb-2">
           Delete this video?
         </h3>
-        <p className="text-gray-500 mb-6">
+        <p className="text-gray-300 mb-6">
           Are you sure you want to delete this video? This action cannot be undone.
         </p>
         
@@ -136,7 +136,7 @@ function DeleteVideoModal({
           </button>
           <button
             onClick={onCancel}
-            className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-colors"
+            className="w-full py-3 bg-dark-700 hover:bg-dark-600 rounded-xl text-white font-medium transition-colors border border-dark-500"
           >
             Cancel
           </button>
@@ -175,6 +175,7 @@ export function SaveWorkoutPage() {
   const [showDeleteVideoModal, setShowDeleteVideoModal] = useState(false)
   const [videoToDelete, setVideoToDelete] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editedTitle, setEditedTitle] = useState(routineName || 'Workout')
   
@@ -277,6 +278,10 @@ export function SaveWorkoutPage() {
   const handleConfirmDeleteVideo = () => {
     if (videoToDelete) {
       removeSavedVideo(videoToDelete)
+      // Adjust current video index if needed
+      if (currentVideoIndex >= savedVideos.length - 1 && currentVideoIndex > 0) {
+        setCurrentVideoIndex(currentVideoIndex - 1)
+      }
     }
     setVideoToDelete(null)
     setShowDeleteVideoModal(false)
@@ -371,23 +376,23 @@ export function SaveWorkoutPage() {
         {/* Stats Row */}
         <div className="flex gap-8">
           <div>
-            <p className="text-xs text-gray-500">Duration</p>
-            <p className="text-cyan-400 font-semibold">{formatDuration(elapsedSeconds)}</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Duration</p>
+            <p className="text-cyan-400 font-bold text-lg">{formatDuration(elapsedSeconds)}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Volume</p>
-            <p className="text-white font-semibold">{Math.round(totalVolume)} lbs</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Volume</p>
+            <p className="text-white font-bold text-lg">{Math.round(totalVolume)} lbs</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Sets</p>
-            <p className="text-white font-semibold">{completedSets}</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Sets</p>
+            <p className="text-white font-bold text-lg">{completedSets}</p>
           </div>
         </div>
         
         {/* When */}
         <div>
-          <p className="text-xs text-gray-500 mb-1">When</p>
-          <p className="text-cyan-400">{formatDateTime(workoutDate)}</p>
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">When</p>
+          <p className="text-cyan-400 font-medium">{formatDateTime(workoutDate)}</p>
         </div>
         
         {/* Photo/Video Upload */}
@@ -425,47 +430,81 @@ export function SaveWorkoutPage() {
           )}
         </div>
         
-        {/* Saved Videos Section */}
-        {savedVideos.length > 0 && (
+        {/* Saved Videos Section - Carousel */}
+        {savedVideos && savedVideos.length > 0 && (
           <div>
-            <p className="text-xs text-gray-500 mb-3">Saved Videos ({savedVideos.length})</p>
-            <div className="space-y-3">
-              {savedVideos.map((video) => (
-                <div key={video.id} className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
-                  <div className="relative">
-                    <video
-                      src={video.videoUrl}
-                      controls
-                      className="w-full aspect-video"
-                    />
-                    <button
-                      onClick={() => handleDeleteVideoClick(video.id)}
-                      className="absolute top-2 right-2 p-2 bg-red-500/80 hover:bg-red-600 rounded-full transition-colors"
-                    >
-                      <Trash2 size={16} className="text-white" />
-                    </button>
-                  </div>
-                  <div className="p-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Video size={16} className="text-cyan-400" />
-                      <span className="text-white text-sm font-medium">{video.exerciseName}</span>
-                    </div>
-                    <span className="text-gray-400 text-sm">Set {video.setIndex + 1} • {video.repCount} reps</span>
-                  </div>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">Saved Videos ({currentVideoIndex + 1} of {savedVideos.length})</p>
+            <div className="relative">
+              {/* Video Card */}
+              <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
+                <div className="relative">
+                  <video
+                    key={savedVideos[currentVideoIndex]?.id}
+                    src={savedVideos[currentVideoIndex]?.videoUrl}
+                    controls
+                    className="w-full aspect-video"
+                  />
+                  <button
+                    onClick={() => handleDeleteVideoClick(savedVideos[currentVideoIndex]?.id)}
+                    className="absolute top-2 right-2 p-2 bg-red-500/80 hover:bg-red-600 rounded-full transition-colors"
+                  >
+                    <Trash2 size={16} className="text-white" />
+                  </button>
                 </div>
-              ))}
+                <div className="p-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Video size={16} className="text-cyan-400" />
+                    <span className="text-white text-sm font-medium">{savedVideos[currentVideoIndex]?.exerciseName}</span>
+                  </div>
+                  <span className="text-gray-400 text-sm">Set {(savedVideos[currentVideoIndex]?.setIndex ?? 0) + 1} • {savedVideos[currentVideoIndex]?.repCount} reps</span>
+                </div>
+              </div>
+              
+              {/* Navigation Buttons */}
+              {savedVideos.length > 1 && (
+                <>
+                  {/* Left Arrow */}
+                  <button
+                    onClick={() => setCurrentVideoIndex(prev => prev > 0 ? prev - 1 : savedVideos.length - 1)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-cyan-500/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-900/50 hover:border-cyan-400 transition-colors"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  
+                  {/* Right Arrow */}
+                  <button
+                    onClick={() => setCurrentVideoIndex(prev => prev < savedVideos.length - 1 ? prev + 1 : 0)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-cyan-500/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-900/50 hover:border-cyan-400 transition-colors"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
+              
+              {/* Dot Indicators */}
+              {savedVideos.length > 1 && (
+                <div className="flex justify-center gap-2 mt-3">
+                  {savedVideos.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentVideoIndex(idx)}
+                      className={`w-2 h-2 rounded-full transition-colors ${idx === currentVideoIndex ? 'bg-cyan-400' : 'bg-dark-600 hover:bg-dark-500'}`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
         
         {/* Description */}
         <div>
-          <p className="text-xs text-gray-500 mb-2">Description</p>
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">Description</p>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="How did your workout go? Leave some notes here..."
-            className="w-full bg-transparent text-white placeholder-gray-600 resize-none focus:outline-none"
+            className="w-full bg-dark-800/50 border border-dark-600 rounded-lg p-3 text-white placeholder-gray-500 resize-none focus:outline-none focus:border-cyan-500/50"
             rows={3}
           />
         </div>
