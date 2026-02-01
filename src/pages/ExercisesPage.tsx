@@ -265,91 +265,91 @@ interface LibraryExercise {
 
 // Sample exercise data
 const SAMPLE_EXERCISES: LibraryExercise[] = [
-  { id: '1', name: 'Bench Press (Barbell)', muscleGroup: 'Chest', equipment: 'Barbell' },
-  { id: '2', name: 'Bicep Curl (Dumbbell)', muscleGroup: 'Biceps', equipment: 'Dumbbell', hasVideoDetection: true },
-  { id: '3', name: 'Deadlift (Barbell)', muscleGroup: 'Glutes', equipment: 'Barbell' },
-  { id: '4', name: 'Incline Bench Press (Dumbbell)', muscleGroup: 'Chest', equipment: 'Dumbbell' },
-  { id: '5', name: '21s Bicep Curl', muscleGroup: 'Biceps', equipment: 'Barbell', hasVideoDetection: true },
-  { id: '6', name: 'Ab Scissors', muscleGroup: 'Abdominals', equipment: 'Bodyweight' },
-  { id: '7', name: 'Ab Wheel', muscleGroup: 'Abdominals', equipment: 'Other' },
-  { id: '8', name: 'Arnold Press (Dumbbell)', muscleGroup: 'Shoulders', equipment: 'Dumbbell' },
-  { id: '9', name: 'Back Extension', muscleGroup: 'Lower Back', equipment: 'Bodyweight' },
-  { id: '10', name: 'Back Extension (Machine)', muscleGroup: 'Lower Back', equipment: 'Machine' },
-  { id: '11', name: 'Ball Slams', muscleGroup: 'Full Body', equipment: 'Other' },
-  { id: '12', name: 'Barbell Row', muscleGroup: 'Upper Back', equipment: 'Barbell' },
-  { id: '13', name: 'Bench Press (Smith Machine)', muscleGroup: 'Chest', equipment: 'Smith Machine' },
-  { id: '14', name: 'Box Jump', muscleGroup: 'Quadriceps', equipment: 'Bodyweight' },
-  { id: '15', name: 'Bulgarian Split Squat', muscleGroup: 'Quadriceps', equipment: 'Dumbbell' },
-  { id: '16', name: 'Cable Crossover', muscleGroup: 'Chest', equipment: 'Cable' },
-  { id: '17', name: 'Cable Fly', muscleGroup: 'Chest', equipment: 'Cable' },
-  { id: '18', name: 'Calf Raise (Machine)', muscleGroup: 'Calves', equipment: 'Machine' },
-  { id: '19', name: 'Calf Raise (Smith Machine)', muscleGroup: 'Calves', equipment: 'Smith Machine' },
-  { id: '20', name: 'Chest Press (Machine)', muscleGroup: 'Chest', equipment: 'Machine' },
-  { id: '21', name: 'Chin Up', muscleGroup: 'Lats', equipment: 'Bodyweight' },
-  { id: '22', name: 'Clean', muscleGroup: 'Full Body', equipment: 'Barbell' },
-  { id: '23', name: 'Clean and Jerk', muscleGroup: 'Full Body', equipment: 'Barbell' },
-  { id: '24', name: 'Concentration Curl', muscleGroup: 'Biceps', equipment: 'Dumbbell', hasVideoDetection: true },
-  { id: '25', name: 'Crunch', muscleGroup: 'Abdominals', equipment: 'Bodyweight' },
-  { id: '26', name: 'Deadlift (Smith Machine)', muscleGroup: 'Glutes', equipment: 'Smith Machine' },
-  { id: '27', name: 'Decline Bench Press (Barbell)', muscleGroup: 'Chest', equipment: 'Barbell' },
-  { id: '28', name: 'Decline Bench Press (Smith Machine)', muscleGroup: 'Chest', equipment: 'Smith Machine' },
-  { id: '29', name: 'Dip', muscleGroup: 'Triceps', equipment: 'Bodyweight' },
-  { id: '30', name: 'Dumbbell Fly', muscleGroup: 'Chest', equipment: 'Dumbbell' },
-  { id: '31', name: 'Dumbbell Press', muscleGroup: 'Chest', equipment: 'Dumbbell' },
-  { id: '32', name: 'Face Pull', muscleGroup: 'Shoulders', equipment: 'Cable' },
-  { id: '33', name: 'Front Raise (Dumbbell)', muscleGroup: 'Shoulders', equipment: 'Dumbbell' },
-  { id: '34', name: 'Front Raise (Cable)', muscleGroup: 'Shoulders', equipment: 'Cable' },
-  { id: '35', name: 'Goblet Squat', muscleGroup: 'Quadriceps', equipment: 'Dumbbell' },
-  { id: '36', name: 'Good Morning', muscleGroup: 'Hamstrings', equipment: 'Barbell' },
-  { id: '37', name: 'Hack Squat (Machine)', muscleGroup: 'Quadriceps', equipment: 'Machine' },
-  { id: '38', name: 'Hammer Curl', muscleGroup: 'Biceps', equipment: 'Dumbbell', hasVideoDetection: true },
-  { id: '39', name: 'Hanging Leg Raise', muscleGroup: 'Abdominals', equipment: 'Bodyweight' },
-  { id: '40', name: 'Hip Thrust (Barbell)', muscleGroup: 'Glutes', equipment: 'Barbell' },
-  { id: '41', name: 'Hip Thrust (Smith Machine)', muscleGroup: 'Glutes', equipment: 'Smith Machine' },
-  { id: '42', name: 'Incline Bench Press (Barbell)', muscleGroup: 'Chest', equipment: 'Barbell' },
-  { id: '43', name: 'Incline Bench Press (Smith Machine)', muscleGroup: 'Chest', equipment: 'Smith Machine' },
-  { id: '44', name: 'Incline Dumbbell Curl', muscleGroup: 'Biceps', equipment: 'Dumbbell', hasVideoDetection: true },
-  { id: '45', name: 'Kettlebell Swing', muscleGroup: 'Full Body', equipment: 'Kettlebell' },
-  { id: '46', name: 'Lat Pulldown', muscleGroup: 'Lats', equipment: 'Cable' },
-  { id: '47', name: 'Lateral Raise (Dumbbell)', muscleGroup: 'Shoulders', equipment: 'Dumbbell' },
-  { id: '48', name: 'Lateral Raise (Cable)', muscleGroup: 'Shoulders', equipment: 'Cable' },
-  { id: '49', name: 'Leg Curl (Machine)', muscleGroup: 'Hamstrings', equipment: 'Machine' },
-  { id: '50', name: 'Leg Extension (Machine)', muscleGroup: 'Quadriceps', equipment: 'Machine' },
-  { id: '51', name: 'Leg Press (Machine)', muscleGroup: 'Quadriceps', equipment: 'Machine' },
-  { id: '52', name: 'Lunge', muscleGroup: 'Quadriceps', equipment: 'Bodyweight' },
-  { id: '53', name: 'Lunge (Smith Machine)', muscleGroup: 'Quadriceps', equipment: 'Smith Machine' },
-  { id: '54', name: 'Mountain Climbers', muscleGroup: 'Cardio', equipment: 'Bodyweight' },
-  { id: '55', name: 'Overhead Press (Barbell)', muscleGroup: 'Shoulders', equipment: 'Barbell' },
-  { id: '56', name: 'Overhead Press (Smith Machine)', muscleGroup: 'Shoulders', equipment: 'Smith Machine' },
-  { id: '57', name: 'Pendlay Row', muscleGroup: 'Upper Back', equipment: 'Barbell' },
-  { id: '58', name: 'Plank', muscleGroup: 'Abdominals', equipment: 'Bodyweight' },
-  { id: '59', name: 'Preacher Curl (Machine)', muscleGroup: 'Biceps', equipment: 'Machine' },
-  { id: '60', name: 'Pull Up', muscleGroup: 'Lats', equipment: 'Bodyweight' },
+  { id: '1', name: 'Bench Press (Barbell)', muscleGroup: 'Chest', secondaryMuscles: ['Triceps', 'Shoulders'], equipment: 'Barbell', instructions: ['Lie flat on the bench with your feet flat on the floor.', 'Grip the barbell slightly wider than shoulder width.', 'Unrack the bar and position it above your chest with arms fully extended.', 'Lower the bar slowly to your mid-chest.', 'Press the bar back up explosively to the starting position.', 'Keep your shoulder blades retracted throughout the movement.'] },
+  { id: '2', name: 'Bicep Curl (Dumbbell)', muscleGroup: 'Biceps', equipment: 'Dumbbell', hasVideoDetection: true, instructions: ['Stand with feet shoulder-width apart, holding dumbbells at your sides.', 'Keep your elbows close to your torso and palms facing forward.', 'Curl the weights while contracting your biceps.', 'Continue the movement until your biceps are fully contracted and the dumbbells are at shoulder level.', 'Hold the contracted position briefly.', 'Slowly lower the dumbbells back to the starting position.'] },
+  { id: '3', name: 'Deadlift (Barbell)', muscleGroup: 'Glutes', secondaryMuscles: ['Hamstrings', 'Lower Back', 'Traps'], equipment: 'Barbell', instructions: ['Stand with feet hip-width apart, barbell over mid-foot.', 'Bend at the hips and knees, grip the bar just outside your legs.', 'Keep your back straight, chest up, and shoulders back.', 'Drive through your heels and extend your hips and knees.', 'Stand tall with the bar at hip level, shoulders back.', 'Lower the bar by pushing your hips back and bending your knees.'] },
+  { id: '4', name: 'Incline Bench Press (Dumbbell)', muscleGroup: 'Chest', secondaryMuscles: ['Shoulders', 'Triceps'], equipment: 'Dumbbell', instructions: ['Set an adjustable bench to a 30-45 degree incline.', 'Sit back with dumbbells resting on your thighs.', 'Lie back and position the dumbbells at chest level.', 'Press the dumbbells up until arms are extended.', 'Lower the dumbbells slowly to chest level.', 'Keep your feet flat on the floor and back pressed against the bench.'] },
+  { id: '5', name: '21s Bicep Curl', muscleGroup: 'Biceps', equipment: 'Barbell', hasVideoDetection: true, instructions: ['Hold a barbell with an underhand grip, arms fully extended.', 'Perform 7 partial reps from bottom to halfway up.', 'Immediately perform 7 partial reps from halfway to full contraction.', 'Finish with 7 full range of motion reps.', 'Keep your elbows stationary throughout all 21 reps.', 'Control the weight on the eccentric (lowering) phase.'] },
+  { id: '6', name: 'Ab Scissors', muscleGroup: 'Abdominals', secondaryMuscles: ['Hip Flexors'], equipment: 'Bodyweight', instructions: ['Lie flat on your back with legs extended and hands under your glutes.', 'Lift both legs off the ground about 6 inches.', 'Alternate crossing one leg over the other in a scissoring motion.', 'Keep your lower back pressed to the floor.', 'Continue the scissoring motion for the desired duration.', 'Keep your core engaged throughout.'] },
+  { id: '7', name: 'Ab Wheel', muscleGroup: 'Abdominals', secondaryMuscles: ['Lower Back', 'Shoulders'], equipment: 'Other', instructions: ['Kneel on a mat with the ab wheel in front of you.', 'Grip the handles with both hands.', 'Roll the wheel forward slowly, extending your body.', 'Keep your arms straight and core tight.', 'Roll out as far as possible while maintaining form.', 'Pull yourself back to the starting position using your abs.'] },
+  { id: '8', name: 'Arnold Press (Dumbbell)', muscleGroup: 'Shoulders', secondaryMuscles: ['Triceps', 'Upper Chest'], equipment: 'Dumbbell', instructions: ['Sit on a bench with back support, dumbbells at shoulder height.', 'Start with palms facing your body, elbows bent.', 'Press the dumbbells up while rotating your palms forward.', 'At the top, palms should face forward with arms extended.', 'Reverse the motion, rotating palms back toward you.', 'Lower to starting position with controlled motion.'] },
+  { id: '9', name: 'Back Extension', muscleGroup: 'Lower Back', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Bodyweight', instructions: ['Position yourself face down on a back extension bench.', 'Cross your arms over your chest or behind your head.', 'Lower your upper body toward the floor by bending at the waist.', 'Keep your back straight during the movement.', 'Raise your torso back up until aligned with your legs.', 'Squeeze your glutes and lower back at the top.'] },
+  { id: '10', name: 'Back Extension (Machine)', muscleGroup: 'Lower Back', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Machine', instructions: ['Adjust the machine pad to fit your body size.', 'Position yourself with feet secured and pad against lower back.', 'Start with your body at a 90-degree angle.', 'Extend your back until your body is in a straight line.', 'Squeeze your lower back and glutes at the top.', 'Lower back down with control to the starting position.'] },
+  { id: '11', name: 'Ball Slams', muscleGroup: 'Full Body', secondaryMuscles: ['Core', 'Shoulders'], equipment: 'Other', instructions: ['Stand with feet shoulder-width apart holding a slam ball overhead.', 'Engage your core and raise the ball above your head.', 'Forcefully slam the ball to the ground using your entire body.', 'Catch or pick up the ball on the bounce.', 'Immediately raise it overhead again.', 'Repeat for the desired number of reps with explosive power.'] },
+  { id: '12', name: 'Barbell Row', muscleGroup: 'Upper Back', secondaryMuscles: ['Lats', 'Biceps'], equipment: 'Barbell', instructions: ['Stand with feet shoulder-width apart, knees slightly bent.', 'Bend forward at the hips with back straight, holding the barbell.', 'Let the bar hang at arm\'s length from your shoulders.', 'Pull the bar to your upper abdomen.', 'Squeeze your shoulder blades together at the top.', 'Lower the bar with control to the starting position.'] },
+  { id: '13', name: 'Bench Press (Smith Machine)', muscleGroup: 'Chest', secondaryMuscles: ['Triceps', 'Shoulders'], equipment: 'Smith Machine', instructions: ['Lie flat on a bench positioned under the Smith machine bar.', 'Grip the bar slightly wider than shoulder width.', 'Unrack the bar and lower it to your mid-chest.', 'Press the bar back up explosively.', 'Keep your feet flat on the floor.', 'Maintain tension in your chest throughout.'] },
+  { id: '14', name: 'Box Jump', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Calves'], equipment: 'Bodyweight', instructions: ['Stand facing a sturdy box or platform.', 'Bend your knees and swing your arms back.', 'Explosively jump onto the box, landing softly.', 'Land with both feet flat on the box, knees slightly bent.', 'Stand tall on the box.', 'Step down carefully and repeat.'] },
+  { id: '15', name: 'Bulgarian Split Squat', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Dumbbell', instructions: ['Stand about 2 feet in front of a bench with dumbbells.', 'Place one foot behind you on the bench.', 'Lower your body by bending your front knee.', 'Keep your torso upright and front knee behind toes.', 'Lower until your back knee nearly touches the ground.', 'Push through your front heel to return to start.'] },
+  { id: '16', name: 'Cable Crossover', muscleGroup: 'Chest', secondaryMuscles: ['Shoulders'], equipment: 'Cable', instructions: ['Stand in the middle of a cable machine with handles at shoulder height.', 'Grab the handles with arms extended to the sides.', 'Step forward slightly, lean forward with one foot ahead.', 'Bring the handles together in front of your chest.', 'Squeeze your chest muscles at the peak contraction.', 'Slowly return to the starting position with control.'] },
+  { id: '17', name: 'Cable Fly', muscleGroup: 'Chest', secondaryMuscles: ['Shoulders'], equipment: 'Cable', instructions: ['Set the pulleys to chest height on both sides.', 'Grab the handles and stand in the center with arms extended.', 'Step forward with a slight lean, one foot in front.', 'Bring your hands together in front of your chest.', 'Keep a slight bend in your elbows throughout.', 'Return to the starting position with controlled motion.'] },
+  { id: '18', name: 'Calf Raise (Machine)', muscleGroup: 'Calves', equipment: 'Machine', instructions: ['Position yourself in the calf raise machine with shoulders under pads.', 'Place the balls of your feet on the platform, heels off.', 'Lower your heels as far as possible for a full stretch.', 'Push through the balls of your feet to raise your heels.', 'Rise up as high as possible onto your toes.', 'Hold the peak contraction briefly, then lower with control.'] },
+  { id: '19', name: 'Calf Raise (Smith Machine)', muscleGroup: 'Calves', equipment: 'Smith Machine', instructions: ['Position a step or platform under the Smith machine bar.', 'Place the bar across your shoulders and unrack it.', 'Stand on the platform with balls of feet on the edge.', 'Lower your heels below the platform for a stretch.', 'Raise up onto your toes as high as possible.', 'Hold briefly at the top, then lower with control.'] },
+  { id: '20', name: 'Chest Press (Machine)', muscleGroup: 'Chest', secondaryMuscles: ['Triceps', 'Shoulders'], equipment: 'Machine', instructions: ['Sit on the machine with back firmly against the pad.', 'Adjust the seat so handles are at chest level.', 'Grasp the handles with a firm grip.', 'Press the handles forward until arms are extended.', 'Keep your back pressed against the pad.', 'Return to the starting position with control.'] },
+  { id: '21', name: 'Chin Up', muscleGroup: 'Lats', secondaryMuscles: ['Biceps', 'Upper Back'], equipment: 'Bodyweight', instructions: ['Hang from a pull-up bar with an underhand grip, hands shoulder-width apart.', 'Start with arms fully extended.', 'Pull yourself up by squeezing your back and bending your elbows.', 'Continue pulling until your chin is over the bar.', 'Hold briefly at the top.', 'Lower yourself with control to the starting position.'] },
+  { id: '22', name: 'Clean', muscleGroup: 'Full Body', secondaryMuscles: ['Traps', 'Shoulders', 'Quadriceps'], equipment: 'Barbell', instructions: ['Stand with feet hip-width apart, barbell over mid-foot.', 'Bend down and grip the bar just outside your legs.', 'Explosively pull the bar up while extending your hips and knees.', 'As the bar reaches chest height, drop under it and catch it on your shoulders.', 'Stand up fully with the bar at shoulder level.', 'Lower the bar back to the starting position with control.'] },
+  { id: '23', name: 'Clean and Jerk', muscleGroup: 'Full Body', secondaryMuscles: ['Traps', 'Shoulders', 'Quadriceps', 'Triceps'], equipment: 'Barbell', instructions: ['Perform a clean to bring the bar to your shoulders.', 'Dip slightly by bending your knees.', 'Explosively drive the bar overhead.', 'Drop into a split or squat stance to catch the bar.', 'Stand up fully with arms locked overhead.', 'Lower the bar back to your shoulders, then to the floor.'] },
+  { id: '24', name: 'Concentration Curl', muscleGroup: 'Biceps', equipment: 'Dumbbell', hasVideoDetection: true, instructions: ['Sit on a bench with legs spread, dumbbell in one hand.', 'Place the back of your upper arm on your inner thigh.', 'Let the dumbbell hang at arm\'s length.', 'Curl the weight up toward your shoulder.', 'Squeeze your bicep at the top of the movement.', 'Lower the weight slowly to the starting position.'] },
+  { id: '25', name: 'Crunch', muscleGroup: 'Abdominals', equipment: 'Bodyweight', instructions: ['Lie on your back with knees bent, feet flat on the floor.', 'Place your hands behind your head or across your chest.', 'Engage your core and lift your shoulder blades off the ground.', 'Curl your upper body toward your knees.', 'Hold the contraction briefly at the top.', 'Lower back down with control, keeping tension on your abs.'] },
+  { id: '26', name: 'Deadlift (Smith Machine)', muscleGroup: 'Glutes', secondaryMuscles: ['Hamstrings', 'Lower Back', 'Traps'], equipment: 'Smith Machine', instructions: ['Position yourself with feet hip-width apart under the bar.', 'Bend at the hips and knees to grip the bar.', 'Keep your back straight and chest up.', 'Push through your heels and extend your hips and knees.', 'Stand tall with the bar at hip level.', 'Lower the bar by pushing your hips back and bending your knees.'] },
+  { id: '27', name: 'Decline Bench Press (Barbell)', muscleGroup: 'Chest', secondaryMuscles: ['Triceps', 'Shoulders'], equipment: 'Barbell', instructions: ['Lie on a decline bench with feet secured at the top.', 'Grip the barbell slightly wider than shoulder width.', 'Unrack the bar and position it above your lower chest.', 'Lower the bar to your lower chest.', 'Press the bar back up explosively.', 'Keep your back flat against the bench throughout.'] },
+  { id: '28', name: 'Decline Bench Press (Smith Machine)', muscleGroup: 'Chest', secondaryMuscles: ['Triceps', 'Shoulders'], equipment: 'Smith Machine', instructions: ['Lie on a decline bench positioned under the Smith machine.', 'Secure your feet at the top of the bench.', 'Grip the bar slightly wider than shoulder width.', 'Unrack the bar and lower it to your lower chest.', 'Press the bar back up explosively.', 'Maintain control throughout the movement.'] },
+  { id: '29', name: 'Dip', muscleGroup: 'Triceps', secondaryMuscles: ['Chest', 'Shoulders'], equipment: 'Bodyweight', instructions: ['Grab the parallel bars and jump up to support your body.', 'Start with arms fully extended.', 'Lower your body by bending your elbows.', 'Lean forward slightly to engage chest, or stay upright for triceps.', 'Lower until your shoulders are below your elbows.', 'Push back up to the starting position by extending your arms.'] },
+  { id: '30', name: 'Dumbbell Fly', muscleGroup: 'Chest', secondaryMuscles: ['Shoulders'], equipment: 'Dumbbell', instructions: ['Lie flat on a bench holding dumbbells above your chest.', 'Keep a slight bend in your elbows.', 'Lower the dumbbells out to the sides in an arc motion.', 'Lower until you feel a stretch in your chest.', 'Bring the dumbbells back together above your chest.', 'Squeeze your chest at the top of the movement.'] },
+  { id: '31', name: 'Dumbbell Press', muscleGroup: 'Chest', secondaryMuscles: ['Triceps', 'Shoulders'], equipment: 'Dumbbell', instructions: ['Lie flat on a bench with dumbbells at chest level.', 'Plant your feet firmly on the floor.', 'Press the dumbbells up until arms are extended.', 'Keep the dumbbells aligned over your chest.', 'Lower the dumbbells slowly to chest level.', 'Maintain control throughout the entire movement.'] },
+  { id: '32', name: 'Face Pull', muscleGroup: 'Shoulders', secondaryMuscles: ['Upper Back', 'Traps'], equipment: 'Cable', instructions: ['Attach a rope to a cable pulley at upper chest height.', 'Grab the rope with both hands, palms facing each other.', 'Step back to create tension in the cable.', 'Pull the rope toward your face, separating your hands.', 'Pull until your hands are beside your ears.', 'Slowly return to the starting position.'] },
+  { id: '33', name: 'Front Raise (Dumbbell)', muscleGroup: 'Shoulders', equipment: 'Dumbbell', instructions: ['Stand with feet shoulder-width apart, dumbbells in front of thighs.', 'Keep your arms straight with a slight bend in elbows.', 'Raise the dumbbells in front of you to shoulder height.', 'Keep your core engaged and torso still.', 'Hold briefly at the top.', 'Lower the dumbbells back down with control.'] },
+  { id: '34', name: 'Front Raise (Cable)', muscleGroup: 'Shoulders', equipment: 'Cable', instructions: ['Stand facing away from a low cable pulley, handle in hand.', 'Start with the handle at your thighs, arm extended.', 'Raise the handle in front of you to shoulder height.', 'Keep a slight bend in your elbow.', 'Hold briefly at the top.', 'Lower back down with control.'] },
+  { id: '35', name: 'Goblet Squat', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Dumbbell', instructions: ['Hold a dumbbell vertically against your chest with both hands.', 'Stand with feet slightly wider than shoulder-width apart.', 'Keep your chest up and core engaged.', 'Lower your body by bending your knees and hips.', 'Descend until your thighs are parallel to the floor.', 'Push through your heels to return to the starting position.'] },
+  { id: '36', name: 'Good Morning', muscleGroup: 'Hamstrings', secondaryMuscles: ['Lower Back', 'Glutes'], equipment: 'Barbell', instructions: ['Place a barbell across your shoulders behind your neck.', 'Stand with feet shoulder-width apart, knees slightly bent.', 'Keep your back straight and core engaged.', 'Hinge at the hips, pushing your glutes back.', 'Lower your torso until nearly parallel to the floor.', 'Drive your hips forward to return to the starting position.'] },
+  { id: '37', name: 'Hack Squat (Machine)', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Machine', instructions: ['Position yourself on the hack squat machine with back against the pad.', 'Place feet shoulder-width apart on the platform.', 'Release the safety handles.', 'Lower your body by bending your knees.', 'Descend until thighs are parallel to the platform.', 'Push through your heels to return to the starting position.'] },
+  { id: '38', name: 'Hammer Curl', muscleGroup: 'Biceps', secondaryMuscles: ['Forearms'], equipment: 'Dumbbell', hasVideoDetection: true, instructions: ['Stand with feet shoulder-width apart, dumbbells at your sides.', 'Keep your palms facing your torso (neutral grip).', 'Keep your elbows close to your body.', 'Curl the weights up toward your shoulders.', 'Squeeze your biceps at the top.', 'Lower the dumbbells back down with control.'] },
+  { id: '39', name: 'Hanging Leg Raise', muscleGroup: 'Abdominals', secondaryMuscles: ['Hip Flexors'], equipment: 'Bodyweight', instructions: ['Hang from a pull-up bar with arms fully extended.', 'Keep your legs together and core engaged.', 'Raise your legs by flexing your hips.', 'Lift until your thighs are parallel to the ground or higher.', 'Hold briefly at the top.', 'Lower your legs back down with control.'] },
+  { id: '40', name: 'Hip Thrust (Barbell)', muscleGroup: 'Glutes', secondaryMuscles: ['Hamstrings', 'Quadriceps'], equipment: 'Barbell', instructions: ['Sit on the ground with your upper back against a bench.', 'Roll a barbell over your hips, use a pad for comfort.', 'Plant your feet flat on the floor, knees bent.', 'Drive through your heels and thrust your hips upward.', 'Squeeze your glutes at the top.', 'Lower your hips back down with control.'] },
+  { id: '41', name: 'Hip Thrust (Smith Machine)', muscleGroup: 'Glutes', secondaryMuscles: ['Hamstrings', 'Quadriceps'], equipment: 'Smith Machine', instructions: ['Position a bench perpendicular to the Smith machine bar.', 'Sit with your upper back against the bench, bar over your hips.', 'Plant your feet flat on the floor, knees bent.', 'Unrack the bar and thrust your hips upward.', 'Squeeze your glutes at the top.', 'Lower your hips back down with control.'] },
+  { id: '42', name: 'Incline Bench Press (Barbell)', muscleGroup: 'Chest', secondaryMuscles: ['Shoulders', 'Triceps'], equipment: 'Barbell', instructions: ['Set an adjustable bench to a 30-45 degree incline.', 'Lie back with feet flat on the floor.', 'Grip the barbell slightly wider than shoulder width.', 'Unrack the bar and position it above your upper chest.', 'Lower the bar to your upper chest.', 'Press the bar back up explosively to the starting position.'] },
+  { id: '43', name: 'Incline Bench Press (Smith Machine)', muscleGroup: 'Chest', secondaryMuscles: ['Shoulders', 'Triceps'], equipment: 'Smith Machine', instructions: ['Set a bench at 30-45 degrees under the Smith machine bar.', 'Lie back and grip the bar slightly wider than shoulder width.', 'Unrack the bar and position it above your upper chest.', 'Lower the bar to your upper chest with control.', 'Press the bar back up explosively.', 'Keep your feet flat and back against the bench.'] },
+  { id: '44', name: 'Incline Dumbbell Curl', muscleGroup: 'Biceps', equipment: 'Dumbbell', hasVideoDetection: true, instructions: ['Set an adjustable bench to a 45-degree angle.', 'Sit back with dumbbells hanging at arm\'s length.', 'Keep your elbows close to your torso.', 'Curl the weights up toward your shoulders.', 'Keep your upper arms stationary.', 'Lower the dumbbells back down with control.'] },
+  { id: '45', name: 'Kettlebell Swing', muscleGroup: 'Full Body', secondaryMuscles: ['Glutes', 'Hamstrings', 'Shoulders'], equipment: 'Kettlebell', instructions: ['Stand with feet shoulder-width apart, kettlebell on the ground.', 'Hinge at the hips and grip the kettlebell with both hands.', 'Swing the kettlebell back between your legs.', 'Explosively drive your hips forward, swinging the kettlebell up.', 'Let the kettlebell rise to chest or eye level.', 'Control the descent and repeat the swing.'] },
+  { id: '46', name: 'Lat Pulldown', muscleGroup: 'Lats', secondaryMuscles: ['Biceps', 'Upper Back'], equipment: 'Cable', instructions: ['Sit at a lat pulldown machine and grab the bar wider than shoulder width.', 'Keep your torso upright with a slight lean back.', 'Pull the bar down to your upper chest.', 'Squeeze your shoulder blades together.', 'Focus on pulling with your back, not your arms.', 'Slowly return the bar to the starting position.'] },
+  { id: '47', name: 'Lateral Raise (Dumbbell)', muscleGroup: 'Shoulders', equipment: 'Dumbbell', instructions: ['Stand with feet shoulder-width apart, dumbbells at your sides.', 'Keep a slight bend in your elbows.', 'Raise the dumbbells out to the sides.', 'Lift until your arms are parallel to the floor.', 'Keep your palms facing down at the top.', 'Lower the dumbbells back down with control.'] },
+  { id: '48', name: 'Lateral Raise (Cable)', muscleGroup: 'Shoulders', equipment: 'Cable', instructions: ['Stand sideways to a low cable pulley, handle in outside hand.', 'Keep a slight bend in your elbow.', 'Raise the handle out to the side.', 'Lift until your arm is parallel to the floor.', 'Keep tension in your shoulder throughout.', 'Lower the handle back down with control.'] },
+  { id: '49', name: 'Leg Curl (Machine)', muscleGroup: 'Hamstrings', equipment: 'Machine', instructions: ['Lie face down on the leg curl machine.', 'Position your ankles under the padded lever.', 'Grip the handles for stability.', 'Curl your legs up toward your glutes.', 'Squeeze your hamstrings at the top.', 'Lower the weight back down with control.'] },
+  { id: '50', name: 'Leg Extension (Machine)', muscleGroup: 'Quadriceps', equipment: 'Machine', instructions: ['Sit on the leg extension machine with back against the pad.', 'Position your ankles under the padded lever.', 'Grip the handles on the sides.', 'Extend your legs until they are straight.', 'Squeeze your quads at the top.', 'Lower the weight back down with control.'] },
+  { id: '51', name: 'Leg Press (Machine)', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Machine', instructions: ['Sit in the leg press machine with back against the pad.', 'Place feet shoulder-width apart on the platform.', 'Release the safety handles.', 'Lower the platform by bending your knees.', 'Lower until your knees are at 90 degrees.', 'Push through your heels to extend your legs.'] },
+  { id: '52', name: 'Lunge', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Bodyweight', instructions: ['Stand with feet together, hands on hips or at sides.', 'Step forward with one leg into a lunge position.', 'Lower your hips until both knees are at 90 degrees.', 'Keep your front knee behind your toes.', 'Push through your front heel to return to start.', 'Repeat with the opposite leg.'] },
+  { id: '53', name: 'Lunge (Smith Machine)', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Smith Machine', instructions: ['Position the Smith machine bar across your shoulders.', 'Unrack the bar and step forward with one leg.', 'Lower your hips until both knees are at 90 degrees.', 'Keep your torso upright and front knee behind toes.', 'Push through your front heel to return to start.', 'Alternate legs or complete all reps on one side.'] },
+  { id: '54', name: 'Mountain Climbers', muscleGroup: 'Cardio', secondaryMuscles: ['Core', 'Shoulders'], equipment: 'Bodyweight', instructions: ['Start in a push-up position with arms extended.', 'Bring one knee toward your chest.', 'Quickly switch legs, extending the bent leg back.', 'Continue alternating legs in a running motion.', 'Keep your core engaged and hips level.', 'Maintain a steady, quick pace throughout.'] },
+  { id: '55', name: 'Overhead Press (Barbell)', muscleGroup: 'Shoulders', secondaryMuscles: ['Triceps', 'Upper Chest'], equipment: 'Barbell', instructions: ['Stand with feet shoulder-width apart, barbell at shoulder height.', 'Grip the bar just outside shoulder width.', 'Press the bar straight up overhead.', 'Lock out your arms at the top.', 'Keep your core engaged and avoid leaning back.', 'Lower the bar back to shoulder height with control.'] },
+  { id: '56', name: 'Overhead Press (Smith Machine)', muscleGroup: 'Shoulders', secondaryMuscles: ['Triceps', 'Upper Chest'], equipment: 'Smith Machine', instructions: ['Stand with feet shoulder-width apart under the Smith machine bar.', 'Grip the bar just outside shoulder width at shoulder height.', 'Unrack the bar and press it straight up overhead.', 'Lock out your arms at the top.', 'Keep your core engaged throughout.', 'Lower the bar back to shoulder height with control.'] },
+  { id: '57', name: 'Pendlay Row', muscleGroup: 'Upper Back', secondaryMuscles: ['Lats', 'Biceps'], equipment: 'Barbell', instructions: ['Stand with feet hip-width apart, barbell on the floor.', 'Bend at the hips until torso is parallel to the floor.', 'Grip the bar with hands just outside your legs.', 'Pull the bar explosively to your lower chest.', 'Let the bar touch the floor between each rep.', 'Keep your back flat throughout the movement.'] },
+  { id: '58', name: 'Plank', muscleGroup: 'Abdominals', secondaryMuscles: ['Lower Back', 'Shoulders'], equipment: 'Bodyweight', instructions: ['Start in a push-up position on your forearms.', 'Keep your elbows directly under your shoulders.', 'Maintain a straight line from head to heels.', 'Engage your core and squeeze your glutes.', 'Keep your neck neutral by looking at the floor.', 'Hold this position for the desired duration.'] },
+  { id: '59', name: 'Preacher Curl (Machine)', muscleGroup: 'Biceps', equipment: 'Machine', instructions: ['Sit at the preacher curl machine and adjust the seat.', 'Position your upper arms on the angled pad.', 'Grip the handles with an underhand grip.', 'Curl the handles up toward your shoulders.', 'Squeeze your biceps at the top.', 'Lower the handles back down with control.'] },
+  { id: '60', name: 'Pull Up', muscleGroup: 'Lats', secondaryMuscles: ['Biceps', 'Upper Back'], equipment: 'Bodyweight', instructions: ['Hang from a pull-up bar with an overhand grip, hands slightly wider than shoulder width.', 'Start with arms fully extended.', 'Pull yourself up by driving your elbows down.', 'Continue until your chin is above the bar.', 'Squeeze your back at the top.', 'Lower yourself with control to the starting position.'] },
   { id: '61', name: 'Push Up', muscleGroup: 'Chest', secondaryMuscles: ['Triceps', 'Shoulders'], equipment: 'Bodyweight', hasVideoDetection: true, instructions: ['Get down on all fours.', 'Extend your body into a push-up position. Have your hands flat on the floor, fingertips rotated slightly out, and shoulder blades retracted.', 'Have your legs straight and your toes supporting your lower body. Your ankles, knees, hips, and shoulders should be in a straight line.', 'Take a breath and lower yourself by bending your elbows.', 'Descend as low as possible—ideally, until your face is an inch or two from the floor.', 'Hold the bottom position for a moment and press yourself back to the top as you exhale.'] },
-  { id: '62', name: 'Romanian Deadlift (Barbell)', muscleGroup: 'Hamstrings', equipment: 'Barbell' },
-  { id: '63', name: 'Romanian Deadlift (Smith Machine)', muscleGroup: 'Hamstrings', equipment: 'Smith Machine' },
-  { id: '64', name: 'Rowing Machine', muscleGroup: 'Cardio', equipment: 'Machine' },
-  { id: '65', name: 'Russian Twist', muscleGroup: 'Abdominals', equipment: 'Bodyweight' },
-  { id: '66', name: 'Seated Row (Cable)', muscleGroup: 'Upper Back', equipment: 'Cable' },
-  { id: '67', name: 'Shoulder Press (Machine)', muscleGroup: 'Shoulders', equipment: 'Machine' },
-  { id: '68', name: 'Shrug (Dumbbell)', muscleGroup: 'Traps', equipment: 'Dumbbell' },
-  { id: '69', name: 'Shrug (Smith Machine)', muscleGroup: 'Traps', equipment: 'Smith Machine' },
-  { id: '70', name: 'Side Plank', muscleGroup: 'Abdominals', equipment: 'Bodyweight' },
-  { id: '71', name: 'Sit Up', muscleGroup: 'Abdominals', equipment: 'Bodyweight' },
-  { id: '72', name: 'Skull Crusher', muscleGroup: 'Triceps', equipment: 'Barbell' },
-  { id: '73', name: 'Snatch', muscleGroup: 'Full Body', equipment: 'Barbell' },
-  { id: '74', name: 'Squat (Barbell)', muscleGroup: 'Quadriceps', equipment: 'Barbell', hasVideoDetection: true },
-  { id: '75', name: 'Squat (Smith Machine)', muscleGroup: 'Quadriceps', equipment: 'Smith Machine', hasVideoDetection: true },
-  { id: '76', name: 'Step Up', muscleGroup: 'Quadriceps', equipment: 'Bodyweight' },
-  { id: '77', name: 'Tricep Dip', muscleGroup: 'Triceps', equipment: 'Bodyweight' },
-  { id: '78', name: 'Tricep Extension (Cable)', muscleGroup: 'Triceps', equipment: 'Cable' },
-  { id: '79', name: 'Tricep Pushdown', muscleGroup: 'Triceps', equipment: 'Cable' },
-  { id: '80', name: 'Upright Row (Barbell)', muscleGroup: 'Traps', equipment: 'Barbell' },
-  { id: '81', name: 'Upright Row (Smith Machine)', muscleGroup: 'Traps', equipment: 'Smith Machine' },
-  { id: '82', name: 'Walking Lunge', muscleGroup: 'Quadriceps', equipment: 'Bodyweight' },
-  { id: '83', name: 'Wall Sit', muscleGroup: 'Quadriceps', equipment: 'Bodyweight' },
-  { id: '84', name: 'Seated Leg Press (Machine)', muscleGroup: 'Quadriceps', equipment: 'Machine' },
-  { id: '85', name: 'Chest Fly (Pec Deck)', muscleGroup: 'Chest', equipment: 'Machine' },
+  { id: '62', name: 'Romanian Deadlift (Barbell)', muscleGroup: 'Hamstrings', secondaryMuscles: ['Glutes', 'Lower Back'], equipment: 'Barbell', instructions: ['Stand with feet hip-width apart, holding a barbell at hip level.', 'Keep a slight bend in your knees.', 'Push your hips back as you lower the bar down your legs.', 'Keep the bar close to your body throughout.', 'Lower until you feel a stretch in your hamstrings.', 'Drive your hips forward to return to the starting position.'] },
+  { id: '63', name: 'Romanian Deadlift (Smith Machine)', muscleGroup: 'Hamstrings', secondaryMuscles: ['Glutes', 'Lower Back'], equipment: 'Smith Machine', instructions: ['Stand with feet hip-width apart, bar at hip level.', 'Unrack the bar and keep a slight bend in your knees.', 'Push your hips back as you lower the bar.', 'Keep the bar close to your body.', 'Lower until you feel a stretch in your hamstrings.', 'Drive your hips forward to return to start.'] },
+  { id: '64', name: 'Rowing Machine', muscleGroup: 'Cardio', secondaryMuscles: ['Back', 'Legs'], equipment: 'Machine', instructions: ['Sit on the rowing machine and secure your feet in the straps.', 'Grab the handle with both hands.', 'Start with legs extended, leaning slightly back.', 'Pull the handle toward your chest while bending your knees.', 'Push back with your legs and extend your arms.', 'Maintain a smooth, continuous rhythm.'] },
+  { id: '65', name: 'Russian Twist', muscleGroup: 'Abdominals', secondaryMuscles: ['Obliques'], equipment: 'Bodyweight', instructions: ['Sit on the floor with knees bent, feet off the ground.', 'Lean back slightly, keeping your back straight.', 'Clasp your hands together or hold a weight.', 'Rotate your torso to the right, touching the ground beside you.', 'Rotate to the left side.', 'Continue alternating sides with controlled movements.'] },
+  { id: '66', name: 'Seated Row (Cable)', muscleGroup: 'Upper Back', secondaryMuscles: ['Lats', 'Biceps'], equipment: 'Cable', instructions: ['Sit at a cable row station with feet on the platform.', 'Grab the handle with both hands, arms extended.', 'Keep your back straight and chest up.', 'Pull the handle toward your abdomen.', 'Squeeze your shoulder blades together at the back.', 'Slowly extend your arms back to the starting position.'] },
+  { id: '67', name: 'Shoulder Press (Machine)', muscleGroup: 'Shoulders', secondaryMuscles: ['Triceps'], equipment: 'Machine', instructions: ['Sit at the shoulder press machine with back against the pad.', 'Adjust the seat so handles are at shoulder height.', 'Grip the handles with both hands.', 'Press the handles straight up overhead.', 'Extend your arms fully at the top.', 'Lower the handles back to shoulder height with control.'] },
+  { id: '68', name: 'Shrug (Dumbbell)', muscleGroup: 'Traps', equipment: 'Dumbbell', instructions: ['Stand with feet shoulder-width apart, dumbbells at your sides.', 'Keep your arms straight.', 'Elevate your shoulders toward your ears.', 'Squeeze your traps at the top.', 'Hold briefly.', 'Lower your shoulders back down with control.'] },
+  { id: '69', name: 'Shrug (Smith Machine)', muscleGroup: 'Traps', equipment: 'Smith Machine', instructions: ['Stand with feet shoulder-width apart, bar at arm\'s length.', 'Grip the bar slightly wider than shoulder width.', 'Keep your arms straight.', 'Elevate your shoulders toward your ears.', 'Squeeze your traps at the top.', 'Lower your shoulders back down with control.'] },
+  { id: '70', name: 'Side Plank', muscleGroup: 'Abdominals', secondaryMuscles: ['Obliques'], equipment: 'Bodyweight', instructions: ['Lie on your side with forearm on the ground, elbow under shoulder.', 'Stack your feet or place one in front of the other.', 'Lift your hips off the ground.', 'Maintain a straight line from head to feet.', 'Keep your core engaged.', 'Hold this position for the desired duration.'] },
+  { id: '71', name: 'Sit Up', muscleGroup: 'Abdominals', secondaryMuscles: ['Hip Flexors'], equipment: 'Bodyweight', instructions: ['Lie on your back with knees bent, feet flat on floor.', 'Place your hands behind your head or across your chest.', 'Engage your core and lift your entire torso off the ground.', 'Come up to a sitting position.', 'Lower yourself back down with control.', 'Keep your feet planted throughout the movement.'] },
+  { id: '72', name: 'Skull Crusher', muscleGroup: 'Triceps', equipment: 'Barbell', instructions: ['Lie flat on a bench holding a barbell above your chest.', 'Keep your upper arms stationary and perpendicular to the floor.', 'Lower the bar toward your forehead by bending your elbows.', 'Keep your upper arms still.', 'Extend your arms back to the starting position.', 'Focus on using only your triceps.'] },
+  { id: '73', name: 'Snatch', muscleGroup: 'Full Body', secondaryMuscles: ['Shoulders', 'Traps', 'Quadriceps'], equipment: 'Barbell', instructions: ['Stand with feet hip-width apart, barbell over mid-foot.', 'Grip the bar with a wide grip.', 'Pull the bar explosively off the floor.', 'As the bar reaches chest height, drop under it.', 'Catch the bar overhead with arms locked.', 'Stand up fully with the bar overhead.'] },
+  { id: '74', name: 'Squat (Barbell)', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Barbell', hasVideoDetection: true, instructions: ['Position the barbell across your upper back and shoulders.', 'Stand with feet shoulder-width apart.', 'Keep your chest up and core engaged.', 'Lower your body by bending your knees and hips.', 'Descend until thighs are parallel to the floor or lower.', 'Drive through your heels to return to standing.'] },
+  { id: '75', name: 'Squat (Smith Machine)', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Smith Machine', hasVideoDetection: true, instructions: ['Position yourself under the Smith machine bar.', 'Place the bar across your upper back and shoulders.', 'Unrack the bar and stand with feet shoulder-width apart.', 'Lower your body by bending your knees and hips.', 'Descend until thighs are parallel to the floor.', 'Drive through your heels to return to standing.'] },
+  { id: '76', name: 'Step Up', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Bodyweight', instructions: ['Stand facing a sturdy box or bench.', 'Place one foot flat on the elevated surface.', 'Push through the elevated foot to lift your body up.', 'Step up until both feet are on the platform.', 'Step back down with the opposite foot first.', 'Repeat, alternating the leading leg.'] },
+  { id: '77', name: 'Tricep Dip', muscleGroup: 'Triceps', secondaryMuscles: ['Chest', 'Shoulders'], equipment: 'Bodyweight', instructions: ['Sit on the edge of a bench, hands gripping the edge beside your hips.', 'Extend your legs out in front of you.', 'Slide your hips off the bench, supporting yourself with your arms.', 'Lower your body by bending your elbows to 90 degrees.', 'Keep your elbows pointing back, not out to the sides.', 'Push back up to the starting position.'] },
+  { id: '78', name: 'Tricep Extension (Cable)', muscleGroup: 'Triceps', equipment: 'Cable', instructions: ['Attach a rope or bar to a high cable pulley.', 'Grip the attachment with both hands overhead.', 'Step forward slightly, arms extended overhead.', 'Lower the attachment behind your head by bending your elbows.', 'Keep your upper arms stationary.', 'Extend your arms back to the starting position.'] },
+  { id: '79', name: 'Tricep Pushdown', muscleGroup: 'Triceps', equipment: 'Cable', instructions: ['Stand facing a high cable pulley with a bar or rope attached.', 'Grip the attachment with palms facing down.', 'Keep your elbows close to your sides.', 'Push the attachment down until your arms are fully extended.', 'Squeeze your triceps at the bottom.', 'Slowly return to the starting position.'] },
+  { id: '80', name: 'Upright Row (Barbell)', muscleGroup: 'Traps', secondaryMuscles: ['Shoulders'], equipment: 'Barbell', instructions: ['Stand with feet shoulder-width apart, barbell at thigh level.', 'Grip the bar with hands closer than shoulder width.', 'Pull the bar straight up toward your chin.', 'Keep the bar close to your body.', 'Raise your elbows high and out to the sides.', 'Lower the bar back down with control.'] },
+  { id: '81', name: 'Upright Row (Smith Machine)', muscleGroup: 'Traps', secondaryMuscles: ['Shoulders'], equipment: 'Smith Machine', instructions: ['Stand with feet shoulder-width apart, bar at thigh level.', 'Grip the bar with hands closer than shoulder width.', 'Unrack the bar and pull it straight up toward your chin.', 'Keep the bar close to your body.', 'Raise your elbows high and out to the sides.', 'Lower the bar back down with control.'] },
+  { id: '82', name: 'Walking Lunge', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Bodyweight', instructions: ['Stand tall with feet together.', 'Step forward with one leg into a lunge position.', 'Lower your hips until both knees are at 90 degrees.', 'Push off the back foot and bring it forward.', 'Step into the next lunge with the opposite leg.', 'Continue walking forward with alternating lunges.'] },
+  { id: '83', name: 'Wall Sit', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes'], equipment: 'Bodyweight', instructions: ['Stand with your back against a wall.', 'Slide down until your thighs are parallel to the floor.', 'Keep your knees directly above your ankles.', 'Your back should be flat against the wall.', 'Hold this position for the desired duration.', 'Keep your core engaged throughout.'] },
+  { id: '84', name: 'Seated Leg Press (Machine)', muscleGroup: 'Quadriceps', secondaryMuscles: ['Glutes', 'Hamstrings'], equipment: 'Machine', instructions: ['Sit in the leg press machine with back against the pad.', 'Place feet shoulder-width apart on the platform.', 'Release the safety handles.', 'Lower the platform by bending your knees toward your chest.', 'Push through your heels to extend your legs.', 'Do not lock your knees at full extension.'] },
+  { id: '85', name: 'Chest Fly (Pec Deck)', muscleGroup: 'Chest', secondaryMuscles: ['Shoulders'], equipment: 'Machine', instructions: ['Sit at the pec deck machine with back against the pad.', 'Grip the handles with arms extended to the sides.', 'Keep a slight bend in your elbows.', 'Bring the handles together in front of your chest.', 'Squeeze your chest at the peak contraction.', 'Slowly return to the starting position.'] },
 ]
 
 // Bottom sheet modal for filter selection
@@ -450,6 +450,7 @@ function ExerciseDetailModal({
 }) {
   const [activeTab, setActiveTab] = useState<'summary' | 'history' | 'howto'>('summary')
   const [chartMode, setChartMode] = useState<'set' | 'session'>('set')
+  const [selectedStat, setSelectedStat] = useState<'bestSet' | 'heaviestWeight' | 'estimated1RM' | null>(null)
   
   if (!isOpen || !exercise) return null
   
@@ -464,6 +465,12 @@ function ExerciseDetailModal({
   const bestReps = exerciseWorkouts.length > 0 
     ? Math.max(...exerciseWorkouts.map(w => w.repCount || 0))
     : null
+  
+  // Calculate heaviest weight (placeholder for now)
+  const heaviestWeight = null // Will be implemented when weight data is available
+  
+  // Calculate estimated 1RM (using Brzycki formula: weight / (1.0278 - 0.0278 × reps))
+  const estimated1RM = null // Will be implemented when weight data is available
   
   return (
     <div className="fixed inset-0 bg-dark-900 z-50 flex flex-col">
@@ -498,13 +505,6 @@ function ExerciseDetailModal({
       <div className="flex-1 overflow-y-auto">
         {activeTab === 'summary' && (
           <div>
-            {/* Exercise Image Placeholder */}
-            <div className="bg-gradient-to-b from-dark-800 to-dark-900 py-8 flex justify-center">
-              <div className="w-48 h-32 bg-gray-300 rounded-lg flex items-center justify-center">
-                <span className="text-gray-500 text-sm">Exercise Image</span>
-              </div>
-            </div>
-            
             {/* Exercise Info */}
             <div className="px-4 py-4">
               <h2 className="text-white text-xl font-bold">{exercise.name}</h2>
@@ -557,16 +557,6 @@ function ExerciseDetailModal({
                   >
                     Most Reps (Set)
                   </button>
-                  <button
-                    onClick={() => setChartMode('session')}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      chartMode === 'session' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-dark-700 text-gray-400'
-                    }`}
-                  >
-                    Session Reps
-                  </button>
                 </div>
               </div>
               
@@ -578,14 +568,57 @@ function ExerciseDetailModal({
                 </div>
                 
                 <div className="border-t border-dark-700">
-                  <div className="flex justify-between py-3 border-b border-dark-700">
+                  <button 
+                    onClick={() => setSelectedStat(selectedStat === 'bestSet' ? null : 'bestSet')}
+                    className="w-full flex justify-between py-3 border-b border-dark-700 hover:bg-dark-700 transition-colors"
+                  >
                     <span className="text-white">Best Set</span>
                     <span className="text-gray-400">{bestReps ? `${bestReps} reps` : '-'}</span>
-                  </div>
-                  <div className="flex justify-between py-3">
-                    <span className="text-white">Most Session Reps</span>
-                    <span className="text-gray-400">{bestReps ? `${bestReps} reps` : '-'}</span>
-                  </div>
+                  </button>
+                  
+                  {selectedStat === 'bestSet' && exerciseWorkouts.length > 0 && (
+                    <div className="px-4 py-4 bg-dark-800 border-b border-dark-700">
+                      <h4 className="text-white text-sm font-medium mb-3">Best Set History</h4>
+                      <div className="space-y-2">
+                        {exerciseWorkouts.slice(0, 5).map((workout, index) => (
+                          <div key={workout.id || index} className="flex justify-between items-center text-sm">
+                            <span className="text-gray-400">
+                              {new Date(workout.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                            </span>
+                            <span className="text-white font-medium">{workout.repCount} reps</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <button 
+                    onClick={() => setSelectedStat(selectedStat === 'heaviestWeight' ? null : 'heaviestWeight')}
+                    className="w-full flex justify-between py-3 border-b border-dark-700 hover:bg-dark-700 transition-colors"
+                  >
+                    <span className="text-white">Heaviest Weight</span>
+                    <span className="text-gray-400">{heaviestWeight ? `${heaviestWeight} lbs` : '-'}</span>
+                  </button>
+                  
+                  {selectedStat === 'heaviestWeight' && (
+                    <div className="px-4 py-4 bg-dark-800 border-b border-dark-700">
+                      <p className="text-gray-400 text-sm">Weight tracking coming soon</p>
+                    </div>
+                  )}
+                  
+                  <button 
+                    onClick={() => setSelectedStat(selectedStat === 'estimated1RM' ? null : 'estimated1RM')}
+                    className="w-full flex justify-between py-3 hover:bg-dark-700 transition-colors"
+                  >
+                    <span className="text-white">Estimated 1RM</span>
+                    <span className="text-gray-400">{estimated1RM ? `${estimated1RM} lbs` : '-'}</span>
+                  </button>
+                  
+                  {selectedStat === 'estimated1RM' && (
+                    <div className="px-4 py-4 bg-dark-800">
+                      <p className="text-gray-400 text-sm">1RM calculation available once weight data is logged</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -618,10 +651,7 @@ function ExerciseDetailModal({
                       <ChevronRight className="w-5 h-5 text-gray-500" />
                     </div>
                     
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
-                        <div className="w-8 h-8 bg-gray-200 rounded-full" />
-                      </div>
+                    <div className="mb-2">
                       <span className="text-white font-medium">{exercise.name}</span>
                     </div>
                     
@@ -654,13 +684,6 @@ function ExerciseDetailModal({
         
         {activeTab === 'howto' && (
           <div>
-            {/* Exercise Image */}
-            <div className="bg-gradient-to-b from-dark-800 to-dark-900 py-8 flex justify-center">
-              <div className="w-48 h-32 bg-gray-300 rounded-lg flex items-center justify-center">
-                <span className="text-gray-500 text-sm">Exercise Image</span>
-              </div>
-            </div>
-            
             <div className="px-4 py-4">
               <h2 className="text-white text-xl font-bold mb-4">{exercise.name}</h2>
               
@@ -695,11 +718,6 @@ function ExerciseDetailModal({
 function ExerciseListItem({ exercise, onTrendClick }: { exercise: LibraryExercise, onTrendClick: () => void }) {
   return (
     <div className="flex items-center gap-3 py-3 border-b border-dark-700">
-      {/* Placeholder for exercise image */}
-      <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center flex-shrink-0 overflow-hidden">
-        <div className="w-12 h-12 bg-gray-200 rounded-full" />
-      </div>
-      
       <div className="flex-1 min-w-0">
         <h3 className="text-white text-[15px] font-medium">{exercise.name}</h3>
         <p className="text-gray-500 text-[14px]">{exercise.muscleGroup}</p>
