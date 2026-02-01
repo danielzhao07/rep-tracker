@@ -1,4 +1,4 @@
-# Rep Tracker - AI-Powered Fitness Tracker
+# JAKD - Video-Powered Fitness Tracker
 
 Computer vision-powered fitness tracker using MediaPipe Tasks Vision for automatic push-up rep counting.
 
