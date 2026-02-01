@@ -17,7 +17,8 @@ import { AddExercisesToRoutinePage } from '@/pages/AddExercisesToRoutinePage'
 import { CreateExercisePage } from '@/pages/CreateExercisePage'
 import { ManualEntryPage } from '@/pages/ManualEntryPage'
 import { HistoryPage } from '@/pages/HistoryPage'
-import { StartWorkoutPage } from '@/pages/StartWorkoutPage'
+import { ActiveWorkoutPage } from '@/pages/ActiveWorkoutPage'
+import { SaveWorkoutPage } from '@/pages/SaveWorkoutPage'
 import { ExercisesPage } from '@/pages/ExercisesPage'
 import { ProfilePage } from '@/pages/ProfilePage'
 import { ROUTES } from '@/utils/constants'
@@ -91,6 +92,22 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <WorkoutPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.WORKOUT_ACTIVE}
+        element={
+          <ProtectedRoute>
+            <ActiveWorkoutPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.WORKOUT_SAVE}
+        element={
+          <ProtectedRoute>
+            <SaveWorkoutPage />
           </ProtectedRoute>
         }
       />

@@ -5,7 +5,6 @@ import { Button } from '@/components/shared/Button'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useAuthStore } from '@/store/authStore'
 import { useRoutineStore } from '@/store/routineStore'
-import { ROUTES } from '@/utils/constants'
 
 export function WorkoutHomePage() {
   const navigate = useNavigate()
@@ -61,8 +60,10 @@ export function WorkoutHomePage() {
   }
 
   const handleStartRoutine = (routineId: string) => {
-    // Navigate to workout with routine (future implementation)
-    console.log('Start routine:', routineId)
+    const routine = routines.find(r => r.id === routineId)
+    if (routine) {
+      navigate('/workout/active', { state: { routine } })
+    }
   }
   const handleViewRoutine = (routine: typeof routines[0]) => {
     setSelectedRoutine(routine)
@@ -318,60 +319,88 @@ export function WorkoutHomePage() {
           <div className="absolute inset-0 bg-black/60" onClick={() => setShowRoutineDetail(false)} />
           <div className="relative bg-dark-900 rounded-t-2xl w-full max-w-lg max-h-[80vh] overflow-hidden border-t border-dark-700 animate-slide-up">
             {/* Modal Header */}
-            <div className="sticky top-0 bg-dark-900 border-b border-dark-700 px-6 py-4 flex items-center justify-between z-10">
-              <h2 className="text-xl font-bold">{selectedRoutine.name}</h2>
-              <button
-                onClick={() => setShowRoutineDetail(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                ✕
-              </button>
+            <div className="sticky top-0 bg-dark-900 border-b border-dark-700 px-6 py-4 z-10">
+              <div className="flex items-start justify-between mb-2">
+                <h2 className="text-xl font-bold text-white">{selectedRoutine.name}</h2>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setShowRoutineDetail(false)
+                      handleEditRoutine(selectedRoutine)
+                    }}
+                    className="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    Edit Routine
+                  </button>
+                  <button
+                    onClick={() => setShowRoutineDetail(false)}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <p className="text-sm text-gray-500">
+                Last edited {new Date(selectedRoutine.updatedAt).toLocaleDateString('en-US', { 
+                  month: 'short', 
+                  day: 'numeric', 
+                  year: 'numeric' 
+                })}
+              </p>
             </div>
 
             {/* Modal Content */}
-            <div className="overflow-y-auto max-h-[calc(80vh-120px)] px-6 py-4">
-              {selectedRoutine.description && (
-                <p className="text-gray-400 mb-6">{selectedRoutine.description}</p>
-              )}
-
-              <div className="space-y-4">
+            <div className="overflow-y-auto max-h-[calc(80vh-180px)] px-6 py-4">
+              <h3 className="text-gray-400 text-sm font-medium mb-4">Exercises</h3>
+              
+              <div className="space-y-6">
                 {selectedRoutine.exercises.map((exercise) => {
                   const isBodyweight = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
                     .some(bw => exercise.exerciseName.toLowerCase().includes(bw))
                   
+                  // Get sets data from setsData if available, otherwise create from targetSets
+                  const sets = exercise.setsData && Array.isArray(exercise.setsData) && exercise.setsData.length > 0
+                    ? exercise.setsData
+                    : Array.from({ length: exercise.targetSets }, () => ({
+                        reps: exercise.targetReps,
+                        weight: exercise.targetWeight || (isBodyweight ? 'BW' : '')
+                      }))
+                  
                   return (
-                    <div
-                      key={exercise.exerciseId}
-                      className="bg-dark-800 rounded-lg p-4 border border-dark-700"
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="text-white font-semibold">{exercise.exerciseName}</h3>
-                          <p className="text-gray-500 text-sm capitalize">
-                            {exercise.exerciseCategory || 'Exercise'}
-                          </p>
+                    <div key={exercise.exerciseId} className="space-y-3">
+                      {/* Exercise Header */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-cyan-900/30 border border-cyan-700/40 flex items-center justify-center flex-shrink-0">
+                          <span className="text-cyan-400 text-sm font-bold">
+                            {exercise.exerciseName.charAt(0)}
+                          </span>
                         </div>
+                        <h4 className="text-cyan-400 font-medium">{exercise.exerciseName}</h4>
                       </div>
 
+                      {/* Sets Table */}
                       <div className="space-y-2">
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="text-gray-400">Sets:</span>
-                          <span className="text-white font-medium">{exercise.targetSets}</span>
+                        <div className="grid grid-cols-[50px_1fr_1fr] gap-2 text-xs text-gray-500 px-1">
+                          <span>SET</span>
+                          <span className="text-center">LBS</span>
+                          <span className="text-center">REPS</span>
                         </div>
-                        {exercise.targetReps && (
-                          <div className="flex items-center gap-4 text-sm">
-                            <span className="text-gray-400">Reps:</span>
-                            <span className="text-white font-medium">{exercise.targetReps}</span>
+                        
+                        {sets.map((set, index) => (
+                          <div key={index} className="grid grid-cols-[50px_1fr_1fr] gap-2 items-center">
+                            <span className="text-white text-lg">{index + 1}</span>
+                            <div className="bg-dark-800 rounded-lg py-2 px-3 text-center border border-dark-700">
+                              <span className="text-white">
+                                {set.weight || '-'}
+                              </span>
+                            </div>
+                            <div className="bg-dark-800 rounded-lg py-2 px-3 text-center border border-dark-700">
+                              <span className="text-white">
+                                {set.reps ?? '-'}
+                              </span>
+                            </div>
                           </div>
-                        )}
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="text-gray-400">Weight:</span>
-                          <span className="text-white font-medium">{isBodyweight ? 'BW' : '-'}</span>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="text-gray-400">Rest:</span>
-                          <span className="text-white font-medium">{exercise.restSeconds}s</span>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   )
