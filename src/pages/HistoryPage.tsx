@@ -5,12 +5,139 @@ import { Modal } from '@/components/shared/Modal'
 import { MuscleDistributionChart } from '@/components/charts/MuscleDistributionChart'
 import { LineChart } from '@/components/charts/LineChart'
 import { useHistoryStore } from '@/store/historyStore'
+import { useAuthStore } from '@/store/authStore'
 import { VideoStorageRepository } from '@/repositories/VideoStorageRepository'
+import { WorkoutSessionRepository, type WorkoutSessionModel } from '@/repositories/WorkoutSessionRepository'
 import { formatDuration, formatDate, formatTime } from '@/utils/helpers'
 import { EXERCISES_SEED } from '@/utils/constants'
-import { Calendar, Clock, Target, Trash2, Video, Play, TrendingUp, ChevronDown, ChevronRight, BarChart3 } from 'lucide-react'
+import { Calendar, Clock, Target, Trash2, Video, Play, TrendingUp, ChevronDown, ChevronRight, BarChart3, Dumbbell, Timer, CheckCircle2 } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+
+// Workout Session Card Component
+function WorkoutSessionCard({ session, onDelete }: { session: WorkoutSessionModel; onDelete: () => void }) {
+  const [expanded, setExpanded] = useState(false)
+  
+  const formatSessionDuration = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600)
+    const mins = Math.floor((seconds % 3600) / 60)
+    if (hours > 0) return `${hours}h ${mins}m`
+    return `${mins}m`
+  }
+  
+  const formatSessionDate = (dateStr: string) => {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
+  
+  const formatSessionTime = (dateStr: string) => {
+    const date = new Date(dateStr)
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    })
+  }
+  
+  return (
+    <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full p-4 text-left"
+      >
+        <div className="flex items-start justify-between mb-2">
+          <div>
+            <h3 className="text-white font-semibold text-lg">{session.routineName}</h3>
+            <p className="text-gray-500 text-sm">
+              {formatSessionDate(session.createdAt)} at {formatSessionTime(session.createdAt)}
+            </p>
+          </div>
+          <ChevronDown 
+            size={20} 
+            className={`text-gray-400 transition-transform ${expanded ? 'rotate-180' : ''}`} 
+          />
+        </div>
+        
+        <div className="flex gap-6 text-sm">
+          <div className="flex items-center gap-2">
+            <Timer size={16} className="text-cyan-400" />
+            <span className="text-cyan-400 font-medium">{formatSessionDuration(session.durationSeconds)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Dumbbell size={16} className="text-gray-400" />
+            <span className="text-white">{Math.round(session.totalVolume)} lbs</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 size={16} className="text-green-400" />
+            <span className="text-white">{session.completedSets}/{session.totalSets} sets</span>
+          </div>
+        </div>
+      </button>
+      
+      {expanded && (
+        <div className="border-t border-dark-700 p-4 space-y-4">
+          {session.exercisesData.map((exercise, idx) => (
+            <div key={idx} className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-cyan-900/30 border border-cyan-700/40 flex items-center justify-center">
+                  <span className="text-cyan-400 text-xs font-bold">
+                    {exercise.exerciseName.charAt(0)}
+                  </span>
+                </div>
+                <span className="text-cyan-400 font-medium">{exercise.exerciseName}</span>
+              </div>
+              
+              <div className="ml-10 space-y-1">
+                {exercise.sets.filter(s => s.completed).map((set, setIdx) => (
+                  <div key={setIdx} className="flex items-center gap-4 text-sm text-gray-400">
+                    <span className="w-6">Set {set.setNumber}</span>
+                    {set.weight && <span>{set.weight} lbs</span>}
+                    <span>× {set.reps} reps</span>
+                  </div>
+                ))}
+              </div>
+              
+              {exercise.notes && (
+                <p className="ml-10 text-gray-500 text-sm italic">{exercise.notes}</p>
+              )}
+            </div>
+          ))}
+          
+          {session.description && (
+            <p className="text-gray-400 text-sm pt-2 border-t border-dark-700">
+              {session.description}
+            </p>
+          )}
+          
+          {session.photoUrl && (
+            <img 
+              src={session.photoUrl} 
+              alt="Workout" 
+              className="w-full h-48 object-cover rounded-lg"
+            />
+          )}
+          
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete()
+            }}
+            className="text-red-400 text-sm flex items-center gap-2 hover:text-red-300 transition-colors"
+          >
+            <Trash2 size={14} />
+            Delete Workout
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function HistoryPage() {
+  const { user } = useAuthStore()
   const { workouts, isLoading, error, loadWorkouts, deleteWorkout } =
     useHistoryStore()
   const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null)
@@ -25,16 +152,106 @@ export function HistoryPage() {
   const [calendarDropdownOpen, setCalendarDropdownOpen] = useState(false)
   const [muscleDistributionPeriod, setMuscleDistributionPeriod] = useState<'week' | 'month' | '3months' | 'year'>('month')
   const [muscleDistributionDropdownOpen, setMuscleDistributionDropdownOpen] = useState(false)
+  
+  // Workout sessions state
+  const [workoutSessions, setWorkoutSessions] = useState<WorkoutSessionModel[]>([])
+  const [sessionsLoading, setSessionsLoading] = useState(true)
 
   useEffect(() => {
     loadWorkouts()
   }, [loadWorkouts])
+  
+  // Load workout sessions
+  useEffect(() => {
+    const loadSessions = async () => {
+      if (!user) return
+      setSessionsLoading(true)
+      try {
+        const sessions = await WorkoutSessionRepository.getUserWorkoutSessions(user.id)
+        setWorkoutSessions(sessions)
+      } catch (err) {
+        console.error('Failed to load workout sessions:', err)
+      } finally {
+        setSessionsLoading(false)
+      }
+    }
+    loadSessions()
+  }, [user])
+  
+  const handleDeleteSession = async (sessionId: string) => {
+    try {
+      await WorkoutSessionRepository.deleteWorkoutSession(sessionId)
+      setWorkoutSessions(prev => prev.filter(s => s.id !== sessionId))
+    } catch (err) {
+      console.error('Failed to delete session:', err)
+    }
+  }
 
   const getExerciseName = (exerciseId: string) => {
     return (
       EXERCISES_SEED.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
     )
   }
+  
+  // Calculate workout session statistics
+  const sessionStats = useMemo(() => {
+    const totalSessions = workoutSessions.length
+    const totalVolume = workoutSessions.reduce((sum, s) => sum + s.totalVolume, 0)
+    const totalDuration = workoutSessions.reduce((sum, s) => sum + s.durationSeconds, 0)
+    const totalSets = workoutSessions.reduce((sum, s) => sum + s.completedSets, 0)
+    
+    // Volume by day (last 7 days)
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date()
+      date.setDate(date.getDate() - (6 - i))
+      return date.toDateString()
+    })
+    
+    const volumeByDay = last7Days.map(dateStr => {
+      const dayVolume = workoutSessions
+        .filter(s => new Date(s.createdAt).toDateString() === dateStr)
+        .reduce((sum, s) => sum + s.totalVolume, 0)
+      
+      const date = new Date(dateStr)
+      return {
+        day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        volume: Math.round(dayVolume),
+      }
+    })
+    
+    // Exercise frequency
+    const exerciseFreq = new Map<string, number>()
+    workoutSessions.forEach(s => {
+      s.exercisesData.forEach(ex => {
+        exerciseFreq.set(ex.exerciseName, (exerciseFreq.get(ex.exerciseName) || 0) + 1)
+      })
+    })
+    const topExercises = Array.from(exerciseFreq.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name, count]) => ({ name, count }))
+    
+    // Category distribution for pie chart
+    const categoryDist = new Map<string, number>()
+    workoutSessions.forEach(s => {
+      s.exercisesData.forEach(ex => {
+        const category = ex.exerciseCategory || 'Other'
+        categoryDist.set(category, (categoryDist.get(category) || 0) + 1)
+      })
+    })
+    const categoryData = Array.from(categoryDist.entries())
+      .map(([name, value]) => ({ name, value }))
+    
+    return {
+      totalSessions,
+      totalVolume,
+      totalDuration,
+      totalSets,
+      volumeByDay,
+      topExercises,
+      categoryData,
+    }
+  }, [workoutSessions])
 
   // Calculate statistics
   const stats = useMemo(() => {
@@ -46,10 +263,11 @@ export function HistoryPage() {
       ? workouts.filter(w => w.formScore !== null).reduce((sum, w) => sum + (w.formScore || 0), 0) / workouts.filter(w => w.formScore !== null).length
       : 0
     
-    // Calculate workout days and streak
-    const workoutDates = new Set(
-      workouts.map(w => new Date(w.createdAt).toDateString())
-    )
+    // Calculate workout days and streak - include both workouts and sessions
+    const workoutDates = new Set([
+      ...workouts.map(w => new Date(w.createdAt).toDateString()),
+      ...workoutSessions.map(s => new Date(s.createdAt).toDateString())
+    ])
     
     // Calculate streak
     let currentStreak = 0
@@ -405,22 +623,87 @@ export function HistoryPage() {
       {/* Workout History Section */}
       {activeSection === 'workouts' && (
         <div>
+          {/* Session Stats Summary */}
+          {workoutSessions.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="bg-dark-800 rounded-xl p-4 border border-dark-700">
+                <p className="text-gray-500 text-xs mb-1">Total Workouts</p>
+                <p className="text-2xl font-bold text-white">{sessionStats.totalSessions}</p>
+              </div>
+              <div className="bg-dark-800 rounded-xl p-4 border border-dark-700">
+                <p className="text-gray-500 text-xs mb-1">Total Volume</p>
+                <p className="text-2xl font-bold text-white">{Math.round(sessionStats.totalVolume).toLocaleString()} <span className="text-sm text-gray-400">lbs</span></p>
+              </div>
+              <div className="bg-dark-800 rounded-xl p-4 border border-dark-700">
+                <p className="text-gray-500 text-xs mb-1">Total Time</p>
+                <p className="text-2xl font-bold text-cyan-400">{Math.round(sessionStats.totalDuration / 60)} <span className="text-sm text-gray-400">min</span></p>
+              </div>
+              <div className="bg-dark-800 rounded-xl p-4 border border-dark-700">
+                <p className="text-gray-500 text-xs mb-1">Sets Completed</p>
+                <p className="text-2xl font-bold text-green-400">{sessionStats.totalSets}</p>
+              </div>
+            </div>
+          )}
+          
+          {/* Volume Chart (Last 7 Days) */}
+          {workoutSessions.length > 0 && sessionStats.volumeByDay.some(d => d.volume > 0) && (
+            <Card className="mb-6">
+              <h3 className="text-white font-semibold mb-4">Volume (Last 7 Days)</h3>
+              <div className="h-40">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={sessionStats.volumeByDay}>
+                    <XAxis 
+                      dataKey="day" 
+                      axisLine={false} 
+                      tickLine={false}
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                    />
+                    <YAxis hide />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#1f2937', 
+                        border: '1px solid #374151',
+                        borderRadius: '8px',
+                        color: '#fff'
+                      }}
+                      formatter={(value: number) => [`${value.toLocaleString()} lbs`, 'Volume']}
+                    />
+                    <Bar 
+                      dataKey="volume" 
+                      fill="#06b6d4" 
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          )}
+          
           <h2 className="text-lg font-semibold mb-4 text-white">Recent Workouts</h2>
-          {workouts.length === 0 ? (
+          
+          {sessionsLoading ? (
+            <div className="flex items-center justify-center h-32">
+              <LoadingSpinner size="lg" />
+            </div>
+          ) : workoutSessions.length === 0 ? (
             <Card>
               <div className="text-center py-12">
                 <Target className="mx-auto text-gray-500 mb-4" size={48} />
                 <p className="text-gray-400 text-lg">No workouts yet</p>
                 <p className="text-gray-500 text-sm mt-1">
-                  Complete a workout to see it here
+                  Complete a routine workout to see it here
                 </p>
               </div>
             </Card>
           ) : (
-            <div className="bg-dark-800 rounded-lg p-4 mb-4">
-              <p className="text-gray-400 text-sm">
-                Routine history will be displayed here once routines are implemented.
-              </p>
+            <div className="space-y-3">
+              {workoutSessions.map((session) => (
+                <WorkoutSessionCard
+                  key={session.id}
+                  session={session}
+                  onDelete={() => handleDeleteSession(session.id)}
+                />
+              ))}
             </div>
           )}
         </div>

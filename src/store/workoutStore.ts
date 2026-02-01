@@ -39,6 +39,10 @@ interface WorkoutState {
   resetWorkout: () => void
   restartWorkout: () => void
 
+  // Individual setters for video tracking from active workout
+  setCurrentExercise: (exercise: Exercise) => void
+  setCameraMode: (cameraMode: boolean) => void
+
   incrementRep: () => void
   decrementRep: () => void
   setRepCount: (count: number) => void
@@ -167,6 +171,10 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
       debugPoseDetected: false,
       debugFrameCount: 0,
     })),
+
+  // Individual setters for video tracking from active workout
+  setCurrentExercise: (exercise) => set({ currentExercise: exercise }),
+  setCameraMode: (cameraMode) => set({ isCameraMode: cameraMode }),
 
   incrementRep: () => set((state) => ({ repCount: state.repCount + 1 })),
   decrementRep: () =>
