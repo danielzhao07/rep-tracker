@@ -75,8 +75,10 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
   // Define handleEnd early so it can be used in useEffects
   const handleEnd = useCallback(async () => {
+    console.log('📹 handleEnd called - stopping detection and recording')
     stopDetection()
-    await stopRecording()
+    const blob = await stopRecording()
+    console.log('📹 Recording stopped, blob:', blob ? `${blob.size} bytes` : 'null')
     endWorkout()
     onEnd()
   }, [stopDetection, stopRecording, endWorkout, onEnd])
@@ -184,7 +186,10 @@ export function WorkoutActiveView({ onEnd }: WorkoutActiveViewProps) {
 
       // Start recording with composite canvas (video + skeleton overlay)
       if (stream) {
+        console.log('📹 Starting recording with stream')
         startRecording(stream, video, canvas)
+      } else {
+        console.log('📹 No stream available for recording!')
       }
     },
     [isInitialized, detectionStarted, startDetection, stream, startRecording]

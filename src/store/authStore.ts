@@ -7,12 +7,15 @@ interface AuthState {
   session: Session | null
   isLoading: boolean
   error: string | null
+  hasSeenOnboarding: boolean
 
   initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string) => Promise<void>
+  signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
   clearError: () => void
+  setHasSeenOnboarding: (seen: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -20,6 +23,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   isLoading: true,
   error: null,
+  hasSeenOnboarding: localStorage.getItem('hasSeenOnboarding') === 'true',
 
   initialize: async () => {
     try {
@@ -61,6 +65,19 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
+  signInWithGoogle: async () => {
+    set({ isLoading: true, error: null })
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    })
+    if (error) {
+      set({ error: error.message, isLoading: false })
+    }
+  },
+
   signOut: async () => {
     set({ isLoading: true })
     await supabase.auth.signOut()
@@ -68,4 +85,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   clearError: () => set({ error: null }),
+
+  setHasSeenOnboarding: (seen: boolean) => {
+    localStorage.setItem('hasSeenOnboarding', String(seen))
+    set({ hasSeenOnboarding: seen })
+  },
 }))

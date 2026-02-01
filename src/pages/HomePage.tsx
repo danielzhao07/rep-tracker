@@ -6,7 +6,7 @@ import { Modal } from '@/components/shared/Modal'
 import { useWorkoutStore } from '@/store/workoutStore'
 import { ROUTES } from '@/utils/constants'
 import type { Exercise } from '@/types'
-import { Camera, PenLine, Activity } from 'lucide-react'
+import { Camera, PenLine } from 'lucide-react'
 
 export function HomePage() {
   const navigate = useNavigate()

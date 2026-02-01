@@ -50,7 +50,7 @@ export function CreateExercisePage() {
   const [exerciseName, setExerciseName] = useState('')
   const [equipment, setEquipment] = useState('')
   const [primaryMuscle, setPrimaryMuscle] = useState('')
-  const [otherMuscles, setOtherMuscles] = useState<string[]>([])
+  const [otherMuscles] = useState<string[]>([])
   const [exerciseType, setExerciseType] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')

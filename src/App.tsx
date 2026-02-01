@@ -8,6 +8,7 @@ import { PageContainer } from '@/components/layout/PageContainer'
 import { ToastContainer } from '@/components/shared/Toast'
 import { PageLoader } from '@/components/shared/LoadingSpinner'
 import { WorkoutInProgressBar } from '@/components/workout/WorkoutInProgressBar'
+import { OnboardingPage } from '@/pages/OnboardingPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { SignUpPage } from '@/pages/SignUpPage'
 import { HomePage } from '@/pages/HomePage'
@@ -48,7 +49,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 }
 
 function AppRoutes() {
-  const { isLoading, user, initialize } = useAuthStore()
+  const { isLoading, user, initialize, hasSeenOnboarding } = useAuthStore()
 
   useEffect(() => {
     initialize()
@@ -60,13 +61,26 @@ function AppRoutes() {
 
   return (
     <Routes>
+      {/* Onboarding - show if not logged in and hasn't seen onboarding */}
+      <Route
+        path="/onboarding"
+        element={user ? <Navigate to={ROUTES.HOME} replace /> : <OnboardingPage />}
+      />
       <Route
         path={ROUTES.LOGIN}
-        element={user ? <Navigate to={ROUTES.HOME} replace /> : <LoginPage />}
+        element={
+          user ? <Navigate to={ROUTES.HOME} replace /> : 
+          !hasSeenOnboarding ? <Navigate to="/onboarding" replace /> :
+          <LoginPage />
+        }
       />
       <Route
         path={ROUTES.SIGNUP}
-        element={user ? <Navigate to={ROUTES.HOME} replace /> : <SignUpPage />}
+        element={
+          user ? <Navigate to={ROUTES.HOME} replace /> : 
+          !hasSeenOnboarding ? <Navigate to="/onboarding" replace /> :
+          <SignUpPage />
+        }
       />
       <Route
         path={ROUTES.HOME}

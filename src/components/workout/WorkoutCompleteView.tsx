@@ -80,7 +80,12 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
   const [showSaveVideoModal, setShowSaveVideoModal] = useState(false)
 
   // Debug: Log what exercise we have when component loads
-  console.log('🏋️ WorkoutCompleteView loaded with:', {
+  useEffect(() => {
+    console.log('🏋️ WorkoutCompleteView mounted/updated with recordingBlob:', 
+      recordingBlob ? `${recordingBlob.size} bytes` : 'null')
+  }, [recordingBlob])
+
+  console.log('🏋️ WorkoutCompleteView render with:', {
     currentExercise: currentExercise ? {
       id: currentExercise.id,
       name: currentExercise.name,
@@ -88,7 +93,9 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
     } : null,
     repCount,
     hasRecording: !!recordingBlob,
-    user: user ? user.id : 'no user'
+    recordingBlobSize: recordingBlob?.size,
+    user: user ? user.id : 'no user',
+    videoTrackingContext
   })
 
   const { saveWorkout } = useHistoryStore()
@@ -184,6 +191,14 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
 
   // Handle logging reps and returning to the active workout
   const handleLogAndReturn = () => {
+    console.log('📹 handleLogAndReturn called with:', {
+      videoTrackingContext,
+      repCount,
+      hasRecordingBlob: !!recordingBlob,
+      recordingBlobSize: recordingBlob?.size,
+      currentExercise: currentExercise?.name
+    })
+    
     if (videoTrackingContext && repCount > 0) {
       logRepsFromVideo(repCount)
       showToast(`Logged ${repCount} reps!`, 'success')
@@ -191,10 +206,12 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
     
     // If there's a video, ask if they want to save it
     if (recordingBlob && videoTrackingContext && currentExercise) {
+      console.log('📹 Showing save video modal')
       setShowSaveVideoModal(true)
       return
     }
     
+    console.log('📹 No video to save, returning directly')
     // No video, just return
     resetWorkout()
     navigate(returnTo || ROUTES.WORKOUT_ACTIVE)

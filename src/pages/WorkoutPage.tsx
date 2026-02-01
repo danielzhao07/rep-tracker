@@ -63,7 +63,7 @@ export function WorkoutPage() {
 
   const handleCloseDifficultyModal = useCallback(() => {
     stopCamera()
-    navigate(ROUTES.HOME)
+    navigate(ROUTES.WORKOUT_ACTIVE)
   }, [stopCamera, navigate])
 
   const handleStartWorkout = useCallback(() => {
@@ -77,7 +77,7 @@ export function WorkoutPage() {
 
   const handleCloseSetup = useCallback(() => {
     stopCamera()
-    navigate(ROUTES.HOME)
+    navigate(ROUTES.WORKOUT_ACTIVE)
   }, [stopCamera, navigate])
 
   const handleRetry = useCallback(() => {

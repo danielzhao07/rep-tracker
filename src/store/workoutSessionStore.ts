@@ -576,6 +576,8 @@ export const useWorkoutSessionStore = create<WorkoutSessionState>((set, get) => 
       id: crypto.randomUUID(),
       createdAt: Date.now(),
     }
+    console.log('📹 addSavedVideo called:', newVideo)
+    console.log('📹 savedVideos after add:', [...savedVideos, newVideo])
     set({ savedVideos: [...savedVideos, newVideo] })
   },
 

@@ -173,6 +173,9 @@ export function SaveWorkoutPage() {
   const [showDiscardModal, setShowDiscardModal] = useState(false)
   const [showUpdateRoutineModal, setShowUpdateRoutineModal] = useState(false)
   const [showDeleteVideoModal, setShowDeleteVideoModal] = useState(false)
+  
+  // Debug: log saved videos
+  console.log('📹 SaveWorkoutPage - savedVideos:', savedVideos)
   const [videoToDelete, setVideoToDelete] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0)

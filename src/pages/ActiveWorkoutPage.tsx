@@ -883,11 +883,6 @@ export function ActiveWorkoutPage() {
             <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Sets</p>
             <p className="text-white font-bold">{completedSets}</p>
           </div>
-          <div className="flex gap-1">
-            {/* Body outline icons (simplified) */}
-            <div className="w-8 h-12 border border-cyan-400/60 rounded" />
-            <div className="w-8 h-12 border border-cyan-400/60 rounded" />
-          </div>
         </div>
       </div>
       

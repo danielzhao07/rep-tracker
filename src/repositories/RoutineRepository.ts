@@ -1,7 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import type { 
   Routine, 
-  RoutineExercise, 
   RoutineWithExercises, 
   CreateRoutineInput,
   UpdateRoutineInput,
@@ -21,7 +20,7 @@ export class RoutineRepository {
     if (!routines) return []
 
     // Get exercises for all routines
-    const routineIds = routines.map(r => r.id)
+    const routineIds = (routines as any[]).map(r => r.id)
     const { data: routineExercises, error: exercisesError } = await supabase
       .from('routine_exercises')
       .select(`
@@ -38,8 +37,8 @@ export class RoutineRepository {
     if (exercisesError) throw exercisesError
 
     // Map routines with their exercises
-    return routines.map(routine => {
-      const exercises = (routineExercises || [])
+    return (routines as any[]).map(routine => {
+      const exercises = ((routineExercises || []) as any[])
         .filter(re => re.routine_id === routine.id)
         .map(re => ({
           id: re.id,
@@ -96,7 +95,7 @@ export class RoutineRepository {
 
     if (exercisesError) throw exercisesError
 
-    const exercises = (routineExercises || []).map(re => ({
+    const exercises = ((routineExercises || []) as any[]).map(re => ({
       id: re.id,
       routineId: re.routine_id,
       exerciseId: re.exercise_id,
@@ -112,14 +111,15 @@ export class RoutineRepository {
       exerciseDetectorType: re.exercises?.detector_type || ''
     } as RoutineExerciseWithDetails))
 
+    const r = routine as any
     return {
-      id: routine.id,
-      userId: routine.user_id,
-      name: routine.name,
-      description: routine.description,
-      isActive: routine.is_active,
-      createdAt: routine.created_at,
-      updatedAt: routine.updated_at,
+      id: r.id,
+      userId: r.user_id,
+      name: r.name,
+      description: r.description,
+      isActive: r.is_active,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
       exercises
     }
   }
@@ -134,19 +134,20 @@ export class RoutineRepository {
         name: input.name,
         description: input.description,
         is_active: true
-      })
+      } as any)
       .select()
       .single()
 
     if (routineError) throw routineError
 
+    const r = routine as any
     // Add exercises if any
     if (input.exercises.length > 0) {
       const { error: exercisesError } = await supabase
         .from('routine_exercises')
         .insert(
           input.exercises.map(ex => ({
-            routine_id: routine.id,
+            routine_id: r.id,
             exercise_id: ex.exerciseId,
             order_index: ex.orderIndex,
             target_sets: ex.targetSets,
@@ -154,20 +155,20 @@ export class RoutineRepository {
             target_weight: ex.targetWeight,
             sets_data: ex.setsData,
             rest_seconds: ex.restSeconds
-          }))
+          })) as any
         )
 
       if (exercisesError) throw exercisesError
     }
 
     return {
-      id: routine.id,
-      userId: routine.user_id,
-      name: routine.name,
-      description: routine.description,
-      isActive: routine.is_active,
-      createdAt: routine.created_at,
-      updatedAt: routine.updated_at
+      id: r.id,
+      userId: r.user_id,
+      name: r.name,
+      description: r.description,
+      isActive: r.is_active,
+      createdAt: r.created_at,
+      updatedAt: r.updated_at
     }
   }
 
