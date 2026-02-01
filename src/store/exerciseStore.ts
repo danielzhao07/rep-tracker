@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { supabase } from '@/lib/supabase'
-import type { Exercise } from '@/types/exercise'
+import type { Exercise, ExerciseCategory, ExerciseDetectorType } from '@/types/exercise'
 
 interface ExerciseState {
   exercises: Exercise[]
@@ -9,6 +9,27 @@ interface ExerciseState {
   
   // Actions
   fetchExercises: () => Promise<void>
+}
+
+// Map database row to Exercise type
+function mapDbExercise(row: {
+  id: string
+  name: string
+  category: string
+  description: string | null
+  thumbnail_url: string | null
+  detector_type: string
+  created_at: string
+}): Exercise {
+  return {
+    id: row.id,
+    name: row.name,
+    category: row.category as ExerciseCategory,
+    description: row.description || '',
+    thumbnailUrl: row.thumbnail_url,
+    detectorType: row.detector_type as ExerciseDetectorType,
+    createdAt: row.created_at,
+  }
 }
 
 export const useExerciseStore = create<ExerciseState>((set, get) => ({
@@ -31,7 +52,7 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
       if (error) throw error
       
       set({ 
-        exercises: (data || []) as Exercise[],
+        exercises: (data || []).map((row: any) => mapDbExercise(row)),
         isLoading: false 
       })
     } catch (error) {

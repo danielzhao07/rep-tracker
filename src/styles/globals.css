@@ -12,7 +12,16 @@
   }
 
   * {
-    @apply border-gray-600;
+    @apply border-gray-500;
+  }
+  
+  /* Improve default text colors - make grays more visible */
+  .text-gray-400 {
+    color: #a1a1aa !important; /* zinc-400 - brighter */
+  }
+  
+  .text-gray-500 {
+    color: #a1a1aa !important; /* Make gray-500 same as zinc-400 */
   }
 
   /* Custom Scrollbar Styles */

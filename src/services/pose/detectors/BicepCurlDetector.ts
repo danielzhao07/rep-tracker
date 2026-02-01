@@ -162,15 +162,6 @@ export class BicepCurlDetector extends BaseDetector {
       }
     }
 
-    // Determine view type: side view if one arm has significantly better visibility
-    const VISIBILITY_THRESHOLD = 0.15 // 15% difference indicates side view
-    const visibilityDiff = Math.abs(leftVisibility - rightVisibility)
-    const isSideView = visibilityDiff > VISIBILITY_THRESHOLD
-
-    // For both-arms exercise, always use both arms even in side-ish views
-    const useLeftArm = true
-    const useRightArm = true
-
     // Get average angle of both arms
     const primaryAngle = (leftAngle + rightAngle) / 2
 

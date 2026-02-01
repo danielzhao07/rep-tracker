@@ -34,7 +34,7 @@ interface ProfileState {
   reset: () => void
 }
 
-export const useProfileStore = create<ProfileState>((set, get) => ({
+export const useProfileStore = create<ProfileState>((set) => ({
   // Initial state
   goals: [],
   activeGoals: [],

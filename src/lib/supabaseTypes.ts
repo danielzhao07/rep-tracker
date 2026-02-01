@@ -106,6 +106,144 @@ export interface Database {
         }
         Relationships: []
       }
+      user_goals: {
+        Row: {
+          id: string
+          user_id: string
+          goal_type: string
+          target_value: number
+          current_value: number
+          start_date: string
+          end_date: string | null
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          goal_type: string
+          target_value: number
+          current_value?: number
+          start_date: string
+          end_date?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          goal_type?: string
+          target_value?: number
+          current_value?: number
+          start_date?: string
+          end_date?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          form_strictness: string
+          rep_detection_sensitivity: number
+          default_rest_seconds: number
+          camera_position: string
+          notifications_enabled: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          form_strictness?: string
+          rep_detection_sensitivity?: number
+          default_rest_seconds?: number
+          camera_position?: string
+          notifications_enabled?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          form_strictness?: string
+          rep_detection_sensitivity?: number
+          default_rest_seconds?: number
+          camera_position?: string
+          notifications_enabled?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      routines: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          description: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          description?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          description?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      routine_exercises: {
+        Row: {
+          id: string
+          routine_id: string
+          exercise_id: string
+          order_index: number
+          target_sets: number
+          target_reps: number | null
+          target_weight: string | null
+          sets_data: any | null
+          rest_seconds: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          routine_id: string
+          exercise_id: string
+          order_index: number
+          target_sets?: number
+          target_reps?: number | null
+          target_weight?: string | null
+          sets_data?: any | null
+          rest_seconds?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          routine_id?: string
+          exercise_id?: string
+          order_index?: number
+          target_sets?: number
+          target_reps?: number | null
+          target_weight?: string | null
+          sets_data?: any | null
+          rest_seconds?: number
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>

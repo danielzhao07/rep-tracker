@@ -3,19 +3,28 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Plus, ClipboardList, Search, MoreVertical, ChevronDown, ChevronRight, Edit2, Copy, Trash2 } from 'lucide-react'
 import { Button } from '@/components/shared/Button'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { WorkoutInProgressModal } from '@/components/workout/WorkoutInProgressModal'
 import { useAuthStore } from '@/store/authStore'
 import { useRoutineStore } from '@/store/routineStore'
+import { useWorkoutSessionStore } from '@/store/workoutSessionStore'
+import type { RoutineWithExercises } from '@/types/routine'
 
 export function WorkoutHomePage() {
   const navigate = useNavigate()
   const location = useLocation() as any
   const { user } = useAuthStore()
   const { routines, isLoading, fetchRoutines, deleteRoutine } = useRoutineStore()
+  const { isActive: isWorkoutInProgress, startEmptyWorkout, reset: resetWorkout } = useWorkoutSessionStore()
   const [expandedRoutines, setExpandedRoutines] = useState(false)
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
   const [selectedRoutine, setSelectedRoutine] = useState<typeof routines[0] | null>(null)
   const [showRoutineDetail, setShowRoutineDetail] = useState(false)
   const [deleteConfirmation, setDeleteConfirmation] = useState<{show: boolean, routineId: string, routineName: string}>({show: false, routineId: '', routineName: ''})
+  
+  // Modal state for workout in progress warning
+  const [showWorkoutInProgressModal, setShowWorkoutInProgressModal] = useState(false)
+  const [pendingRoutine, setPendingRoutine] = useState<RoutineWithExercises | null>(null)
+  const [pendingAction, setPendingAction] = useState<'empty' | 'routine'>('empty')
 
   useEffect(() => {
     if (user) {
@@ -46,8 +55,15 @@ export function WorkoutHomePage() {
   }, [location.state])
 
   const handleStartEmptyWorkout = () => {
-    // Navigate to workout tracking (future implementation)
-    console.log('Start empty workout')
+    if (isWorkoutInProgress) {
+      setPendingAction('empty')
+      setPendingRoutine(null)
+      setShowWorkoutInProgressModal(true)
+      return
+    }
+    
+    startEmptyWorkout()
+    navigate('/workout/active')
   }
 
   const handleNewRoutine = () => {
@@ -61,9 +77,42 @@ export function WorkoutHomePage() {
 
   const handleStartRoutine = (routineId: string) => {
     const routine = routines.find(r => r.id === routineId)
-    if (routine) {
-      navigate('/workout/active', { state: { routine } })
+    if (!routine) return
+    
+    if (isWorkoutInProgress) {
+      setPendingAction('routine')
+      setPendingRoutine(routine as RoutineWithExercises)
+      setShowWorkoutInProgressModal(true)
+      return
     }
+    
+    navigate('/workout/active', { state: { routine } })
+  }
+
+  // Handle modal actions
+  const handleResumeWorkout = () => {
+    setShowWorkoutInProgressModal(false)
+    navigate('/workout/active')
+  }
+
+  const handleStartNewWorkout = () => {
+    // Reset the current workout
+    resetWorkout()
+    setShowWorkoutInProgressModal(false)
+    
+    if (pendingAction === 'empty') {
+      startEmptyWorkout()
+      navigate('/workout/active')
+    } else if (pendingRoutine) {
+      navigate('/workout/active', { state: { routine: pendingRoutine } })
+    }
+    
+    setPendingRoutine(null)
+  }
+
+  const handleCancelModal = () => {
+    setShowWorkoutInProgressModal(false)
+    setPendingRoutine(null)
   }
   const handleViewRoutine = (routine: typeof routines[0]) => {
     setSelectedRoutine(routine)
@@ -423,6 +472,14 @@ export function WorkoutHomePage() {
           </div>
         </div>
       )}
+
+      {/* Workout In Progress Modal */}
+      <WorkoutInProgressModal
+        isOpen={showWorkoutInProgressModal}
+        onResume={handleResumeWorkout}
+        onStartNew={handleStartNewWorkout}
+        onCancel={handleCancelModal}
+      />
     </div>
   )
 }

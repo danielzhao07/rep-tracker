@@ -50,18 +50,36 @@ export function RepCounter({
           </div>
         </div>
 
-        {/* Total */}
+        {/* Total with edit buttons */}
         <div>
           <p className="text-sm text-gray-400 uppercase tracking-wider mb-1">
             Total Reps
           </p>
-          <span className={
-            size === 'large'
-              ? 'text-6xl font-bold text-cyan-400 tabular-nums'
-              : 'text-4xl font-bold text-cyan-400 tabular-nums'
-          }>
-            {count}
-          </span>
+          <div className="flex items-center justify-center gap-4">
+            {editable && (
+              <button
+                onClick={onDecrement}
+                className="w-10 h-10 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-cyan-500 transition-all duration-200 transform hover:scale-110"
+              >
+                <Minus size={18} />
+              </button>
+            )}
+            <span className={
+              size === 'large'
+                ? 'text-6xl font-bold text-cyan-400 tabular-nums'
+                : 'text-4xl font-bold text-cyan-400 tabular-nums'
+            }>
+              {count}
+            </span>
+            {editable && (
+              <button
+                onClick={onIncrement}
+                className="w-10 h-10 rounded-full bg-dark-700 border border-gray-600 flex items-center justify-center text-gray-300 hover:text-white hover:border-cyan-500 transition-all duration-200 transform hover:scale-110"
+              >
+                <Plus size={18} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     )

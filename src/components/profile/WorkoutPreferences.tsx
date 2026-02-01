@@ -6,7 +6,7 @@ import {
   REST_TIMER_PRESETS,
   CAMERA_POSITIONS,
 } from '@/types'
-import { Settings, Sliders } from 'lucide-react'
+import { Sliders } from 'lucide-react'
 
 interface WorkoutPreferencesProps {
   preferences: UserPreferences

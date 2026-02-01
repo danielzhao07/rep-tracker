@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Image, AlertTriangle, Edit2, X } from 'lucide-react'
+import { ArrowLeft, Image, AlertTriangle, Edit2, X, Video, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/shared/Button'
 import { useWorkoutSessionStore } from '@/store/workoutSessionStore'
 import { useAuthStore } from '@/store/authStore'
@@ -108,6 +108,44 @@ function UpdateRoutineModal({
   )
 }
 
+// Delete Video Confirmation Modal
+function DeleteVideoModal({
+  onDelete,
+  onCancel,
+}: {
+  onDelete: () => void
+  onCancel: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/70" onClick={onCancel} />
+      <div className="relative bg-dark-800 rounded-2xl w-full max-w-sm p-6 text-center border border-dark-600">
+        <h3 className="text-xl font-semibold text-white mb-2">
+          Delete this video?
+        </h3>
+        <p className="text-gray-300 mb-6">
+          Are you sure you want to delete this video? This action cannot be undone.
+        </p>
+        
+        <div className="space-y-3">
+          <button
+            onClick={onDelete}
+            className="w-full py-3 bg-red-500 hover:bg-red-600 rounded-xl text-white font-medium transition-colors"
+          >
+            Delete Video
+          </button>
+          <button
+            onClick={onCancel}
+            className="w-full py-3 bg-dark-700 hover:bg-dark-600 rounded-xl text-white font-medium transition-colors border border-dark-500"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function SaveWorkoutPage() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
@@ -122,17 +160,25 @@ export function SaveWorkoutPage() {
     completedSets,
     totalSets,
     startTime,
+    savedVideos,
     getChanges,
     hasChanges,
     reset,
     updateWorkoutName,
+    removeSavedVideo,
   } = useWorkoutSessionStore()
   
   const [description, setDescription] = useState('')
   const [photoUrl, setPhotoUrl] = useState<string | null>(null)
   const [showDiscardModal, setShowDiscardModal] = useState(false)
   const [showUpdateRoutineModal, setShowUpdateRoutineModal] = useState(false)
+  const [showDeleteVideoModal, setShowDeleteVideoModal] = useState(false)
+  
+  // Debug: log saved videos
+  console.log('📹 SaveWorkoutPage - savedVideos:', savedVideos)
+  const [videoToDelete, setVideoToDelete] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editedTitle, setEditedTitle] = useState(routineName || 'Workout')
   
@@ -226,25 +272,48 @@ export function SaveWorkoutPage() {
     }
     setPhotoUrl(null)
   }
+
+  const handleDeleteVideoClick = (videoId: string) => {
+    setVideoToDelete(videoId)
+    setShowDeleteVideoModal(true)
+  }
+
+  const handleConfirmDeleteVideo = () => {
+    if (videoToDelete) {
+      removeSavedVideo(videoToDelete)
+      // Adjust current video index if needed
+      if (currentVideoIndex >= savedVideos.length - 1 && currentVideoIndex > 0) {
+        setCurrentVideoIndex(currentVideoIndex - 1)
+      }
+    }
+    setVideoToDelete(null)
+    setShowDeleteVideoModal(false)
+  }
   
   const getChangesDescription = () => {
     const changes = getChanges()
     const parts: string[] = []
     
-    if (changes.addedSets > 0) {
-      parts.push(`You added ${changes.addedSets} set${changes.addedSets > 1 ? 's' : ''}.`)
-    }
-    if (changes.removedSets > 0) {
-      parts.push(`You removed ${changes.removedSets} set${changes.removedSets > 1 ? 's' : ''}.`)
-    }
     if (changes.addedExercises.length > 0) {
-      parts.push(`You added ${changes.addedExercises.join(', ')}.`)
+      parts.push(`added ${changes.addedExercises.length} exercise${changes.addedExercises.length > 1 ? 's' : ''}`)
     }
     if (changes.removedExercises.length > 0) {
-      parts.push(`You removed ${changes.removedExercises.join(', ')}.`)
+      parts.push(`removed ${changes.removedExercises.length} exercise${changes.removedExercises.length > 1 ? 's' : ''}`)
+    }
+    if (changes.addedSets > 0) {
+      parts.push(`added ${changes.addedSets} set${changes.addedSets > 1 ? 's' : ''}`)
+    }
+    if (changes.removedSets > 0) {
+      parts.push(`removed ${changes.removedSets} set${changes.removedSets > 1 ? 's' : ''}`)
     }
     
-    return parts.join(' ')
+    if (parts.length === 0) return ''
+    
+    // Join with "and" for natural language
+    if (parts.length === 1) {
+      return `You ${parts[0]}.`
+    }
+    return `You ${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}.`
   }
   
   return (
@@ -310,23 +379,23 @@ export function SaveWorkoutPage() {
         {/* Stats Row */}
         <div className="flex gap-8">
           <div>
-            <p className="text-xs text-gray-500">Duration</p>
-            <p className="text-cyan-400 font-semibold">{formatDuration(elapsedSeconds)}</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Duration</p>
+            <p className="text-cyan-400 font-bold text-lg">{formatDuration(elapsedSeconds)}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Volume</p>
-            <p className="text-white font-semibold">{Math.round(totalVolume)} lbs</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Volume</p>
+            <p className="text-white font-bold text-lg">{Math.round(totalVolume)} lbs</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Sets</p>
-            <p className="text-white font-semibold">{completedSets}</p>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Sets</p>
+            <p className="text-white font-bold text-lg">{completedSets}</p>
           </div>
         </div>
         
         {/* When */}
         <div>
-          <p className="text-xs text-gray-500 mb-1">When</p>
-          <p className="text-cyan-400">{formatDateTime(workoutDate)}</p>
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">When</p>
+          <p className="text-cyan-400 font-medium">{formatDateTime(workoutDate)}</p>
         </div>
         
         {/* Photo/Video Upload */}
@@ -364,14 +433,81 @@ export function SaveWorkoutPage() {
           )}
         </div>
         
+        {/* Saved Videos Section - Carousel */}
+        {savedVideos && savedVideos.length > 0 && (
+          <div>
+            <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">Saved Videos ({currentVideoIndex + 1} of {savedVideos.length})</p>
+            <div className="relative">
+              {/* Video Card */}
+              <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
+                <div className="relative">
+                  <video
+                    key={savedVideos[currentVideoIndex]?.id}
+                    src={savedVideos[currentVideoIndex]?.videoUrl}
+                    controls
+                    className="w-full aspect-video"
+                  />
+                  <button
+                    onClick={() => handleDeleteVideoClick(savedVideos[currentVideoIndex]?.id)}
+                    className="absolute top-2 right-2 p-2 bg-red-500/80 hover:bg-red-600 rounded-full transition-colors"
+                  >
+                    <Trash2 size={16} className="text-white" />
+                  </button>
+                </div>
+                <div className="p-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Video size={16} className="text-cyan-400" />
+                    <span className="text-white text-sm font-medium">{savedVideos[currentVideoIndex]?.exerciseName}</span>
+                  </div>
+                  <span className="text-gray-400 text-sm">Set {(savedVideos[currentVideoIndex]?.setIndex ?? 0) + 1} • {savedVideos[currentVideoIndex]?.repCount} reps</span>
+                </div>
+              </div>
+              
+              {/* Navigation Buttons */}
+              {savedVideos.length > 1 && (
+                <>
+                  {/* Left Arrow */}
+                  <button
+                    onClick={() => setCurrentVideoIndex(prev => prev > 0 ? prev - 1 : savedVideos.length - 1)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-cyan-500/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-900/50 hover:border-cyan-400 transition-colors"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  
+                  {/* Right Arrow */}
+                  <button
+                    onClick={() => setCurrentVideoIndex(prev => prev < savedVideos.length - 1 ? prev + 1 : 0)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-cyan-500/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-900/50 hover:border-cyan-400 transition-colors"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
+              
+              {/* Dot Indicators */}
+              {savedVideos.length > 1 && (
+                <div className="flex justify-center gap-2 mt-3">
+                  {savedVideos.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentVideoIndex(idx)}
+                      className={`w-2 h-2 rounded-full transition-colors ${idx === currentVideoIndex ? 'bg-cyan-400' : 'bg-dark-600 hover:bg-dark-500'}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        
         {/* Description */}
         <div>
-          <p className="text-xs text-gray-500 mb-2">Description</p>
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">Description</p>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="How did your workout go? Leave some notes here..."
-            className="w-full bg-transparent text-white placeholder-gray-600 resize-none focus:outline-none"
+            className="w-full bg-dark-800/50 border border-dark-600 rounded-lg p-3 text-white placeholder-gray-500 resize-none focus:outline-none focus:border-cyan-500/50"
             rows={3}
           />
         </div>
@@ -405,6 +541,17 @@ export function SaveWorkoutPage() {
           onKeepOriginal={() => {
             setShowUpdateRoutineModal(false)
             saveWorkout(false)
+          }}
+        />
+      )}
+
+      {/* Delete Video Confirmation Modal */}
+      {showDeleteVideoModal && (
+        <DeleteVideoModal
+          onDelete={handleConfirmDeleteVideo}
+          onCancel={() => {
+            setShowDeleteVideoModal(false)
+            setVideoToDelete(null)
           }}
         />
       )}

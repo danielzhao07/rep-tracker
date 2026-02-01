@@ -18,19 +18,31 @@ export function useVideoRecording() {
       videoElement?: HTMLVideoElement,
       skeletonCanvas?: HTMLCanvasElement
     ) => {
+      console.log('📹 useVideoRecording.startRecording called with:', {
+        hasStream: !!stream,
+        hasVideoElement: !!videoElement,
+        hasSkeletonCanvas: !!skeletonCanvas
+      })
       const service = new VideoRecordingService()
       service.startRecording(stream, videoElement, skeletonCanvas)
       serviceRef.current = service
+      console.log('📹 Service ref set:', !!serviceRef.current)
       setIsRecording(true)
     },
     [setIsRecording]
   )
 
   const stopRecording = useCallback(async () => {
-    if (!serviceRef.current) return null
+    console.log('📹 useVideoRecording.stopRecording called, serviceRef:', !!serviceRef.current)
+    if (!serviceRef.current) {
+      console.log('📹 No service ref, returning null')
+      return null
+    }
 
     const blob = await serviceRef.current.stopRecording()
+    console.log('📹 Got blob from service:', blob ? `${blob.size} bytes` : 'null')
     setRecordingBlob(blob)
+    console.log('📹 setRecordingBlob called')
     setIsRecording(false)
     serviceRef.current = null
     return blob

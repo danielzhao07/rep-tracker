@@ -129,12 +129,6 @@ export function CreateRoutinePage() {
     })
   }
 
-  const handleCreateCustomExercise = () => {
-    navigate('/workout/create-routine/create-exercise', {
-      state: { returnTo: '/workout/create-routine' }
-    })
-  }
-
   const handleRemoveExercise = (index: number) => {
     setExercises(prev => prev.filter((_, i) => i !== index))
   }

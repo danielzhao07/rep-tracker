@@ -161,6 +161,7 @@ export const EXERCISES_SEED = [
 ]
 
 export const ROUTES = {
+  ONBOARDING: '/onboarding',
   LOGIN: '/login',
   SIGNUP: '/signup',
   HOME: '/',

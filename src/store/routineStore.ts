@@ -15,7 +15,7 @@ interface RoutineStore {
   clearError: () => void
 }
 
-export const useRoutineStore = create<RoutineStore>((set, get) => ({
+export const useRoutineStore = create<RoutineStore>((set) => ({
   routines: [],
   isLoading: false,
   error: null,

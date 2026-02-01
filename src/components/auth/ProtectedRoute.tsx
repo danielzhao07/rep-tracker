@@ -1,7 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/authStore'
 import { PageLoader } from '@/components/shared/LoadingSpinner'
-import { ROUTES } from '@/utils/constants'
 import type { ReactNode } from 'react'
 
 interface ProtectedRouteProps {
@@ -9,14 +8,18 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuthStore()
+  const { user, isLoading, hasSeenOnboarding } = useAuthStore()
 
   if (isLoading) {
     return <PageLoader />
   }
 
   if (!user) {
-    return <Navigate to={ROUTES.LOGIN} replace />
+    // If user hasn't seen onboarding, redirect there first
+    if (!hasSeenOnboarding) {
+      return <Navigate to="/onboarding" replace />
+    }
+    return <Navigate to="/login" replace />
   }
 
   return <>{children}</>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { CameraSetupModal } from '@/components/workout/CameraSetupModal'
 import { SquatDifficultyModal } from '@/components/workout/SquatDifficultyModal'
 import { WorkoutActiveView } from '@/components/workout/WorkoutActiveView'
@@ -12,8 +12,16 @@ import type { SquatDifficultyMode } from '@/utils/constants'
 
 type WorkoutPhase = 'difficulty-select' | 'setup' | 'active' | 'complete'
 
+interface LocationState {
+  returnTo?: string
+  setIndex?: number
+  exerciseId?: string
+}
+
 export function WorkoutPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const locationState = location.state as LocationState | null
   const { currentExercise, isCameraMode, setSquatDifficulty } = useWorkoutStore()
   const { stream, initializeCamera, stopCamera } = useCameraStore()
   const { isEnabled, toggleAudio } = useAudioCues()
@@ -55,7 +63,7 @@ export function WorkoutPage() {
 
   const handleCloseDifficultyModal = useCallback(() => {
     stopCamera()
-    navigate(ROUTES.HOME)
+    navigate(ROUTES.WORKOUT_ACTIVE)
   }, [stopCamera, navigate])
 
   const handleStartWorkout = useCallback(() => {
@@ -69,7 +77,7 @@ export function WorkoutPage() {
 
   const handleCloseSetup = useCallback(() => {
     stopCamera()
-    navigate(ROUTES.HOME)
+    navigate(ROUTES.WORKOUT_ACTIVE)
   }, [stopCamera, navigate])
 
   const handleRetry = useCallback(() => {
@@ -111,7 +119,12 @@ export function WorkoutPage() {
 
       {phase === 'active' && <WorkoutActiveView onEnd={handleEndWorkout} />}
 
-      {phase === 'complete' && <WorkoutCompleteView onRetry={handleRetry} />}
+      {phase === 'complete' && (
+        <WorkoutCompleteView 
+          onRetry={handleRetry} 
+          returnTo={locationState?.returnTo}
+        />
+      )}
     </div>
   )
 }

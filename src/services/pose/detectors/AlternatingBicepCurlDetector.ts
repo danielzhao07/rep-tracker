@@ -228,7 +228,7 @@ export class AlternatingBicepCurlDetector extends BaseDetector {
     }
   }
 
-  validateForm(pose: Pose): { score: number; feedback: string[] } {
+  validateForm(_pose: Pose): { score: number; feedback: string[] } {
     const feedback: string[] = []
     let score = 100
 
