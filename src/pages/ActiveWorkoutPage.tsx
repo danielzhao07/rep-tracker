@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { ChevronDown, MoreVertical, Plus, Check, Clock, Video, Search, X, Volume2, VolumeX } from 'lucide-react'
+import { ChevronDown, MoreVertical, Plus, Check, Clock, Video, Search, X, Volume2, VolumeX, Trash2 } from 'lucide-react'
 import { Button } from '@/components/shared/Button'
 import { useWorkoutSessionStore, type WorkoutExercise } from '@/store/workoutSessionStore'
 import { useWorkoutStore } from '@/store/workoutStore'
@@ -247,16 +247,113 @@ function AddExerciseModal({
   )
 }
 
+// Unfinished Sets Modal - shown when user tries to finish workout with incomplete sets
+// When ALL sets are unfinished (no checkmarks), shows "Cancel Workout" option
+function UnfinishedSetsModal({
+  unfinishedCount,
+  hasNoCompletedSets,
+  onComplete,
+  onDiscard,
+  onCancelWorkout,
+  onCancel,
+}: {
+  unfinishedCount: number
+  hasNoCompletedSets: boolean
+  onComplete: () => void
+  onDiscard: () => void
+  onCancelWorkout: () => void
+  onCancel: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/60" onClick={onCancel} />
+      <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 text-center">
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          You have {unfinishedCount} unfinished set{unfinishedCount > 1 ? 's' : ''}
+        </h3>
+        <p className="text-gray-500 mb-6">
+          What would you like to do with the incomplete sets?
+        </p>
+        
+        <div className="space-y-3">
+          <button
+            onClick={onComplete}
+            className="w-full py-3 bg-cyan-500 hover:bg-cyan-600 rounded-xl text-white font-medium transition-colors"
+          >
+            Complete Unfinished Sets
+          </button>
+          {hasNoCompletedSets ? (
+            <button
+              onClick={onCancelWorkout}
+              className="w-full py-3 bg-red-100 hover:bg-red-200 rounded-xl text-red-600 font-medium transition-colors"
+            >
+              Cancel Workout
+            </button>
+          ) : (
+            <button
+              onClick={onDiscard}
+              className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-colors"
+            >
+              Discard Unfinished Sets
+            </button>
+          )}
+          <button
+            onClick={onCancel}
+            className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-500 font-medium transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Empty/Invalid Workout Modal - shown when there are no valid sets (need both weight and reps)
+function InvalidWorkoutModal({
+  message,
+  onCancel,
+}: {
+  message: string
+  onCancel: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/60" onClick={onCancel} />
+      <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 text-center">
+        <div className="w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+          <X size={24} className="text-red-500" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          Cannot Complete Workout
+        </h3>
+        <p className="text-gray-500 mb-6">
+          {message}
+        </p>
+        
+        <button
+          onClick={onCancel}
+          className="w-full py-3 bg-cyan-500 hover:bg-cyan-600 rounded-xl text-white font-medium transition-colors"
+        >
+          Got It
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // Exercise Card Component - REDESIGNED to match reference images
 // Layout: SET | PREVIOUS | LBS (if weighted) | VIDEO (if detectable) | REPS | CHECKMARK all in ONE row
 function ExerciseCard({ 
   exercise, 
   onOpenRestTimer,
-  onVideoTrack
+  onVideoTrack,
+  showInvalidFields
 }: { 
   exercise: WorkoutExercise
   onOpenRestTimer: () => void
   onVideoTrack: (setIndex: number) => void
+  showInvalidFields: boolean
 }) {
   const { 
     toggleSetCompletion, 
@@ -405,30 +502,36 @@ function ExerciseCard({
                 </div>
                 
                 {/* Weight Input (if applicable) */}
-                {hasWeight && (
-                  <div 
-                    className={`rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
-                      isCompleted 
-                        ? 'bg-green-900/30 border-green-700/40' 
-                        : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
-                    }`}
-                    onClick={() => setEditingSet({ index, field: 'weight' })}
-                  >
-                    {editingSet?.index === index && editingSet.field === 'weight' ? (
-                      <input
-                        type="text"
-                        value={set.weight}
-                        onChange={(e) => updateSetWeight(exercise.exerciseId, index, e.target.value)}
-                        onBlur={() => setEditingSet(null)}
-                        onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
-                        autoFocus
-                        className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
-                      />
-                    ) : (
-                      <span className="text-white text-sm">{set.weight || '-'}</span>
-                    )}
-                  </div>
-                )}
+                {hasWeight && (() => {
+                  const weightEmpty = !set.weight || set.weight.trim() === ''
+                  const showRedBorder = showInvalidFields && isCompleted && weightEmpty
+                  return (
+                    <div 
+                      className={`rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
+                        showRedBorder
+                          ? 'bg-red-900/30 border-red-500'
+                          : isCompleted 
+                            ? 'bg-green-900/30 border-green-700/40' 
+                            : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
+                      }`}
+                      onClick={() => setEditingSet({ index, field: 'weight' })}
+                    >
+                      {editingSet?.index === index && editingSet.field === 'weight' ? (
+                        <input
+                          type="text"
+                          value={set.weight}
+                          onChange={(e) => updateSetWeight(exercise.exerciseId, index, e.target.value)}
+                          onBlur={() => setEditingSet(null)}
+                          onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
+                          autoFocus
+                          className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
+                        />
+                      ) : (
+                        <span className={`text-sm ${showRedBorder ? 'text-red-400' : 'text-white'}`}>{set.weight || '-'}</span>
+                      )}
+                    </div>
+                  )
+                })()}
                 
                 {/* Video Icon (if exercise is detectable) */}
                 {isDetectable && (
@@ -444,28 +547,36 @@ function ExerciseCard({
                 )}
                 
                 {/* Reps Input */}
-                <div 
-                  className={`rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
-                    isCompleted 
-                      ? 'bg-green-900/30 border-green-700/40' 
-                      : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
-                  }`}
-                  onClick={() => setEditingSet({ index, field: 'reps' })}
-                >
-                  {editingSet?.index === index && editingSet.field === 'reps' ? (
-                    <input
-                      type="number"
-                      value={set.reps ?? ''}
-                      onChange={(e) => updateSetReps(exercise.exerciseId, index, e.target.value ? parseInt(e.target.value) : null)}
-                      onBlur={() => setEditingSet(null)}
-                      onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
-                      autoFocus
-                      className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
-                    />
-                  ) : (
-                    <span className="text-white text-sm">{set.reps ?? '-'}</span>
-                  )}
-                </div>
+                {(() => {
+                  const repsEmpty = set.reps === null || set.reps === undefined || set.reps <= 0
+                  const showRedBorder = showInvalidFields && isCompleted && repsEmpty
+                  return (
+                    <div 
+                      className={`rounded-lg py-1.5 text-center border transition-colors cursor-pointer ${
+                        showRedBorder
+                          ? 'bg-red-900/30 border-red-500'
+                          : isCompleted 
+                            ? 'bg-green-900/30 border-green-700/40' 
+                            : 'bg-dark-700/50 border-dark-600 hover:border-cyan-700/50'
+                      }`}
+                      onClick={() => setEditingSet({ index, field: 'reps' })}
+                    >
+                      {editingSet?.index === index && editingSet.field === 'reps' ? (
+                        <input
+                          type="number"
+                          value={set.reps ?? ''}
+                          onChange={(e) => updateSetReps(exercise.exerciseId, index, e.target.value ? parseInt(e.target.value) : null)}
+                          onBlur={() => setEditingSet(null)}
+                          onKeyDown={(e) => e.key === 'Enter' && setEditingSet(null)}
+                          autoFocus
+                          className="w-full bg-transparent text-white text-center text-sm focus:outline-none"
+                        />
+                      ) : (
+                        <span className={`text-sm ${showRedBorder ? 'text-red-400' : 'text-white'}`}>{set.reps ?? '-'}</span>
+                      )}
+                    </div>
+                  )
+                })()}
                 
                 {/* Checkmark Button */}
                 <button
@@ -514,10 +625,16 @@ export function ActiveWorkoutPage() {
     tick,
     stopRestTimer,
     tickRestTimer,
+    toggleSetCompletion,
+    reset,
   } = useWorkoutSessionStore()
   
   const [restTimerExercise, setRestTimerExercise] = useState<WorkoutExercise | null>(null)
   const [showAddExerciseModal, setShowAddExerciseModal] = useState(false)
+  const [showUnfinishedSetsModal, setShowUnfinishedSetsModal] = useState(false)
+  const [showInvalidWorkoutModal, setShowInvalidWorkoutModal] = useState(false)
+  const [invalidWorkoutMessage, setInvalidWorkoutMessage] = useState('')
+  const [showInvalidFields, setShowInvalidFields] = useState(false)
   
   const audioRef = useRef<HTMLAudioElement | null>(null)
   
@@ -578,13 +695,117 @@ export function ActiveWorkoutPage() {
     
     return () => clearInterval(interval)
   }, [activeRestTimer?.isRunning, activeRestTimer?.exerciseId, exercises, tickRestTimer])
+
+  // Count unfinished sets (sets that are not completed)
+  const unfinishedSets = exercises.flatMap(ex => 
+    ex.sets.filter(s => !s.completed).map((s) => ({ exercise: ex, set: s, index: ex.sets.indexOf(s) }))
+  )
+
+  // Helper to check if a set is valid (has both weight/BW AND reps)
+  const isSetValid = (set: { weight: string; reps: number | null }) => {
+    const hasWeight = set.weight.trim() !== '' && (set.weight.toUpperCase() === 'BW' || !isNaN(parseFloat(set.weight)))
+    const hasReps = set.reps !== null && set.reps > 0
+    return hasWeight && hasReps
+  }
+
+  // Count valid completed sets (sets with both weight and reps)
+  const validCompletedSets = exercises.flatMap(ex => 
+    ex.sets.filter(s => s.completed && isSetValid(s))
+  )
   
   const handleFinish = () => {
+    // Reset invalid field highlighting
+    setShowInvalidFields(false)
+    
+    // Check if there are no exercises
+    if (exercises.length === 0) {
+      setInvalidWorkoutMessage('Please add at least one exercise to your workout.')
+      setShowInvalidWorkoutModal(true)
+      return
+    }
+    
+    // Check if there are any completed sets at all
+    const allCompletedSets = exercises.flatMap(ex => ex.sets.filter(s => s.completed))
+    
+    if (allCompletedSets.length === 0) {
+      // No checkmarks at all - show unfinished modal with cancel workout option
+      setShowUnfinishedSetsModal(true)
+      return
+    }
+    
+    // Check if any completed sets are missing weight or reps
+    const invalidSets = allCompletedSets.filter(s => !isSetValid(s))
+    
+    if (invalidSets.length > 0) {
+      // Show red borders and error message
+      setShowInvalidFields(true)
+      setInvalidWorkoutMessage('Some completed sets are missing weight or reps. Please fill in all fields for completed sets.')
+      setShowInvalidWorkoutModal(true)
+      return
+    }
+    
+    // Check if there are unfinished sets
+    if (unfinishedSets.length > 0) {
+      setShowUnfinishedSetsModal(true)
+      return
+    }
+    
     navigate('/workout/save')
+  }
+
+  // Complete unfinished sets that have valid data (weight/BW AND reps)
+  const handleCompleteUnfinishedSets = () => {
+    let hasValidSetsToComplete = false
+    
+    exercises.forEach(ex => {
+      ex.sets.forEach((set, index) => {
+        if (!set.completed && isSetValid(set)) {
+          toggleSetCompletion(ex.exerciseId, index)
+          hasValidSetsToComplete = true
+        }
+      })
+    })
+    
+    setShowUnfinishedSetsModal(false)
+    
+    // If no valid sets could be completed, show error
+    if (!hasValidSetsToComplete && completedSets === 0) {
+      setShowInvalidFields(true)
+      setInvalidWorkoutMessage('No valid sets to complete. Each set needs both weight (or BW) and reps.')
+      setShowInvalidWorkoutModal(true)
+      return
+    }
+    
+    navigate('/workout/save')
+  }
+
+  // Discard unfinished sets (just go to save without completing them)
+  const handleDiscardUnfinishedSets = () => {
+    // Check if we have any valid completed sets before proceeding
+    if (validCompletedSets.length === 0) {
+      setShowUnfinishedSetsModal(false)
+      setShowInvalidFields(true)
+      setInvalidWorkoutMessage('Cannot save workout with no valid sets. Each completed set needs both weight (or BW) and reps.')
+      setShowInvalidWorkoutModal(true)
+      return
+    }
+    
+    setShowUnfinishedSetsModal(false)
+    navigate('/workout/save')
+  }
+
+  // Cancel entire workout
+  const handleCancelWorkout = () => {
+    setShowUnfinishedSetsModal(false)
+    reset()
+    navigate('/workout')
   }
   
   // Skip the modal and go DIRECTLY to camera
   const handleDirectVideoTrack = (exercise: WorkoutExercise, setIndex: number) => {
+    // Set the video tracking context in the session store
+    useWorkoutSessionStore.getState().setVideoTrackingContext(exercise.exerciseId, setIndex)
+    
     // Set up the workout store with the exercise for camera tracking
     // Using 'as any' to avoid type issues since the exercise from workout may not have all fields
     setCurrentExercise({
@@ -677,23 +898,58 @@ export function ActiveWorkoutPage() {
       
       {/* Exercises */}
       <div className="p-4 space-y-4">
-        {exercises.map((exercise) => (
-          <ExerciseCard
-            key={exercise.exerciseId}
-            exercise={exercise}
-            onOpenRestTimer={() => setRestTimerExercise(exercise)}
-            onVideoTrack={(setIndex) => handleDirectVideoTrack(exercise, setIndex)}
-          />
-        ))}
-        
-        {/* Add Exercise Button */}
-        <button
-          onClick={() => setShowAddExerciseModal(true)}
-          className="w-full py-4 bg-dark-800/50 hover:bg-dark-800 rounded-xl border border-dashed border-dark-600 text-cyan-400 font-medium flex items-center justify-center gap-2 transition-colors"
-        >
-          <Plus size={20} />
-          Add Exercise
-        </button>
+        {exercises.length === 0 ? (
+          // Empty workout state
+          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+            <div className="w-16 h-16 rounded-full bg-dark-800 flex items-center justify-center mb-4">
+              <Plus size={32} className="text-cyan-400" />
+            </div>
+            <h3 className="text-white text-lg font-semibold mb-2">Get started!</h3>
+            <p className="text-gray-400 mb-6">
+              Add an exercise to begin your workout
+            </p>
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={() => setShowAddExerciseModal(true)}
+                className="px-6 py-3 bg-cyan-500 hover:bg-cyan-600 rounded-xl text-white font-medium flex items-center gap-2 transition-colors"
+              >
+                <Plus size={20} />
+                Add Exercise
+              </button>
+              <button
+                onClick={() => {
+                  useWorkoutSessionStore.getState().reset()
+                  navigate('/workout')
+                }}
+                className="px-6 py-3 text-gray-400 hover:text-white font-medium flex items-center gap-2 transition-colors"
+              >
+                <Trash2 size={18} />
+                Discard Workout
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {exercises.map((exercise) => (
+              <ExerciseCard
+                key={exercise.exerciseId}
+                exercise={exercise}
+                onOpenRestTimer={() => setRestTimerExercise(exercise)}
+                onVideoTrack={(setIndex) => handleDirectVideoTrack(exercise, setIndex)}
+                showInvalidFields={showInvalidFields}
+              />
+            ))}
+            
+            {/* Add Exercise Button */}
+            <button
+              onClick={() => setShowAddExerciseModal(true)}
+              className="w-full py-4 bg-dark-800/50 hover:bg-dark-800 rounded-xl border border-dashed border-dark-600 text-cyan-400 font-medium flex items-center justify-center gap-2 transition-colors"
+            >
+              <Plus size={20} />
+              Add Exercise
+            </button>
+          </>
+        )}
       </div>
       
       {/* Rest Timer Picker Modal */}
@@ -720,6 +976,28 @@ export function ActiveWorkoutPage() {
         <AddExerciseModal
           onClose={() => setShowAddExerciseModal(false)}
           onAddExercise={handleAddExercise}
+        />
+      )}
+
+      {/* Unfinished Sets Modal */}
+      {showUnfinishedSetsModal && (
+        <UnfinishedSetsModal
+          unfinishedCount={unfinishedSets.length}
+          hasNoCompletedSets={completedSets === 0}
+          onComplete={handleCompleteUnfinishedSets}
+          onDiscard={handleDiscardUnfinishedSets}
+          onCancelWorkout={handleCancelWorkout}
+          onCancel={() => setShowUnfinishedSetsModal(false)}
+        />
+      )}
+
+      {/* Invalid Workout Modal */}
+      {showInvalidWorkoutModal && (
+        <InvalidWorkoutModal
+          message={invalidWorkoutMessage}
+          onCancel={() => {
+            setShowInvalidWorkoutModal(false)
+          }}
         />
       )}
     </div>

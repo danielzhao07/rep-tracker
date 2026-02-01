@@ -7,6 +7,7 @@ import { NavBar } from '@/components/layout/NavBar'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { ToastContainer } from '@/components/shared/Toast'
 import { PageLoader } from '@/components/shared/LoadingSpinner'
+import { WorkoutInProgressBar } from '@/components/workout/WorkoutInProgressBar'
 import { LoginPage } from '@/pages/LoginPage'
 import { SignUpPage } from '@/pages/SignUpPage'
 import { HomePage } from '@/pages/HomePage'
@@ -185,6 +186,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AppRoutes />
+        <WorkoutInProgressBar />
         <ToastContainer />
       </BrowserRouter>
     </QueryClientProvider>

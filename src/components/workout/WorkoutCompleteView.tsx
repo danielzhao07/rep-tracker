@@ -4,20 +4,60 @@ import { Card } from '@/components/shared/Card'
 import { Button } from '@/components/shared/Button'
 import { RepCounter } from './RepCounter'
 import { useWorkoutStore } from '@/store/workoutStore'
+import { useWorkoutSessionStore } from '@/store/workoutSessionStore'
 import { useHistoryStore } from '@/store/historyStore'
 import { useAuthStore } from '@/store/authStore'
 import { VideoStorageRepository } from '@/repositories/VideoStorageRepository'
 import { MetricsCalculatorService } from '@/services/metrics/MetricsCalculatorService'
 import { showToast } from '@/components/shared/Toast'
 import { formatDuration } from '@/utils/helpers'
-import { Save, Trash2, RotateCcw, Video, VideoOff, Download } from 'lucide-react'
+import { Save, Trash2, RotateCcw, Video, VideoOff, Download, CheckCircle } from 'lucide-react'
 import { ROUTES } from '@/utils/constants'
+
+// Save Video Prompt Modal
+function SaveVideoModal({
+  onSave,
+  onDiscard,
+}: {
+  onSave: () => void
+  onDiscard: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 text-center">
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          Save this video?
+        </h3>
+        <p className="text-gray-500 mb-6">
+          Would you like to save this video to your workout summary?
+        </p>
+        
+        <div className="space-y-3">
+          <button
+            onClick={onSave}
+            className="w-full py-3 bg-cyan-500 hover:bg-cyan-600 rounded-xl text-white font-medium transition-colors"
+          >
+            Save Video
+          </button>
+          <button
+            onClick={onDiscard}
+            className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-colors"
+          >
+            Don't Save
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 interface WorkoutCompleteViewProps {
   onRetry?: () => void
+  returnTo?: string // Path to return to (e.g., /workout/active)
 }
 
-export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
+export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewProps) {
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const {
@@ -34,6 +74,10 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
     resetWorkout,
     restartWorkout,
   } = useWorkoutStore()
+  
+  const { logRepsFromVideo, videoTrackingContext, addSavedVideo } = useWorkoutSessionStore()
+  
+  const [showSaveVideoModal, setShowSaveVideoModal] = useState(false)
 
   // Debug: Log what exercise we have when component loads
   console.log('🏋️ WorkoutCompleteView loaded with:', {
@@ -138,9 +182,56 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
     }
   }
 
+  // Handle logging reps and returning to the active workout
+  const handleLogAndReturn = () => {
+    if (videoTrackingContext && repCount > 0) {
+      logRepsFromVideo(repCount)
+      showToast(`Logged ${repCount} reps!`, 'success')
+    }
+    
+    // If there's a video, ask if they want to save it
+    if (recordingBlob && videoTrackingContext && currentExercise) {
+      setShowSaveVideoModal(true)
+      return
+    }
+    
+    // No video, just return
+    resetWorkout()
+    navigate(returnTo || ROUTES.WORKOUT_ACTIVE)
+  }
+
+  const handleSaveVideoAndReturn = () => {
+    if (recordingBlob && videoTrackingContext && currentExercise) {
+      const videoUrl = URL.createObjectURL(recordingBlob)
+      addSavedVideo({
+        exerciseId: videoTrackingContext.exerciseId,
+        exerciseName: currentExercise.name,
+        setIndex: videoTrackingContext.setIndex,
+        repCount,
+        videoBlob: recordingBlob,
+        videoUrl,
+      })
+      showToast('Video saved!', 'success')
+    }
+    setShowSaveVideoModal(false)
+    resetWorkout()
+    navigate(returnTo || ROUTES.WORKOUT_ACTIVE)
+  }
+
+  const handleDiscardVideoAndReturn = () => {
+    setShowSaveVideoModal(false)
+    resetWorkout()
+    navigate(returnTo || ROUTES.WORKOUT_ACTIVE)
+  }
+
   const handleDiscard = () => {
     resetWorkout()
-    navigate(ROUTES.HOME)
+    // If we came from active workout, return there; otherwise go home
+    if (returnTo) {
+      navigate(returnTo)
+    } else {
+      navigate(ROUTES.HOME)
+    }
   }
 
   const handleRetryWorkout = () => {
@@ -164,6 +255,9 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
 
     showToast('Video downloaded!', 'success')
   }
+
+  // Check if we're coming from an active workout session
+  const isFromActiveWorkout = !!returnTo && !!videoTrackingContext
 
   return (
     <div className="space-y-8">
@@ -254,36 +348,68 @@ export function WorkoutCompleteView({ onRetry }: WorkoutCompleteViewProps) {
       )}
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 border-t border-gray-600">
-        {recordingBlob && (
-          <Button
-            onClick={() => handleSave(true)}
-            isLoading={isSaving}
-            size="lg"
-          >
-            <Video size={18} />
-            <span className="ml-2">Save with Video</span>
-          </Button>
+        {isFromActiveWorkout ? (
+          // When coming from active workout session - show Log & Return as primary action
+          <>
+            <Button
+              onClick={handleLogAndReturn}
+              size="lg"
+            >
+              <CheckCircle size={18} />
+              <span className="ml-2">Log {repCount} Reps & Continue</span>
+            </Button>
+            <Button variant="ghost" onClick={handleRetryWorkout}>
+              <RotateCcw size={18} />
+              <span className="ml-2">Retry</span>
+            </Button>
+            <Button variant="ghost" onClick={handleDiscard}>
+              <Trash2 size={18} />
+              <span className="ml-2">Discard</span>
+            </Button>
+          </>
+        ) : (
+          // Normal flow - save to history
+          <>
+            {recordingBlob && (
+              <Button
+                onClick={() => handleSave(true)}
+                isLoading={isSaving}
+                size="lg"
+              >
+                <Video size={18} />
+                <span className="ml-2">Save with Video</span>
+              </Button>
+            )}
+            <Button
+              variant={recordingBlob ? 'secondary' : 'primary'}
+              onClick={() => handleSave(false)}
+              isLoading={isSaving}
+              size="lg"
+            >
+              {recordingBlob ? <VideoOff size={18} /> : <Save size={18} />}
+              <span className="ml-2">
+                {recordingBlob ? 'Save without Video' : 'Save Workout'}
+              </span>
+            </Button>
+            <Button variant="ghost" onClick={handleRetryWorkout}>
+              <RotateCcw size={18} />
+              <span className="ml-2">Retry</span>
+            </Button>
+            <Button variant="ghost" onClick={handleDiscard}>
+              <Trash2 size={18} />
+              <span className="ml-2">Discard</span>
+            </Button>
+          </>
         )}
-        <Button
-          variant={recordingBlob ? 'secondary' : 'primary'}
-          onClick={() => handleSave(false)}
-          isLoading={isSaving}
-          size="lg"
-        >
-          {recordingBlob ? <VideoOff size={18} /> : <Save size={18} />}
-          <span className="ml-2">
-            {recordingBlob ? 'Save without Video' : 'Save Workout'}
-          </span>
-        </Button>
-        <Button variant="ghost" onClick={handleRetryWorkout}>
-          <RotateCcw size={18} />
-          <span className="ml-2">Retry</span>
-        </Button>
-        <Button variant="ghost" onClick={handleDiscard}>
-          <Trash2 size={18} />
-          <span className="ml-2">Discard</span>
-        </Button>
       </div>
+
+      {/* Save Video Modal */}
+      {showSaveVideoModal && (
+        <SaveVideoModal
+          onSave={handleSaveVideoAndReturn}
+          onDiscard={handleDiscardVideoAndReturn}
+        />
+      )}
     </div>
   )
 }

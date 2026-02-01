@@ -12,6 +12,18 @@ export interface WorkoutSet {
   previousWeight?: string
 }
 
+// Saved video data
+export interface SavedVideo {
+  id: string
+  exerciseId: string
+  exerciseName: string
+  setIndex: number
+  repCount: number
+  videoBlob: Blob
+  videoUrl: string
+  createdAt: number
+}
+
 // Exercise data during workout
 export interface WorkoutExercise {
   exerciseId: string
@@ -59,8 +71,18 @@ interface WorkoutSessionState {
   // Original state for change tracking
   originalExercises: WorkoutExercise[]
   
+  // Video tracking context (for returning from video detection)
+  videoTrackingContext: {
+    exerciseId: string
+    setIndex: number
+  } | null
+  
+  // Saved videos during workout
+  savedVideos: SavedVideo[]
+  
   // Actions
   startWorkout: (routine: RoutineWithExercises, previousWorkoutData?: Map<string, { reps: number | null; weight: string }[]>) => void
+  startEmptyWorkout: () => void
   endWorkout: () => void
   
   // Set actions
@@ -85,6 +107,16 @@ interface WorkoutSessionState {
   stopRestTimer: () => void
   tickRestTimer: () => void
   
+  // Video tracking
+  setVideoTrackingContext: (exerciseId: string, setIndex: number) => void
+  clearVideoTrackingContext: () => void
+  logRepsFromVideo: (repCount: number) => void
+  
+  // Saved video actions
+  addSavedVideo: (video: Omit<SavedVideo, 'id' | 'createdAt'>) => void
+  removeSavedVideo: (videoId: string) => void
+  clearSavedVideos: () => void
+  
   // Get changes
   getChanges: () => WorkoutChanges
   hasChanges: () => boolean
@@ -98,6 +130,8 @@ const initialState = {
   routine: null,
   routineName: '',
   exercises: [],
+  videoTrackingContext: null,
+  savedVideos: [],
   startTime: null,
   elapsedSeconds: 0,
   activeRestTimer: null,
@@ -115,17 +149,22 @@ export const useWorkoutSessionStore = create<WorkoutSessionState>((set, get) => 
       // Get previous workout data for this exercise
       const prevData = previousWorkoutData?.get(ex.exerciseId)
       
+      // Determine if this is a bodyweight exercise and default weight to 'BW'
+      const isBodyweight = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'body weight', 'bodyweight', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
+        .some(bw => ex.exerciseName.toLowerCase().includes(bw))
+      const defaultWeight = isBodyweight ? 'BW' : ''
+      
       // Build sets from setsData if available, otherwise from targetSets
       const setsData = ex.setsData && Array.isArray(ex.setsData) && ex.setsData.length > 0
         ? ex.setsData
         : Array.from({ length: ex.targetSets }, () => ({
             reps: ex.targetReps ?? null,
-            weight: ex.targetWeight || ''
+            weight: ex.targetWeight || defaultWeight
           }))
       
       const sets: WorkoutSet[] = setsData.map((setData, index) => ({
         setNumber: index + 1,
-        weight: setData.weight || '',
+        weight: setData.weight || defaultWeight,
         reps: setData.reps,
         completed: false,
         previousReps: prevData?.[index]?.reps ?? null,
@@ -159,6 +198,24 @@ export const useWorkoutSessionStore = create<WorkoutSessionState>((set, get) => 
       completedSets: 0,
       totalSets,
       activeRestTimer: null,
+      videoTrackingContext: null,
+    })
+  },
+
+  startEmptyWorkout: () => {
+    set({
+      isActive: true,
+      routine: null,
+      routineName: 'Workout',
+      exercises: [],
+      originalExercises: [],
+      startTime: Date.now(),
+      elapsedSeconds: 0,
+      totalVolume: 0,
+      completedSets: 0,
+      totalSets: 0,
+      activeRestTimer: null,
+      videoTrackingContext: null,
     })
   },
 
@@ -316,6 +373,11 @@ export const useWorkoutSessionStore = create<WorkoutSessionState>((set, get) => 
   addExercise: (exercise) => {
     const { exercises, totalSets } = get()
     
+    // Determine if this is a bodyweight exercise and default weight to 'BW'
+    const isBodyweight = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'body weight', 'bodyweight', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
+      .some(bw => exercise.name.toLowerCase().includes(bw))
+    const defaultWeight = isBodyweight ? 'BW' : ''
+    
     // Create new workout exercise with default sets
     const newWorkoutExercise: WorkoutExercise = {
       exerciseId: exercise.id,
@@ -324,9 +386,9 @@ export const useWorkoutSessionStore = create<WorkoutSessionState>((set, get) => 
       detectorType: exercise.detectorType || '',
       orderIndex: exercises.length,
       sets: [
-        { setNumber: 1, weight: '', reps: null, completed: false },
-        { setNumber: 2, weight: '', reps: null, completed: false },
-        { setNumber: 3, weight: '', reps: null, completed: false },
+        { setNumber: 1, weight: defaultWeight, reps: null, completed: false },
+        { setNumber: 2, weight: defaultWeight, reps: null, completed: false },
+        { setNumber: 3, weight: defaultWeight, reps: null, completed: false },
       ],
       notes: '',
       restTimerSeconds: 0,
@@ -453,7 +515,91 @@ export const useWorkoutSessionStore = create<WorkoutSessionState>((set, get) => 
            changes.addedExercises.length > 0 || changes.removedExercises.length > 0
   },
 
+  // Video tracking context functions
+  setVideoTrackingContext: (exerciseId, setIndex) => {
+    set({ videoTrackingContext: { exerciseId, setIndex } })
+  },
+
+  clearVideoTrackingContext: () => {
+    set({ videoTrackingContext: null })
+  },
+
+  logRepsFromVideo: (repCount) => {
+    const { videoTrackingContext, exercises, startRestTimer } = get()
+    if (!videoTrackingContext) return
+    
+    const { exerciseId, setIndex } = videoTrackingContext
+    
+    // Update the specific set with the rep count and mark as completed
+    const newExercises = exercises.map(ex => {
+      if (ex.exerciseId !== exerciseId) return ex
+      
+      const newSets = ex.sets.map((s, i) => {
+        if (i !== setIndex) return s
+        return { ...s, reps: repCount, completed: true }
+      })
+      
+      return { ...ex, sets: newSets }
+    })
+    
+    // Recalculate totals
+    let completedSets = 0
+    let totalVolume = 0
+    
+    newExercises.forEach(ex => {
+      ex.sets.forEach(s => {
+        if (s.completed) {
+          completedSets++
+          const weight = parseFloat(s.weight) || 0
+          const reps = s.reps || 0
+          totalVolume += weight * reps
+        }
+      })
+    })
+    
+    set({ 
+      exercises: newExercises, 
+      completedSets, 
+      totalVolume,
+      videoTrackingContext: null // Clear after logging
+    })
+    
+    // Start rest timer for this exercise
+    startRestTimer(exerciseId)
+  },
+
+  // Saved video functions
+  addSavedVideo: (video) => {
+    const { savedVideos } = get()
+    const newVideo: SavedVideo = {
+      ...video,
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+    }
+    set({ savedVideos: [...savedVideos, newVideo] })
+  },
+
+  removeSavedVideo: (videoId) => {
+    const { savedVideos } = get()
+    const video = savedVideos.find(v => v.id === videoId)
+    if (video) {
+      // Revoke the object URL to free memory
+      URL.revokeObjectURL(video.videoUrl)
+    }
+    set({ savedVideos: savedVideos.filter(v => v.id !== videoId) })
+  },
+
+  clearSavedVideos: () => {
+    const { savedVideos } = get()
+    // Revoke all object URLs
+    savedVideos.forEach(v => URL.revokeObjectURL(v.videoUrl))
+    set({ savedVideos: [] })
+  },
+
   reset: () => {
+    // Clear saved videos before reset
+    const { savedVideos } = get()
+    savedVideos.forEach(v => URL.revokeObjectURL(v.videoUrl))
     set(initialState)
   },
 }))
