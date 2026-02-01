@@ -48,6 +48,8 @@ export class RoutineRepository {
           orderIndex: re.order_index,
           targetSets: re.target_sets,
           targetReps: re.target_reps,
+          targetWeight: re.target_weight,
+          setsData: re.sets_data,
           restSeconds: re.rest_seconds,
           createdAt: re.created_at,
           exerciseName: re.exercises?.name || '',
@@ -101,6 +103,8 @@ export class RoutineRepository {
       orderIndex: re.order_index,
       targetSets: re.target_sets,
       targetReps: re.target_reps,
+      targetWeight: re.target_weight,
+      setsData: re.sets_data,
       restSeconds: re.rest_seconds,
       createdAt: re.created_at,
       exerciseName: re.exercises?.name || '',
@@ -147,6 +151,8 @@ export class RoutineRepository {
             order_index: ex.orderIndex,
             target_sets: ex.targetSets,
             target_reps: ex.targetReps,
+            target_weight: ex.targetWeight,
+            sets_data: ex.setsData,
             rest_seconds: ex.restSeconds
           }))
         )
@@ -213,6 +219,8 @@ export class RoutineRepository {
             order_index: ex.orderIndex,
             target_sets: ex.targetSets,
             target_reps: ex.targetReps,
+            target_weight: ex.targetWeight,
+            sets_data: ex.setsData,
             rest_seconds: ex.restSeconds
           }))
         )

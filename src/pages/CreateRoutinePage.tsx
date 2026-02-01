@@ -76,23 +76,39 @@ export function CreateRoutinePage() {
       setRoutineName(routine.name)
       setRoutineNotes(routine.description || '')
       
-      const exerciseData: RoutineExerciseData[] = routine.exercises.map((ex: any) => ({
-        exercise: {
-          id: ex.exerciseId,
-          name: ex.exerciseName,
-          category: ex.targetCategory || 'strength',
-          description: '',
-          thumbnailUrl: '',
-          detectorType: ex.exerciseDetectorType || 'squat',
-          createdAt: new Date().toISOString()
-        } as Exercise,
-        setsData: Array.from({ length: ex.targetSets }, () => ({ 
-          reps: ex.targetReps, 
-          weight: '' 
-        })),
-        restSeconds: ex.restSeconds,
-        notes: ''
-      }))
+      const exerciseData: RoutineExerciseData[] = routine.exercises.map((ex: any) => {
+        // Use saved setsData if available, otherwise fall back to creating from targetSets
+        let setsData: { reps: number | null; weight: string }[]
+        
+        if (ex.setsData && Array.isArray(ex.setsData) && ex.setsData.length > 0) {
+          // Use the saved individual set data
+          setsData = ex.setsData.map((set: any) => ({
+            reps: set.reps,
+            weight: set.weight || ''
+          }))
+        } else {
+          // Fall back to creating sets from targetSets (for old data)
+          setsData = Array.from({ length: ex.targetSets }, () => ({ 
+            reps: ex.targetReps, 
+            weight: ex.targetWeight || '' 
+          }))
+        }
+        
+        return {
+          exercise: {
+            id: ex.exerciseId,
+            name: ex.exerciseName,
+            category: ex.targetCategory || 'strength',
+            description: '',
+            thumbnailUrl: '',
+            detectorType: ex.exerciseDetectorType || 'squat',
+            createdAt: new Date().toISOString()
+          } as Exercise,
+          setsData,
+          restSeconds: ex.restSeconds,
+          notes: ''
+        }
+      })
       setExercises(exerciseData)
     }
     
@@ -176,6 +192,12 @@ export function CreateRoutinePage() {
     }
   }
 
+  // Helper function to check if exercise is bodyweight
+  const isBodyweightExercise = (name: string) => {
+    const bodyweightExercises = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
+    return bodyweightExercises.some(bw => name.toLowerCase().includes(bw))
+  }
+
   const handleSave = async () => {
     // Validate routine name
     if (!routineName.trim()) {
@@ -185,14 +207,24 @@ export function CreateRoutinePage() {
 
     if (!user) return
 
-    // Prepare exercises data
-    const exercisesData = exercises.map((ex, index) => ({
-      exerciseId: ex.exercise.id,
-      orderIndex: index,
-      targetSets: ex.setsData.length,
-      targetReps: ex.setsData[0]?.reps ?? undefined,
-      restSeconds: ex.restSeconds
-    }))
+    // Prepare exercises data - save ALL sets with their individual reps and weight
+    const exercisesData = exercises.map((ex, index) => {
+      // Process each set - for bodyweight exercises with no weight, use 'BW'
+      const setsData = ex.setsData.map(set => ({
+        reps: set.reps,
+        weight: set.weight || (isBodyweightExercise(ex.exercise.name) ? 'BW' : '')
+      }))
+      
+      return {
+        exerciseId: ex.exercise.id,
+        orderIndex: index,
+        targetSets: ex.setsData.length,
+        targetReps: setsData[0]?.reps ?? undefined,
+        targetWeight: setsData[0]?.weight || undefined,
+        setsData: setsData,
+        restSeconds: ex.restSeconds
+      }
+    })
 
     console.log('Saving routine:', {
       editingRoutineId,
@@ -226,12 +258,6 @@ export function CreateRoutinePage() {
   }
 
   const canSave = routineName.trim().length > 0
-
-  // Helper function to check if exercise is bodyweight
-  const isBodyweightExercise = (name: string) => {
-    const bodyweightExercises = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
-    return bodyweightExercises.some(bw => name.toLowerCase().includes(bw))
-  }
 
   return (
     <div className="min-h-screen bg-black pb-20">

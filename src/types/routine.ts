@@ -15,6 +15,8 @@ export interface RoutineExercise {
   orderIndex: number
   targetSets: number
   targetReps?: number
+  targetWeight?: string
+  setsData?: { reps: number | null; weight: string }[]
   restSeconds: number
   createdAt: string
 }
@@ -38,6 +40,8 @@ export interface CreateRoutineInput {
     orderIndex: number
     targetSets: number
     targetReps?: number
+    targetWeight?: string
+    setsData?: { reps: number | null; weight: string }[]
     restSeconds: number
   }[]
 }
