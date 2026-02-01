@@ -39,13 +39,24 @@ export function useVideoRecording() {
       return null
     }
 
-    const blob = await serviceRef.current.stopRecording()
-    console.log('📹 Got blob from service:', blob ? `${blob.size} bytes` : 'null')
-    setRecordingBlob(blob)
-    console.log('📹 setRecordingBlob called')
-    setIsRecording(false)
-    serviceRef.current = null
-    return blob
+    try {
+      const blob = await serviceRef.current.stopRecording()
+      console.log('📹 Got blob from service:', blob ? `${blob.size} bytes` : 'null')
+      if (blob && blob.size > 0) {
+        setRecordingBlob(blob)
+        console.log('📹 setRecordingBlob called with valid blob')
+      } else {
+        console.log('📹 Blob is empty or null, not setting')
+      }
+      setIsRecording(false)
+      serviceRef.current = null
+      return blob
+    } catch (error) {
+      console.error('📹 Error stopping recording:', error)
+      setIsRecording(false)
+      serviceRef.current = null
+      return null
+    }
   }, [setRecordingBlob, setIsRecording])
 
   const pauseRecording = useCallback(() => {

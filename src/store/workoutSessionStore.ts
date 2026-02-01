@@ -19,6 +19,7 @@ export interface SavedVideo {
   exerciseName: string
   setIndex: number
   repCount: number
+  formScore: number | null
   videoBlob: Blob
   videoUrl: string
   createdAt: number

@@ -5,7 +5,9 @@ import { Button } from '@/components/shared/Button'
 import { useWorkoutSessionStore } from '@/store/workoutSessionStore'
 import { useAuthStore } from '@/store/authStore'
 import { useRoutineStore } from '@/store/routineStore'
+import { useHistoryStore } from '@/store/historyStore'
 import { WorkoutSessionRepository } from '@/repositories/WorkoutSessionRepository'
+import { VideoStorageRepository } from '@/repositories/VideoStorageRepository'
 
 function formatDuration(seconds: number): string {
   const hours = Math.floor(seconds / 3600)
@@ -195,10 +197,12 @@ export function SaveWorkoutPage() {
       return
     }
     
-    await saveWorkout(false)
+    await saveWorkoutData(false)
   }
   
-  const saveWorkout = async (updateRoutineFirst: boolean) => {
+  const { saveWorkout: saveWorkoutToHistory } = useHistoryStore()
+  
+  const saveWorkoutData = async (updateRoutineFirst: boolean) => {
     if (!user) return
     
     setIsSaving(true)
@@ -237,6 +241,46 @@ export function SaveWorkoutPage() {
         description: description || undefined,
         photoUrl: photoUrl || undefined,
       })
+      
+      // Save videos to workouts table (for history videos section)
+      if (savedVideos && savedVideos.length > 0) {
+        console.log('📹 Saving', savedVideos.length, 'videos to workouts table')
+        const videoRepo = new VideoStorageRepository()
+        
+        for (const video of savedVideos) {
+          try {
+            // Upload video to storage
+            let videoUrl: string | null = null
+            if (video.videoBlob) {
+              console.log('📹 Uploading video for', video.exerciseName)
+              videoUrl = await videoRepo.uploadWorkoutVideo(user.id, video.videoBlob)
+              console.log('📹 Video uploaded:', videoUrl)
+            }
+            
+            // Find the exercise to get duration info
+            const exercise = exercises.find(e => e.exerciseId === video.exerciseId)
+            const completedSetsForExercise = exercise?.sets.filter(s => s.completed) || []
+            const totalReps = completedSetsForExercise.reduce((sum, s) => sum + (s.reps || 0), 0) || video.repCount
+            
+            // Save to workouts table
+            await saveWorkoutToHistory({
+              userId: user.id,
+              exerciseId: video.exerciseId,
+              repCount: totalReps,
+              durationMs: Math.round(elapsedSeconds * 1000 / Math.max(savedVideos.length, 1)), // Approximate duration per video
+              formScore: video.formScore,
+              avgTimePerRep: null,
+              videoUrl,
+              manualEntry: false,
+              notes: `From ${routineName || 'Quick Workout'} - Set ${video.setIndex + 1}`,
+            })
+            console.log('📹 Workout entry saved for', video.exerciseName)
+          } catch (videoError) {
+            console.error('📹 Failed to save video workout:', videoError)
+            // Continue with other videos even if one fails
+          }
+        }
+      }
       
       // Reset and navigate
       reset()
@@ -536,11 +580,11 @@ export function SaveWorkoutPage() {
           changesDescription={getChangesDescription()}
           onUpdate={() => {
             setShowUpdateRoutineModal(false)
-            saveWorkout(true)
+            saveWorkoutData(true)
           }}
           onKeepOriginal={() => {
             setShowUpdateRoutineModal(false)
-            saveWorkout(false)
+            saveWorkoutData(false)
           }}
         />
       )}

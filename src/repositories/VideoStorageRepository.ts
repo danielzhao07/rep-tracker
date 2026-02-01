@@ -41,6 +41,17 @@ export class VideoStorageRepository {
   }
 
   /**
+   * Upload a workout video with auto-generated ID
+   */
+  async uploadWorkoutVideo(
+    userId: string,
+    blob: Blob
+  ): Promise<string> {
+    const workoutId = crypto.randomUUID()
+    return this.uploadVideo(userId, workoutId, blob)
+  }
+
+  /**
    * Get a playable URL for a video
    * Uses signed URL for better security and reliability
    */

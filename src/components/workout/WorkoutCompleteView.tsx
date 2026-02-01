@@ -78,6 +78,8 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
   const { logRepsFromVideo, videoTrackingContext, addSavedVideo } = useWorkoutSessionStore()
   
   const [showSaveVideoModal, setShowSaveVideoModal] = useState(false)
+  // Store the video tracking context locally since logRepsFromVideo clears it
+  const [savedVideoContext, setSavedVideoContext] = useState<{ exerciseId: string; setIndex: number } | null>(null)
 
   // Debug: Log what exercise we have when component loads
   useEffect(() => {
@@ -199,14 +201,18 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
       currentExercise: currentExercise?.name
     })
     
+    // Save context BEFORE logging reps (logRepsFromVideo clears videoTrackingContext!)
+    const contextToSave = videoTrackingContext
+    
     if (videoTrackingContext && repCount > 0) {
       logRepsFromVideo(repCount)
       showToast(`Logged ${repCount} reps!`, 'success')
     }
     
-    // If there's a video, ask if they want to save it
-    if (recordingBlob && videoTrackingContext && currentExercise) {
-      console.log('📹 Showing save video modal')
+    // If there's a video, ask if they want to save it (use contextToSave since logRepsFromVideo clears it)
+    if (recordingBlob && contextToSave && currentExercise) {
+      console.log('📹 Showing save video modal, saving context:', contextToSave)
+      setSavedVideoContext(contextToSave)
       setShowSaveVideoModal(true)
       return
     }
@@ -218,19 +224,33 @@ export function WorkoutCompleteView({ onRetry, returnTo }: WorkoutCompleteViewPr
   }
 
   const handleSaveVideoAndReturn = () => {
-    if (recordingBlob && videoTrackingContext && currentExercise) {
+    console.log('📹 handleSaveVideoAndReturn called with:', {
+      hasRecordingBlob: !!recordingBlob,
+      recordingBlobSize: recordingBlob?.size,
+      savedVideoContext,
+      currentExercise: currentExercise?.name
+    })
+    
+    // Use savedVideoContext which was stored before logRepsFromVideo cleared the original
+    if (recordingBlob && savedVideoContext && currentExercise) {
       const videoUrl = URL.createObjectURL(recordingBlob)
+      console.log('📹 Creating video with URL:', videoUrl)
       addSavedVideo({
-        exerciseId: videoTrackingContext.exerciseId,
+        exerciseId: savedVideoContext.exerciseId,
         exerciseName: currentExercise.name,
-        setIndex: videoTrackingContext.setIndex,
+        setIndex: savedVideoContext.setIndex,
         repCount,
+        formScore,
         videoBlob: recordingBlob,
         videoUrl,
       })
+      console.log('📹 Video added to savedVideos')
       showToast('Video saved!', 'success')
+    } else {
+      console.log('📹 Missing required data for saving video!')
     }
     setShowSaveVideoModal(false)
+    setSavedVideoContext(null)
     resetWorkout()
     navigate(returnTo || ROUTES.WORKOUT_ACTIVE)
   }
