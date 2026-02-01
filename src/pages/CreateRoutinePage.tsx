@@ -34,26 +34,48 @@ export function CreateRoutinePage() {
   const [editingRoutineId, setEditingRoutineId] = useState<string | null>(null)
   const [exerciseMenuOpen, setExerciseMenuOpen] = useState<string | null>(null)
 
-  // Load preserved state when returning from add exercises page
+  // Initialize state based on location state (only runs once on mount)
   useEffect(() => {
-    if (location.state?.preservedExercises && !location.state?.selectedExercises) {
-      // User came back without selecting anything - restore previous state
-      setExercises(location.state.preservedExercises)
-      if (location.state.routineName) setRoutineName(location.state.routineName)
-      if (location.state.routineNotes) setRoutineNotes(location.state.routineNotes)
-      if (location.state.editingRoutineId) setEditingRoutineId(location.state.editingRoutineId)
-      window.history.replaceState({}, document.title)
+    const state = location.state
+    
+    // Case 1: Coming back from add exercises page without selecting anything
+    if (state?.preservedExercises && !state?.selectedExercises && !state?.editRoutine) {
+      console.log('Restoring preserved state')
+      setExercises(state.preservedExercises)
+      if (state.routineName) setRoutineName(state.routineName)
+      if (state.routineNotes) setRoutineNotes(state.routineNotes)
+      if (state.editingRoutineId) setEditingRoutineId(state.editingRoutineId)
     }
-  }, [])
-
-  // Load routine if editing
-  useEffect(() => {
-    if (location.state?.editRoutine) {
-      const routine = location.state.editRoutine
+    // Case 2: Coming back from add exercises with new selections
+    else if (state?.selectedExercises) {
+      console.log('Adding selected exercises')
+      const selectedExercises = state.selectedExercises as Exercise[]
+      const preservedExercises = state.preservedExercises as RoutineExerciseData[] || []
+      
+      if (state.routineName) setRoutineName(state.routineName)
+      if (state.routineNotes) setRoutineNotes(state.routineNotes)
+      if (state.editingRoutineId) setEditingRoutineId(state.editingRoutineId)
+      
+      const existingIds = new Set(preservedExercises.map(e => e.exercise.id))
+      const newExercises: RoutineExerciseData[] = selectedExercises
+        .filter(ex => !existingIds.has(ex.id))
+        .map((ex: Exercise) => ({
+          exercise: ex,
+          setsData: [{ reps: null, weight: '' }, { reps: null, weight: '' }, { reps: null, weight: '' }],
+          restSeconds: 90,
+          notes: ''
+        }))
+      
+      setExercises([...preservedExercises, ...newExercises])
+    }
+    // Case 3: Editing an existing routine
+    else if (state?.editRoutine) {
+      console.log('Loading routine for editing:', state.editRoutine.id)
+      const routine = state.editRoutine
       setEditingRoutineId(routine.id)
       setRoutineName(routine.name)
       setRoutineNotes(routine.description || '')
-      // Convert routine exercises to RoutineExerciseData format
+      
       const exerciseData: RoutineExerciseData[] = routine.exercises.map((ex: any) => ({
         exercise: {
           id: ex.exerciseId,
@@ -72,37 +94,10 @@ export function CreateRoutinePage() {
         notes: ''
       }))
       setExercises(exerciseData)
-      window.history.replaceState({}, document.title)
     }
-  }, [location.state?.editRoutine])
-
-  // Check if exercises were added from exercise library
-  useEffect(() => {
-    if (location.state?.selectedExercises) {
-      const selectedExercises = location.state.selectedExercises as Exercise[]
-      const preservedExercises = location.state.preservedExercises as RoutineExerciseData[] || []
-      
-      // Restore preserved state
-      if (location.state.routineName) setRoutineName(location.state.routineName)
-      if (location.state.routineNotes) setRoutineNotes(location.state.routineNotes)
-      if (location.state.editingRoutineId) setEditingRoutineId(location.state.editingRoutineId)
-      
-      // Combine preserved exercises with new ones
-      const existingIds = new Set(preservedExercises.map(e => e.exercise.id))
-      const newExercises: RoutineExerciseData[] = selectedExercises
-        .filter(ex => !existingIds.has(ex.id))
-        .map((ex: Exercise) => ({
-          exercise: ex,
-          setsData: [{ reps: null, weight: '' }, { reps: null, weight: '' }, { reps: null, weight: '' }],
-          restSeconds: 90,
-          notes: ''
-        }))
-      
-      setExercises([...preservedExercises, ...newExercises])
-      
-      // Clear the state immediately to prevent re-adding
-      window.history.replaceState({}, document.title)
-    }
+    
+    // Clear the state to prevent re-running
+    window.history.replaceState({}, document.title)
   }, []) // Empty deps - only run once on mount
 
   const handleAddExercise = () => {
@@ -190,42 +185,53 @@ export function CreateRoutinePage() {
 
     if (!user) return
 
+    // Prepare exercises data
+    const exercisesData = exercises.map((ex, index) => ({
+      exerciseId: ex.exercise.id,
+      orderIndex: index,
+      targetSets: ex.setsData.length,
+      targetReps: ex.setsData[0]?.reps ?? undefined,
+      restSeconds: ex.restSeconds
+    }))
+
+    console.log('Saving routine:', {
+      editingRoutineId,
+      name: routineName,
+      exercises: exercisesData
+    })
+
     try {
       if (editingRoutineId) {
         // Update existing routine
         await updateRoutine(editingRoutineId, {
           name: routineName,
           description: routineNotes,
-          exercises: exercises.map((ex, index) => ({
-            exerciseId: ex.exercise.id,
-            orderIndex: index,
-            targetSets: ex.setsData.length,
-            targetReps: ex.setsData[0]?.reps ?? undefined,
-            restSeconds: ex.restSeconds
-          }))
+          exercises: exercisesData
         })
+        console.log('Routine updated successfully')
       } else {
         // Create new routine
         await createRoutine(user.id, {
           name: routineName,
           description: routineNotes,
-          exercises: exercises.map((ex, index) => ({
-            exerciseId: ex.exercise.id,
-            orderIndex: index,
-            targetSets: ex.setsData.length,
-            targetReps: ex.setsData[0]?.reps ?? undefined,
-            restSeconds: ex.restSeconds
-          }))
+          exercises: exercisesData
         })
+        console.log('Routine created successfully')
       }
 
       navigate(ROUTES.WORKOUT, { state: { fromCreateRoutine: true } })
     } catch (error) {
-      console.error('Failed to create routine:', error)
+      console.error('Failed to save routine:', error)
     }
   }
 
   const canSave = routineName.trim().length > 0
+
+  // Helper function to check if exercise is bodyweight
+  const isBodyweightExercise = (name: string) => {
+    const bodyweightExercises = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
+    return bodyweightExercises.some(bw => name.toLowerCase().includes(bw))
+  }
 
   return (
     <div className="min-h-screen bg-black pb-20">
@@ -348,18 +354,18 @@ export function CreateRoutinePage() {
 
               {/* Sets Configuration */}
               <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-400 mb-2">
-                  <span className="w-12">SET</span>
-                  <span className="w-20">LBS</span>
-                  <span className="flex-1 text-center">REPS</span>
+                <div className="grid grid-cols-[40px_1fr_1fr] gap-2 text-sm text-gray-400 mb-2 px-1">
+                  <span>SET</span>
+                  <span className="text-center">LBS</span>
+                  <span className="text-center">REPS</span>
                 </div>
 
                 {exerciseData.setsData.map((setData, setIndex) => (
-                  <div key={setIndex} className="flex items-center gap-2 group">
-                    <span className="w-12 text-white text-lg">{setIndex + 1}</span>
+                  <div key={setIndex} className="grid grid-cols-[40px_1fr_1fr] gap-2 items-center group">
+                    <span className="text-white text-lg font-medium">{setIndex + 1}</span>
                     <input
                       type="text"
-                      placeholder="-"
+                      placeholder={isBodyweightExercise(exerciseData.exercise.name) ? 'BW' : '-'}
                       value={setData.weight}
                       onChange={(e) => {
                         setExercises(prev => prev.map((ex, i) => 
@@ -373,14 +379,14 @@ export function CreateRoutinePage() {
                             : ex
                         ))
                       }}
-                      className="w-20 bg-dark-800 text-white text-lg text-center rounded-lg py-2 border border-dark-700 focus:border-cyan-600 focus:outline-none"
+                      className="w-full bg-dark-800 text-white text-lg text-center rounded-lg py-2 border border-dark-700 focus:border-cyan-600 focus:outline-none"
                     />
-                    <div className="flex-1 flex items-center justify-center gap-2">
+                    <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleDecrementReps(index, setIndex)}
-                        className="w-9 h-9 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-700/50 hover:border-cyan-500 text-cyan-400 flex items-center justify-center transition-all duration-200"
+                        className="w-8 h-8 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-700/50 hover:border-cyan-500 text-cyan-400 flex items-center justify-center transition-all duration-200 flex-shrink-0"
                       >
-                        <Minus size={16} />
+                        <Minus size={14} />
                       </button>
                       <input
                         type="text"
@@ -392,23 +398,23 @@ export function CreateRoutinePage() {
                           handleUpdateSetReps(index, setIndex, val ? parseInt(val) : null)
                         }}
                         placeholder="-"
-                        className="w-16 bg-dark-800 text-white text-lg text-center rounded-lg py-2 border border-dark-700 focus:border-cyan-600 focus:outline-none"
+                        className="w-full min-w-0 bg-dark-800 text-white text-lg text-center rounded-lg py-2 border border-dark-700 focus:border-cyan-600 focus:outline-none"
                       />
                       <button
                         onClick={() => handleIncrementReps(index, setIndex)}
-                        className="w-9 h-9 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-700/50 hover:border-cyan-500 text-cyan-400 flex items-center justify-center transition-all duration-200"
+                        className="w-8 h-8 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-700/50 hover:border-cyan-500 text-cyan-400 flex items-center justify-center transition-all duration-200 flex-shrink-0"
                       >
-                        <Plus size={16} />
+                        <Plus size={14} />
                       </button>
+                      {exerciseData.setsData.length > 1 && (
+                        <button
+                          onClick={() => handleRemoveSet(index, setIndex)}
+                          className="w-8 h-8 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300 flex items-center justify-center"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
                     </div>
-                    {exerciseData.setsData.length > 1 && (
-                      <button
-                        onClick={() => handleRemoveSet(index, setIndex)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-300 p-1"
-                      >
-                        <X size={18} />
-                      </button>
-                    )}
                   </div>
                 ))}  
               </div>

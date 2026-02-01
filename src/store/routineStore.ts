@@ -58,10 +58,13 @@ export const useRoutineStore = create<RoutineStore>((set, get) => ({
   },
 
   updateRoutine: async (routineId: string, input: CreateRoutineInput) => {
+    console.log('updateRoutine called with:', { routineId, input })
     set({ isLoading: true, error: null })
     try {
       await RoutineRepository.updateRoutineWithExercises(routineId, input)
+      console.log('Repository update complete, fetching updated routine...')
       const updatedRoutine = await RoutineRepository.getRoutine(routineId)
+      console.log('Updated routine:', updatedRoutine)
       
       if (updatedRoutine) {
         set(state => ({
@@ -70,6 +73,7 @@ export const useRoutineStore = create<RoutineStore>((set, get) => ({
         }))
       }
     } catch (error) {
+      console.error('updateRoutine error:', error)
       set({
         error: error instanceof Error ? error.message : 'Failed to update routine',
         isLoading: false

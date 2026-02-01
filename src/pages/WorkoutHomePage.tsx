@@ -335,38 +335,47 @@ export function WorkoutHomePage() {
               )}
 
               <div className="space-y-4">
-                {selectedRoutine.exercises.map((exercise) => (
-                  <div
-                    key={exercise.exerciseId}
-                    className="bg-dark-800 rounded-lg p-4 border border-dark-700"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="text-white font-semibold">{exercise.exerciseName}</h3>
-                        <p className="text-gray-500 text-sm capitalize">
-                          {exercise.exerciseCategory || 'Exercise'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="text-gray-400">Sets:</span>
-                        <span className="text-white font-medium">{exercise.targetSets}</span>
-                      </div>
-                      {exercise.targetReps && (
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="text-gray-400">Reps:</span>
-                          <span className="text-white font-medium">{exercise.targetReps}</span>
+                {selectedRoutine.exercises.map((exercise) => {
+                  const isBodyweight = ['push up', 'pushup', 'push-up', 'squat', 'squats', 'pull up', 'pullup', 'pull-up', 'dip', 'dips', 'plank', 'lunge', 'lunges', 'burpee', 'burpees']
+                    .some(bw => exercise.exerciseName.toLowerCase().includes(bw))
+                  
+                  return (
+                    <div
+                      key={exercise.exerciseId}
+                      className="bg-dark-800 rounded-lg p-4 border border-dark-700"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="text-white font-semibold">{exercise.exerciseName}</h3>
+                          <p className="text-gray-500 text-sm capitalize">
+                            {exercise.exerciseCategory || 'Exercise'}
+                          </p>
                         </div>
-                      )}
-                      <div className="flex items-center gap-4 text-sm">
-                        <span className="text-gray-400">Rest:</span>
-                        <span className="text-white font-medium">{exercise.restSeconds}s</span>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-gray-400">Sets:</span>
+                          <span className="text-white font-medium">{exercise.targetSets}</span>
+                        </div>
+                        {exercise.targetReps && (
+                          <div className="flex items-center gap-4 text-sm">
+                            <span className="text-gray-400">Reps:</span>
+                            <span className="text-white font-medium">{exercise.targetReps}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-gray-400">Weight:</span>
+                          <span className="text-white font-medium">{isBodyweight ? 'BW' : '-'}</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-gray-400">Rest:</span>
+                          <span className="text-white font-medium">{exercise.restSeconds}s</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
 
