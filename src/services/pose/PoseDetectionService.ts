@@ -78,10 +78,10 @@ export class PoseDetectionService {
       this.canvasCtx = canvas.getContext('2d')
       if (this.canvasCtx) {
         this.drawingUtils = new DrawingUtils(this.canvasCtx)
-        console.log('🎨 Canvas context acquired:', canvas.width, 'x', canvas.height)
+        console.log('Canvas context acquired:', canvas.width, 'x', canvas.height)
       }
     } else {
-      console.warn('⚠️ No canvas provided - skeleton will not be drawn')
+      console.warn('No canvas provided - skeleton will not be drawn')
     }
 
     this.isRunning = true
@@ -97,12 +97,12 @@ export class PoseDetectionService {
       cancelAnimationFrame(this.animationFrameId)
       this.animationFrameId = null
     }
-    console.log('🛑 Pose detection stopped')
+    console.log('Pose detection stopped')
   }
 
   onPoseDetected(callback: PoseCallback): () => void {
     this.callbacks.push(callback)
-    console.log(`📝 Pose callback registered (total: ${this.callbacks.length})`)
+    console.log(`Pose callback registered (total: ${this.callbacks.length})`)
     return () => {
       this.callbacks = this.callbacks.filter((cb) => cb !== callback)
     }
@@ -159,7 +159,7 @@ export class PoseDetectionService {
     const now = Date.now()
     if (now - this.lastLogTime > 2000) {
       console.log(
-        `📊 Pose detection - Frame ${this.frameCount}, Landmarks: ${
+        `Pose detection - Frame ${this.frameCount}, Landmarks: ${
           results.landmarks && results.landmarks.length > 0
             ? 'YES (' + results.landmarks[0].length + ')'
             : 'NO'
@@ -196,7 +196,7 @@ export class PoseDetectionService {
    * Draws GREEN skeleton matching user's Python implementation style
    * Only draws landmarks with high visibility to prevent glitching
    *
-   * ⚠️ CRITICAL: Use MANUAL drawing approach (do NOT use drawingUtils.drawLandmarks/drawConnectors)
+   * CRITICAL: Use MANUAL drawing approach (do NOT use drawingUtils.drawLandmarks/drawConnectors)
    * Even though Google examples use DrawingUtils methods directly, they DO NOT work reliably here.
    * Manual drawing with visibility filtering is required for stable skeleton rendering.
    * See DEVELOPMENT.md for detailed explanation.

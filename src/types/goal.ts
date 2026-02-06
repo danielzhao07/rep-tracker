@@ -50,8 +50,8 @@ export const GOAL_TYPE_LABELS: Record<GoalType, string> = {
 }
 
 export const GOAL_TYPE_ICONS: Record<GoalType, string> = {
-  weekly_reps: '💪',
-  monthly_workouts: '📅',
-  total_reps_milestone: '🏆',
-  weekly_workouts: '🔥',
+  weekly_reps: '',
+  monthly_workouts: '',
+  total_reps_milestone: '',
+  weekly_workouts: '',
 }

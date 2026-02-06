@@ -449,7 +449,7 @@ export class SquatDetector extends BaseDetector {
 
     // Debug logging
     if (now - this.lastLogTime > 300) {
-      const positionStatus = this.isInValidSquatPosition ? '✅' : '⚠️'
+      const positionStatus = this.isInValidSquatPosition ? 'OK' : 'WARN'
       const viewLabel = this.isFrontView ? 'FRONT' : 'SIDE'
 
       if (this.isFrontView) {

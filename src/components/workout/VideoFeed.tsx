@@ -112,7 +112,7 @@ export function VideoFeed({ stream, onVideoReady, showOverlay = true }: VideoFee
       {/* Camera position tip */}
       <div className="absolute bottom-4 left-4 right-4 bg-black/70 px-4 py-2 rounded-lg z-20">
         <p className="text-xs text-gray-300 text-center">
-          💡 Position camera to your <strong>side</strong> for best detection. Your full arm (shoulder→elbow→wrist) should be visible.
+          Position camera to your <strong>side</strong> for best detection. Your full arm (shoulder→elbow→wrist) should be visible.
         </p>
       </div>
     </div>

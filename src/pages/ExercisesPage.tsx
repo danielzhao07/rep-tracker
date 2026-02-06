@@ -563,7 +563,6 @@ function ExerciseDetailModal({
               {/* Personal Records */}
               <div className="mt-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">🏆</span>
                   <span className="text-white font-semibold">Personal Records</span>
                 </div>
                 
@@ -630,19 +629,13 @@ function ExerciseDetailModal({
             {exerciseWorkouts.length > 0 ? (
               exerciseWorkouts.map((workout, index) => {
                 const date = new Date(workout.createdAt)
-                const hour = date.getHours()
-                let emoji = '☀️'
-                if (hour >= 5 && hour < 12) emoji = '🌅'
-                else if (hour >= 12 && hour < 17) emoji = '☀️'
-                else if (hour >= 17 && hour < 21) emoji = '🌆'
-                else emoji = '🌙'
                 
                 return (
                   <div key={workout.id || index} className="mb-6">
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <h3 className="text-white font-medium flex items-center gap-2">
-                          Workout {emoji}
+                          Workout
                         </h3>
                         <p className="text-gray-500 text-sm">
                           {date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}, {date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}

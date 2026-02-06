@@ -171,7 +171,7 @@ export class BicepCurlDetector extends BaseDetector {
 
     // Debug logging
     if (now - this.lastLogTime > 300) {
-      console.log(`💪 (BOTH ARMS) Left: ${leftAngle.toFixed(1)}° (vis: ${(leftVisibility * 100).toFixed(0)}%) | Right: ${rightAngle.toFixed(1)}° (vis: ${(rightVisibility * 100).toFixed(0)}%)`)
+      console.log(`(BOTH ARMS) Left: ${leftAngle.toFixed(1)}° (vis: ${(leftVisibility * 100).toFixed(0)}%) | Right: ${rightAngle.toFixed(1)}° (vis: ${(rightVisibility * 100).toFixed(0)}%)`)
       console.log(`   Avg: ${primaryAngle.toFixed(1)}° | Diff: ${Math.abs(leftAngle - rightAngle).toFixed(1)}° | Left stage: ${this.leftStage ?? 'null'} | Right stage: ${this.rightStage ?? 'null'} | Reps: ${this.repCount}`)
       console.log(`   Thresholds - DOWN: >${ANGLE_DOWN_ENTER}° | UP: <${ANGLE_UP_ENTER}°`)
       this.lastLogTime = now

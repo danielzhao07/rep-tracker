@@ -132,7 +132,7 @@ export class AlternatingBicepCurlDetector extends BaseDetector {
     // Debug logging - show both arms with individual rep counts
     if (now - this.lastLogTime > 300) {
       const totalReps = this.leftRepCount + this.rightRepCount
-      console.log(`💪 Left: ${leftAngle.toFixed(1)}° (${this.leftStage ?? 'null'}, ${this.leftRepCount} reps) | Right: ${rightAngle.toFixed(1)}° (${this.rightStage ?? 'null'}, ${this.rightRepCount} reps) | Total: ${totalReps}`)
+      console.log(`Left: ${leftAngle.toFixed(1)}° (${this.leftStage ?? 'null'}, ${this.leftRepCount} reps) | Right: ${rightAngle.toFixed(1)}° (${this.rightStage ?? 'null'}, ${this.rightRepCount} reps) | Total: ${totalReps}`)
       console.log(`   Thresholds - DOWN: >${ANGLE_DOWN_ENTER}° | UP: <${ANGLE_UP_ENTER}°`)
       this.lastLogTime = now
     }
